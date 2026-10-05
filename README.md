@@ -49,6 +49,27 @@ left of the tick can still ask more than the units of its own type. Every week i
 picture can be drawn for any earlier week, and a cut is a listing asking less per m² than it did
 the week before.
 
+## 📸 The pipeline running
+
+The weekly run of <!--nb:latest_run_week-->4 October 2026<!--/nb--> in Airflow, and the warehouse tables it wrote.
+
+<p align="center">
+  <img width="49%" src="docs/screenshots/airflow-grid.png" alt="Airflow grid view of the weekly DAG: every task of the run green">
+  <img width="49%" src="docs/screenshots/airflow-graph.png" alt="Airflow graph view: one extract task per site, then load_silver, build_gold and report">
+</p>
+<p align="center"><sub>Left: the grid view, every task of the run green. Right: the graph, one extract per site, then load_silver, build_gold and report.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/screenshots/airflow-load-silver-log.png" alt="The load_silver task log: pages and counts per site and area, ending with the week's reconciled totals">
+  <img width="49%" src="docs/screenshots/warehouse-run-log.png" alt="silver.run_log summed per site: parsed, skipped, duplicate, saved and quarantined rows, each site reconciled">
+</p>
+<p align="center"><sub>Left: the load_silver log, ending with the week's totals. Right: silver.run_log per site, where parsed = skipped + duplicate + saved + quarantined.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/screenshots/warehouse-quarantine.png" alt="silver.quarantine grouped by reason and site: every rejected row kept with its reason">
+</p>
+<p align="center"><sub>silver.quarantine by reason and site: a rejected row is kept with its reason, never dropped.</sub></p>
+
 ## 📈 The result
 
 **<!--nb:listings_compared-->5,619<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
@@ -63,35 +84,79 @@ median of the same type in the same area.** The checks behind every number are i
   from <!--nb:developers_covered-->307<!--/nb--> developers covered, against our <!--nb:our_units-->60<!--/nb--> units.
 - **<!--nb:share_listings_cheaper_than_ours-->50.4<!--/nb-->% of the <!--nb:listings_in_our_types-->4,929<!--/nb--> competing listings** in
   the areas and types where we have units ask less per m² than our median unit of that type and area.
-- **<!--nb:price_cuts-->0<!--/nb--> price cuts** in the latest run week: listings that asked less
-  per m² than the week before.
 - **<!--nb:quarantined_rows-->41<!--/nb--> rows set aside** with their reason
-  (<!--nb:quarantine_share_pct-->0.7<!--/nb-->% of all rows read); every run's counts reconcile site
-  by site and area by area.
+  (<!--nb:quarantine_share_pct-->0.7<!--/nb-->% of all rows read), most often "<!--nb:i12_top_reason-->price per m² outside 10,000 to 400,000<!--/nb-->"
+  (<!--nb:i12_top_reason_rows-->29<!--/nb--> rows); every run's counts reconcile site by site and area by area.
 - **<!--nb:i1_premium_pct-->114.2<!--/nb-->% more per m²** asked in <!--nb:i1_dearest_area-->North Coast<!--/nb--> than
   in <!--nb:i1_cheapest_area-->New Capital<!--/nb-->, the cheapest area, comparing median asking prices.
+- **The 90th percentile <!--nb:i10_widest_p90_over_p10_pct-->369.1<!--/nb-->% above the 10th** in asking price per m²
+  in <!--nb:i10_widest_area-->North Coast<!--/nb-->, the widest spread; the narrowest is <!--nb:i10_narrowest_area-->Mostakbal City<!--/nb-->, at <!--nb:i10_narrowest_p90_over_p10_pct-->218.6<!--/nb-->%.
 - **<!--nb:i5_types_lower_in_largest_band-->7<!--/nb--> of <!--nb:i5_types_compared-->9<!--/nb--> unit types** ask less per m² in their largest size band
   than in their smallest; different listings side by side, not the effect of size.
 - **Index <!--nb:i3_top_index-->219<!--/nb--> for <!--nb:i3_top_developer-->ADD Properties<!--/nb-->**, the dearest of <!--nb:i3_developers-->48<!--/nb--> developers
   with 10 or more listings (100 = the area median); the lowest is <!--nb:i3_bottom_developer-->Amer Group<!--/nb--> at <!--nb:i3_bottom_index-->62<!--/nb-->.
 - **Nawy above Dubizzle in <!--nb:i6_nawy_above_areas-->6<!--/nb--> of <!--nb:i6_areas_compared-->6<!--/nb--> areas** by median asking price per m²;
   Nawy shows mostly developers' launch prices and Dubizzle is a resale marketplace, the likely reason.
-- **About <!--nb:i7_twin_share_pct-->1.7<!--/nb-->% of listings with a named compound** likely appear on another site
-  too (same area, compound and type, size within 2 m², price within 2%): an estimate.
+- **From <!--nb:i11_lowest_read_pct-->0.1<!--/nb-->% to <!--nb:i11_highest_read_pct-->12.5<!--/nb-->% of each site's own count** read each week,
+  from <!--nb:i11_lowest_site-->Bayut Egypt<!--/nb--> to <!--nb:i11_highest_site-->realestate.eg<!--/nb-->: a sample of each site, not all of it.
+
+### 🖼️ Every chart from the notebook
 
 <p align="center">
-  <img width="100%" src="docs/listings-by-area.png" alt="Competing listings read in each area, latest run week">
+  <img width="100%" src="docs/listings-by-area.png" alt="Competing listings read in each area, by site, latest run week">
 </p>
+<p align="center"><sub>Competing listings read in each area, stacked by site.</sub></p>
 
 <p align="center">
   <img width="49%" src="docs/gap-by-area.png" alt="Median gap of our units by area, each unit against the median of the same type in the same area">
-  <img width="49%" src="docs/price-cuts-by-week.png" alt="Listings that asked less per square metre than the week before, by run week">
+  <img width="49%" src="docs/insight-14-units-against-market.png" alt="One amber dot per unit of ours: its gap against the median of the same type in the same area">
 </p>
+<p align="center"><sub>Left: our median gap by area. Right: every unit of ours against its market, one amber dot each.</sub></p>
 
 <p align="center">
   <img width="49%" src="docs/insight-1-area-ranking.png" alt="Median asking price per square metre by area, with the middle half of the listings">
-  <img width="49%" src="docs/insight-3-developer-index.png" alt="Developer price index against the area median, the top five and the bottom five">
+  <img width="49%" src="docs/insight-10-price-spread.png" alt="Box plot per area: middle half of asking prices per square metre, whiskers from the 10th to the 90th percentile">
 </p>
+<p align="center"><sub>Left: areas ranked by median price per m². Right: the spread in each area, 10th to 90th percentile.</sub></p>
+
+<p align="center">
+  <img width="100%" src="docs/insight-2-type-by-area.png" alt="Heatmap of median asking price per square metre by area and unit type, with the count in each cell">
+</p>
+<p align="center"><sub>Median price per m² by area and unit type, with n in each cell; small groups are not measured.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/insight-3-developer-index.png" alt="Developer price index against the area median, the top five and the bottom five">
+  <img width="49%" src="docs/insight-4-compounds.png" alt="The cheapest and the dearest compound in each area by median asking price per square metre">
+</p>
+<p align="center"><sub>Left: developers against their area median (100). Right: the cheapest and the dearest compound in each area.</sub></p>
+
+<p align="center">
+  <img width="100%" src="docs/insight-5-size-and-bedrooms.png" alt="Median price per square metre by unit type and size band, and median asking price per bedroom">
+</p>
+<p align="center"><sub>Price per m² by size band, and price per bedroom: listings side by side, not the effect of size.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/insight-6-site-differences.png" alt="Median asking price per square metre by site and area, one dot per site">
+  <img width="49%" src="docs/insight-8-our-units.png" alt="Our ten units furthest above the median of the same type in the same area">
+</p>
+<p align="center"><sub>Left: each site's median in each area. Right: our ten units furthest above their market.</sub></p>
+
+<p align="center">
+  <img width="100%" src="docs/insight-13-site-and-type.png" alt="Heatmap of listings per site and unit type, latest run week">
+</p>
+<p align="center"><sub>Listings per site and unit type, pooled over sites.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/insight-11-coverage.png" alt="Listings read as a share of each site's own stated count, per site">
+  <img width="49%" src="docs/insight-12-set-aside-by-reason.png" alt="Rows skipped, duplicated or quarantined, by reason and site">
+</p>
+<p align="center"><sub>Left: listings read against each site's own count. Right: rows set aside, by reason and site.</sub></p>
+
+<p align="center">
+  <img width="49%" src="docs/insight-7-cross-site-duplicates.png" alt="Share of each site's listings with a likely twin on another site, an estimate">
+  <img width="49%" src="docs/price-cuts-by-week.png" alt="Listings that asked less, or more, per square metre than the week before, by run week">
+</p>
+<p align="center"><sub>Left: listings with a likely twin on another site, about <!--nb:i7_twin_share_pct-->1.7<!--/nb-->%, an estimate. Right: cuts and rises by run week, <!--nb:price_cuts-->0<!--/nb--> cuts in the latest run week.</sub></p>
 
 ## 📦 For developers and brokerages
 

@@ -2697,6 +2697,322 @@
       "dropped_listings": null,
       "chart": null,
       "sentence": "Week over week needs two run weeks; the warehouse has one, 4 October 2026."
+    },
+    "10": {
+      "title": "Spread of price per m² in each area",
+      "grain": "one row per area, latest run week, pooled over sites and unit types",
+      "groups": [
+        {
+          "area": "North Coast",
+          "n": 1000,
+          "p10": 45422.377,
+          "p25": 70000.0,
+          "median": 113511.095,
+          "p75": 155729.4025,
+          "p90": 213077.001,
+          "p90_over_p10_pct": 369.10138806694323
+        },
+        {
+          "area": "New Cairo",
+          "n": 916,
+          "p10": 37105.915,
+          "p25": 54600.88,
+          "median": 76142.13,
+          "p75": 104602.12,
+          "p90": 134347.645,
+          "p90_over_p10_pct": 262.0653068385458
+        },
+        {
+          "area": "Sheikh Zayed",
+          "n": 941,
+          "p10": 29940.12,
+          "p25": 42211.06,
+          "median": 62068.97,
+          "p75": 93333.33,
+          "p90": 118750.0,
+          "p90_over_p10_pct": 296.6249968270001
+        },
+        {
+          "area": "6th of October",
+          "n": 953,
+          "p10": 26141.912,
+          "p25": 40586.47,
+          "median": 58148.89,
+          "p75": 87083.33,
+          "p90": 110957.07200000003,
+          "p90_over_p10_pct": 324.44130329870296
+        },
+        {
+          "area": "Mostakbal City",
+          "n": 959,
+          "p10": 32235.706000000002,
+          "p25": 40896.854999999996,
+          "median": 56311.21,
+          "p75": 75460.64,
+          "p90": 102693.50000000001,
+          "p90_over_p10_pct": 218.5706557815114
+        },
+        {
+          "area": "New Capital",
+          "n": 850,
+          "p10": 25916.319,
+          "p25": 35008.065,
+          "median": 53000.0,
+          "p75": 82189.315,
+          "p90": 107507.676,
+          "p90_over_p10_pct": 314.82617959749615
+        }
+      ],
+      "groups_skipped": 0,
+      "listings_skipped": 0,
+      "widest_area": "North Coast",
+      "widest_n": 1000,
+      "widest_p10_m2": 45422.377,
+      "widest_p90_m2": 213077.001,
+      "widest_p90_over_p10_pct": 369.10138806694323,
+      "narrowest_area": "Mostakbal City",
+      "narrowest_n": 959,
+      "narrowest_p10_m2": 32235.706000000002,
+      "narrowest_p90_m2": 102693.50000000001,
+      "narrowest_p90_over_p10_pct": 218.5706557815114,
+      "chart": "docs/insight-10-price-spread.png",
+      "sentence": "Asking prices per m² spread widest in North Coast, where the 90th percentile (213,077 EGP) is 369.1% above the 10th (45,422 EGP, n = 1,000), and narrowest in Mostakbal City, at 218.6% (32,236 EGP to 102,694 EGP, n = 959); every unit type is in it, so part of a spread is the mix of types; no area skipped."
+    },
+    "11": {
+      "title": "Coverage per site",
+      "grain": "one row per site, latest run week, summed over the areas asked",
+      "by_site": [
+        {
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "stated_total": 123108,
+          "rows_parsed": 144,
+          "read_pct": 0.11697046495759822
+        },
+        {
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "stated_total": 124083,
+          "rows_parsed": 983,
+          "read_pct": 0.792211664772773
+        },
+        {
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "stated_total": 120186,
+          "rows_parsed": 2160,
+          "read_pct": 1.7972143178073985
+        },
+        {
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "stated_total": 41309,
+          "rows_parsed": 813,
+          "read_pct": 1.9680941199254398
+        },
+        {
+          "source": "nawy",
+          "site": "Nawy",
+          "stated_total": 18636,
+          "rows_parsed": 1104,
+          "read_pct": 5.92401802962009
+        },
+        {
+          "source": "realestate",
+          "site": "realestate.eg",
+          "stated_total": 13242,
+          "rows_parsed": 1650,
+          "read_pct": 12.460353420933394
+        }
+      ],
+      "searches_without_stated_total": 0,
+      "lowest_site": "Bayut Egypt",
+      "lowest_read": 144,
+      "lowest_stated": 123108,
+      "lowest_read_pct": 0.11697046495759822,
+      "highest_site": "realestate.eg",
+      "highest_read": 1650,
+      "highest_stated": 13242,
+      "highest_read_pct": 12.460353420933394,
+      "chart": "docs/insight-11-coverage.png",
+      "sentence": "The run reads from 0.1% of the listings Bayut Egypt says it holds in the areas asked (144 of 123,108) to 12.5% of realestate.eg's (1,650 of 13,242): a sample of each site, as it reads a set number of pages per search; 0 of 36 searches gave no stated count."
+    },
+    "12": {
+      "title": "Rows set aside, by reason and site",
+      "grain": "one cell per site and reason, latest run week",
+      "by_site": [
+        {
+          "site": "realestate.eg",
+          "skipped: another type or outside our areas": 714,
+          "duplicate within the run": 0,
+          "price per m² outside 10,000 to 400,000": 1,
+          "price missing or <= 0": 0,
+          "unknown type": 0
+        },
+        {
+          "site": "Property Finder Egypt",
+          "skipped: another type or outside our areas": 9,
+          "duplicate within the run": 0,
+          "price per m² outside 10,000 to 400,000": 16,
+          "price missing or <= 0": 0,
+          "unknown type": 0
+        },
+        {
+          "site": "Dubizzle Egypt",
+          "skipped: another type or outside our areas": 7,
+          "duplicate within the run": 1,
+          "price per m² outside 10,000 to 400,000": 2,
+          "price missing or <= 0": 0,
+          "unknown type": 0
+        },
+        {
+          "site": "Nawy",
+          "skipped: another type or outside our areas": 204,
+          "duplicate within the run": 30,
+          "price per m² outside 10,000 to 400,000": 8,
+          "price missing or <= 0": 11,
+          "unknown type": 1
+        },
+        {
+          "site": "Bayut Egypt",
+          "skipped: another type or outside our areas": 1,
+          "duplicate within the run": 0,
+          "price per m² outside 10,000 to 400,000": 0,
+          "price missing or <= 0": 0,
+          "unknown type": 0
+        },
+        {
+          "site": "Aqarmap",
+          "skipped: another type or outside our areas": 0,
+          "duplicate within the run": 90,
+          "price per m² outside 10,000 to 400,000": 2,
+          "price missing or <= 0": 0,
+          "unknown type": 0
+        }
+      ],
+      "rows_parsed": 6854,
+      "rows_skipped": 935,
+      "rows_duplicate": 121,
+      "rows_quarantined": 41,
+      "reasons": {
+        "price per m² outside 10,000 to 400,000": 29,
+        "price missing or <= 0": 11,
+        "unknown type": 1
+      },
+      "top_reason": "price per m² outside 10,000 to 400,000",
+      "top_reason_rows": 29,
+      "top_reason_site": "Property Finder Egypt",
+      "top_reason_site_rows": 16,
+      "chart": "docs/insight-12-set-aside-by-reason.png",
+      "sentence": "Of 6,854 rows parsed in the run week, 935 were skipped as another type or outside our areas, 121 were duplicates within the run and 41 were quarantined; the most common reason is \"price per m² outside 10,000 to 400,000\" (29 rows, 16 of them from Property Finder Egypt). The skips are kept as one count, without their reason."
+    },
+    "13": {
+      "title": "Listings per site and unit type",
+      "grain": "one cell per site and unit type, latest run week, pooled over sites",
+      "by_site": {
+        "realestate.eg": {
+          "Apartment": 300,
+          "Villa": 189,
+          "Town House": 94,
+          "Chalet": 122,
+          "Twin House": 71,
+          "Penthouse": 35,
+          "Studio": 56,
+          "Duplex": 68,
+          "iVilla": 0,
+          "Cabin": 0,
+          "Loft": 0
+        },
+        "Property Finder Egypt": {
+          "Apartment": 500,
+          "Villa": 180,
+          "Town House": 93,
+          "Chalet": 82,
+          "Twin House": 42,
+          "Penthouse": 20,
+          "Studio": 0,
+          "Duplex": 24,
+          "iVilla": 17,
+          "Cabin": 0,
+          "Loft": 0
+        },
+        "Dubizzle Egypt": {
+          "Apartment": 786,
+          "Villa": 607,
+          "Town House": 246,
+          "Chalet": 179,
+          "Twin House": 164,
+          "Penthouse": 36,
+          "Studio": 26,
+          "Duplex": 45,
+          "iVilla": 61,
+          "Cabin": 0,
+          "Loft": 0
+        },
+        "Nawy": {
+          "Apartment": 400,
+          "Villa": 130,
+          "Town House": 98,
+          "Chalet": 53,
+          "Twin House": 55,
+          "Penthouse": 16,
+          "Studio": 20,
+          "Duplex": 63,
+          "iVilla": 0,
+          "Cabin": 9,
+          "Loft": 6
+        },
+        "Bayut Egypt": {
+          "Apartment": 3,
+          "Villa": 1,
+          "Town House": 0,
+          "Chalet": 0,
+          "Twin House": 0,
+          "Penthouse": 1,
+          "Studio": 0,
+          "Duplex": 0,
+          "iVilla": 0,
+          "Cabin": 0,
+          "Loft": 0
+        },
+        "Aqarmap": {
+          "Apartment": 132,
+          "Villa": 119,
+          "Town House": 88,
+          "Chalet": 26,
+          "Twin House": 110,
+          "Penthouse": 128,
+          "Studio": 118,
+          "Duplex": 0,
+          "iVilla": 0,
+          "Cabin": 0,
+          "Loft": 0
+        }
+      },
+      "top_type": "Apartment",
+      "top_type_listings": 2121,
+      "top_type_pct": 37.74693005872931,
+      "top_type_sites": 6,
+      "sites": 6,
+      "fewest_site": "Bayut Egypt",
+      "fewest_site_listings": 5,
+      "chart": "docs/insight-13-site-and-type.png",
+      "sentence": "Apartment is the most listed type, 2,121 of 5,619 pooled listings (37.7%), and the most listed on 6 of 6 sites; Bayut Egypt has the fewest pooled listings (5)."
+    },
+    "14": {
+      "title": "Each of our units against its market",
+      "grain": "one row per unit of ours (generated units), latest run week",
+      "units": 60,
+      "units_compared": 60,
+      "units_without_comparison": 0,
+      "units_above": 35,
+      "units_at_or_below": 25,
+      "lowest_unit": "NCO-CH-05",
+      "lowest_gap_pct": -14.94,
+      "highest_unit": "NC-VIL-02",
+      "highest_gap_pct": 14.98,
+      "chart": "docs/insight-14-units-against-market.png",
+      "sentence": "35 of our 60 generated units ask more per m² than the median of their type in their area and 25 the same or less (0 without a comparison); the gaps run from -14.9% (NCO-CH-05) to +15.0% (NC-VIL-02)."
     }
   },
   "pooled_listings": 5619,

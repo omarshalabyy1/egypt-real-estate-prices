@@ -64,6 +64,14 @@ i6_nawy_above_areas, i6_areas_compared
 i7_twin_share_pct                 an estimate: percent of pooled listings with a named compound that match a listing on another site
                                   in the same area and compound (case ignored), of the same type, size within 2 m², asking price
                                   within 2% of the lower of the two
+i10_widest_p90_over_p10_pct, i10_widest_area, i10_narrowest_p90_over_p10_pct, i10_narrowest_area
+                                  per area, all types pooled: the 90th percentile of price per m² above the 10th, percent;
+                                  the areas where it is the highest and the lowest
+i11_lowest_read_pct, i11_lowest_site, i11_highest_read_pct, i11_highest_site
+                                  per site, silver.run_log rows_parsed over stated_total summed over the areas asked, percent;
+                                  the lowest and the highest, with the site
+i12_top_reason, i12_top_reason_rows
+                                  the quarantine reason with the most rows in silver.quarantine, latest run week, and its rows
 
 docs/header.svg
 listings_compared, widest_gap_pct, widest_gap_area, sites_read, areas_read   as above
