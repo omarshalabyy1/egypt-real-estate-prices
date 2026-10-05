@@ -230,6 +230,31 @@ def test_price_change_over_two_synthetic_weeks():
 
 
 @needs_warehouse
+def test_a_price_quarantined_in_its_week_stays_in_silver_and_leaves_gold():
+    """q-1 priced in weeks 2099-01-04 and 2099-01-11 and quarantined in the second: silver keeps both prices,
+    gold keeps only the first. Rolled back."""
+    conn = tracker.connect()
+    try:
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
+        conn.execute("INSERT INTO silver.listing (source, listing_id, area_id, unit_type, size_m2, first_seen_week,"
+                     " last_seen_week) VALUES ('nawy', 'q-1', 'test-area', 'Apartment', 100, '2099-01-04', '2099-01-11')")
+        for week in ("2099-01-04", "2099-01-11"):
+            conn.execute("INSERT INTO silver.price_observation (source, listing_id, run_week, asking_price, size_m2,"
+                         " fetched_at) VALUES ('nawy', 'q-1', %s, 5000000, 100, now())", (week,))
+        conn.execute("INSERT INTO silver.quarantine (run_week, source, url, reason, payload) VALUES ('2099-01-11',"
+                     " 'nawy', 'uq-1', %s, '{\"source_listing_id\": \"q-1\"}')", (tracker.OUTSIDE_BAND,))
+        for week in (date(2099, 1, 4), date(2099, 1, 11)):
+            tracker.build_gold(week, conn)
+        assert conn.execute("SELECT count(*) FROM silver.price_observation WHERE listing_id = 'q-1'").fetchone()[0] == 2
+        assert conn.execute("SELECT week_key FROM gold.fact_listing_price WHERE listing_id = 'q-1'").fetchall() == [
+            (date(2099, 1, 4),)]
+    finally:
+        conn.rollback()
+        conn.close()
+
+
+@needs_warehouse
 def test_pooled_views_leave_out_a_bayut_copy_of_a_dubizzle_ad():
     """One ad on Dubizzle and on Bayut in the same week: the fact table and the per-site view keep both,
     the pooled views count it once. Rolled back."""

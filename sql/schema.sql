@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS gold.fact_listing_price (
     bedrooms     integer,
     PRIMARY KEY (site_key, listing_id, week_key)
 );
-COMMENT ON TABLE gold.fact_listing_price IS 'One row per site, listing and run week: the asking price, size and price per m2.';
+COMMENT ON TABLE gold.fact_listing_price IS 'One row per site, listing and run week: the asking price, size and price per m2. Silver keeps every observed price; gold applies the current checks, so a price quarantined in its week is left out.';
 
 CREATE TABLE IF NOT EXISTS gold.fact_our_unit (
     unit_code    text PRIMARY KEY,
@@ -220,7 +220,9 @@ JOIN gold.dim_area a ON a.area_id = l.area_id
 JOIN gold.dim_compound c ON c.area_id = l.area_id AND c.compound = coalesce(l.compound, 'Unknown')
                         AND c.developer = coalesce(l.developer, 'Unknown')
 JOIN gold.dim_property_type t ON t.unit_type = l.unit_type
-WHERE o.run_week = p_week;
+WHERE o.run_week = p_week
+  AND NOT EXISTS (SELECT 1 FROM silver.quarantine q WHERE q.run_week = o.run_week AND q.source = o.source
+                  AND q.payload->>'source_listing_id' = o.listing_id);
 
 DELETE FROM gold.fact_our_unit;
 

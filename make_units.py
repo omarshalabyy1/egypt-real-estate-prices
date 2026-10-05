@@ -40,7 +40,7 @@ with tracker.connect() as conn:
         " JOIN gold.dim_area a USING (area_key) JOIN gold.dim_property_type t USING (type_key)")}
     type_median = dict(conn.execute(
         "SELECT t.unit_type, percentile_cont(0.5) WITHIN GROUP (ORDER BY f.price_per_m2)::numeric"
-        " FROM gold.fact_listing_price f JOIN gold.dim_property_type t USING (type_key)"
+        " FROM gold.pooled_listing_price f JOIN gold.dim_property_type t USING (type_key)"
         " WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price) GROUP BY t.unit_type"))
     compounds = conn.execute(
         "SELECT l.area_id, l.unit_type, l.compound, l.developer, count(*) FROM silver.listing l"

@@ -502,29 +502,32 @@ def load_silver(run_week):
                 total += counts
                 print(f"{source} {area_id}: {len(set(part['pages']))} pages, {dict(counts)}")
         reconcile(total, "all sources")
+        if not total["saved"]:
+            raise RuntimeError(f"No asking price saved for {run_week}")
         check_saved(conn, run_week, saved_keys)
         quarantined = conn.execute("SELECT count(*) FROM silver.quarantine WHERE run_week = %s", (run_week,)).fetchone()[0]
         if quarantined != total["quarantined"]:
             raise RuntimeError(f"The warehouse holds {quarantined} quarantined rows for {run_week}, the run counted"
                                f" {total['quarantined']}")
-        if not total["saved"]:
-            raise RuntimeError(f"No asking price saved for {run_week}")
         print(f"{run_week}: {dict(total)}")
 
 
 # --- Gold and report -----------------------------------------------------------------------------
 
 def build_gold(run_week, conn=None):
-    """Rebuild the star for the week in one transaction; its fact rows must match silver's prices."""
+    """Rebuild the star for the week in one transaction; its fact rows must match silver's prices for the
+    week less those quarantined that week."""
     own = conn is None
     conn = conn or connect()
     try:
         conn.execute("SELECT gold.build(%s)", (run_week,))
         facts, prices = conn.execute(
             "SELECT (SELECT count(*) FROM gold.fact_listing_price WHERE week_key = %(w)s),"
-            " (SELECT count(*) FROM silver.price_observation WHERE run_week = %(w)s)", {"w": run_week}).fetchone()
+            " (SELECT count(*) FROM silver.price_observation o WHERE run_week = %(w)s AND NOT EXISTS (SELECT 1"
+            " FROM silver.quarantine q WHERE q.run_week = o.run_week AND q.source = o.source"
+            " AND q.payload->>'source_listing_id' = o.listing_id))", {"w": run_week}).fetchone()
         if facts != prices:
-            raise RuntimeError(f"gold holds {facts} prices for {run_week}, silver {prices}")
+            raise RuntimeError(f"gold holds {facts} prices for {run_week}, silver {prices} not quarantined that week")
         if own:
             conn.commit()
         print(f"gold {run_week}: {facts} listing prices")
