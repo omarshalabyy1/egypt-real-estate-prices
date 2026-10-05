@@ -16,7 +16,11 @@ starts a line (GitHub would end the paragraph there), so keep a word before it w
 otherwise, "latest run week" is the newest week in gold.dim_week.
 
 README.md
-listings_compared                 count of competing listings (gold.fact_listing_price rows) in the latest run week in the six areas
+listings_compared                 count of distinct competing listings in the latest run week in the six areas, pooled over sites
+                                  (gold.pooled_listing_price rows: without the Bayut Egypt rows that copy a Dubizzle ad);
+                                  the notebook asserts it equals pooled_listings
+asking_prices_kept                not a slot (numbers.json only): count of gold.fact_listing_price rows in the latest run week,
+                                  one per site and listing, the Bayut Egypt copies of Dubizzle ads included
 sites_read                        count of sites with at least one row in gold.fact_listing_price in the latest run week
 areas_read                        count of areas with at least one row in gold.fact_listing_price in the latest run week
 widest_gap_area                   area name (as in silver.area) whose gold.area_gap.median_gap_pct is furthest from 0: the median of

@@ -3,7 +3,8 @@
   "first_run_week": "2026-10-04",
   "run_weeks": 1,
   "price_observations": 5786,
-  "listings_compared": 5757,
+  "asking_prices_kept": 5757,
+  "listings_compared": 5619,
   "sites_read": 6,
   "areas_read": 6,
   "rows_parsed": 6854,
@@ -2756,6 +2757,6 @@
   "new_cairo_price_changes": 0,
   "new_cairo_cuts": 0,
   "new_cairo_rises": 0,
-  "card_title": "Our asking price per m² against 5,757 competing listings, every week",
-  "card_result": "5,757 competing listings from 6 sites in 6 areas read and checked, 1,152 compound names and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 41 rows (0.7%) were set aside with their reason."
+  "card_title": "Our asking price per m² against 5,619 competing listings, every week",
+  "card_result": "5,619 competing listings from 6 sites in 6 areas read and checked, 1,152 compound names and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 41 rows (0.7%) were set aside with their reason."
 }

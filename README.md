@@ -49,7 +49,7 @@ the week before.
 
 ## 📈 The result
 
-**<!--nb:listings_compared-->5,757<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
+**<!--nb:listings_compared-->5,619<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
 areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
 in <!--nb:widest_gap_area-->6th of October<!--/nb-->, at <!--nb:widest_gap_pct-->+7.4<!--/nb-->% against the
 median of the same type in the same area.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
