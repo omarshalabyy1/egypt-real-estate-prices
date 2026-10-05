@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 534" width="1000" height="534" role="img" aria-label="Price gap by area: one strip per area (New Cairo, New Capital, Sheikh Zayed, 6th of October, North Coast, Mostakbal City). On each strip a band shows the middle half of competing listings by asking price per square metre, a tick shows the area median, and dots show our units. The gap between our units and the area median is written beside each strip, and the share of competing listings cheaper than ours at its right end.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560" role="img" aria-label="Price gap by area: one strip per area (New Cairo, New Capital, Sheikh Zayed, 6th of October, North Coast, Mostakbal City). On each strip a band shows the middle half of competing listings by asking price per square metre, a tick shows their median, both over all unit types, and dots show our units. The gap, the median of our units' gaps with each unit against the median of the same type in the same area, is written beside each strip, and the share of competing listings cheaper than ours at its right end.">
   <!-- analysis/analysis.ipynb redraws this file from analysis/numbers.json: every number is a tspan with id="nb-KEY", and the bands, median ticks and our units' dots sit at their prices on the shared scale. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -20,7 +20,7 @@
     .ours { fill: #F59E0B; stroke: #0B1220; stroke-width: 2; }
   </style>
 
-  <rect width="1000" height="534" rx="22" fill="url(#bg)"/>
+  <rect width="1000" height="560" rx="22" fill="url(#bg)"/>
   <text x="40" y="50" class="title">Where our units sit against the market</text>
   <text x="40" y="74" class="sub">Asking price per m² in EGP, latest run week. One strip per area, all on one scale.</text>
 
@@ -149,5 +149,6 @@
   <text x="312" y="509" class="cap">area median</text>
   <circle cx="420" cy="504" r="7" class="ours"/>
   <text x="434" y="509" class="cap">our unit</text>
-  <text x="520" y="509" class="cap">Gap: our units' median price per m² against the area median.</text>
+  <text x="520" y="509" class="cap">band and tick: all types</text>
+  <text x="40" y="538" class="cap">Gap: the median of our units' gaps, each unit against the median of the same type in the same area.</text>
 </svg>

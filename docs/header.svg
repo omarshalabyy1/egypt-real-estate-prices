@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Egypt real estate prices. Competing listings compared with our units every week in six Egyptian areas, and the area where our asking price per square metre is furthest from the market median. One area's strip: the middle half of competing listings, the area median, and our units to its right.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Egypt real estate prices. Competing listings compared with our units every week in six Egyptian areas, and the area where our asking price per square metre is furthest from the median of the same type in the same area. One area's strip: the middle half of competing listings, the area median, and our units to its right.">
   <!-- Numbers in tspans with id="nb-KEY" are filled by the notebook from the gold layer. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -28,15 +28,16 @@
 
   <text x="50" y="100" class="title">Egypt real estate prices</text>
   <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">5,782</tspan> competing listings compared with ours every week;</text>
-  <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">+7.4</tspan>% in <tspan id="nb-widest_gap_area">6th of October</tspan></tspan>, against the area median.</text>
+  <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">+7.4</tspan>% in <tspan id="nb-widest_gap_area">6th of October</tspan></tspan>,</text>
+  <text x="50" y="192" class="sub">against the median of the same type in the same area.</text>
 
   <g>
-    <rect x="50" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
-    <text x="96" y="218" class="pill" text-anchor="middle"><tspan id="nb-sites_read">6</tspan> sites</text>
-    <rect x="152" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
-    <text x="198" y="218" class="pill" text-anchor="middle"><tspan id="nb-areas_read">6</tspan> areas</text>
-    <rect x="254" y="196" width="196" height="34" rx="17" fill="none" stroke="#F59E0B"/>
-    <text x="352" y="218" class="pill" text-anchor="middle" style="fill:#F59E0B">every asking price kept</text>
+    <rect x="50" y="214" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
+    <text x="96" y="236" class="pill" text-anchor="middle"><tspan id="nb-sites_read">6</tspan> sites</text>
+    <rect x="152" y="214" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
+    <text x="198" y="236" class="pill" text-anchor="middle"><tspan id="nb-areas_read">6</tspan> areas</text>
+    <rect x="254" y="214" width="196" height="34" rx="17" fill="none" stroke="#F59E0B"/>
+    <text x="352" y="236" class="pill" text-anchor="middle" style="fill:#F59E0B">every asking price kept</text>
   </g>
 
   <!-- the idea in one strip: the market's middle half, its median, our units -->
@@ -50,7 +51,8 @@
     <text x="820" y="112" class="note" text-anchor="middle">median</text>
     <text x="770" y="182" class="note">middle half</text>
     <text x="950" y="182" class="note" text-anchor="end" style="fill:#F59E0B">our units</text>
-    <text x="730" y="256" class="note">The gap: how far our units sit from</text>
-    <text x="730" y="274" class="note">the median of the competing listings.</text>
+    <text x="730" y="238" class="note">The gap: each unit of ours against</text>
+    <text x="730" y="256" class="note">the median of the same type</text>
+    <text x="730" y="274" class="note">in the same area.</text>
   </g>
 </svg>

@@ -122,11 +122,12 @@ VAR _Widest = TOPN ( 1, _Areas, ABS ( [Median Gap] ), DESC )
 RETURN
     MAXX ( _Widest, Area[name] )
 
-// The latest week's listings each unit of ours is compared with (its type, its area, the sites in
-// the filter), added up over our units. Format: #,0  Folder: Market position
+// The latest week's listings in the areas and unit types where we have units in the filter (the
+// sites in the filter, any compound), each listing counted once. For one unit of ours, the listings
+// of its type in its area. Format: #,0  Folder: Market position
 Listings Compared =
 SUMX (
-    'Our Unit',
+    SUMMARIZE ( 'Our Unit', 'Our Unit'[area_key], 'Our Unit'[type_key] ),
     VAR _Area = 'Our Unit'[area_key]
     VAR _Type = 'Our Unit'[type_key]
     RETURN
@@ -140,14 +141,15 @@ SUMX (
         )
 )
 
-// Of those listings, the ones asking less per m² than our unit, added up over our units.
+// Of those listings, the ones asking less per m² than our median unit of their type and area (the
+// units in the filter). For one unit of ours, the median is its own price per m².
 // Format: #,0  Folder: Market position
 Listings Cheaper Than Ours =
 SUMX (
-    'Our Unit',
+    SUMMARIZE ( 'Our Unit', 'Our Unit'[area_key], 'Our Unit'[type_key] ),
     VAR _Area = 'Our Unit'[area_key]
     VAR _Type = 'Our Unit'[type_key]
-    VAR _Ours = 'Our Unit'[price_per_m2]
+    VAR _Ours = CALCULATE ( MEDIAN ( 'Our Unit'[price_per_m2] ) )
     RETURN
         CALCULATE (
             [Listings],
@@ -160,8 +162,10 @@ SUMX (
         )
 )
 
-// Share of the compared listings that ask less per m² than our unit; with no slicer it equals
-// gold.area_gap's pct_listings_cheaper, pooled. Format: 0.0%  Folder: Market position
+// Share of the compared listings that ask less per m² than our median unit of their type and area;
+// with no slicer it equals share_listings_cheaper_than_ours in analysis/numbers.json (check C3), and
+// for one unit of ours its pct_listings_cheaper in gold.unit_gap. It is not gold.area_gap's
+// pct_listings_cheaper, which compares every unit with every listing. Format: 0.0%  Folder: Market position
 Share Of Listings Cheaper Than Ours =
 DIVIDE ( [Listings Cheaper Than Ours], [Listings Compared] )
 

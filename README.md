@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="100%" src="docs/header.svg" alt="Egypt real estate prices. Competing listings compared with our units every week in six Egyptian areas, and the area where our asking price per square metre is furthest from the market median.">
+  <img width="100%" src="docs/header.svg" alt="Egypt real estate prices. Competing listings compared with our units every week in six Egyptian areas, and the area where our asking price per square metre is furthest from the median of the same type in the same area.">
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
 ## The problem
 
 An Egyptian developer or brokerage sells units in New Cairo, the New Capital, Sheikh Zayed and the
-other growth areas, against competing listings on half a dozen sites that someone checks by hand,
+other growth areas, against competing listings on <!--nb:sites_read-->6<!--/nb--> listing sites that someone checks by hand,
 now and then. Nobody can say, week by week, how our asking price per m² compares with the units
 around it, who cut prices, or in which area and compound the gap is widest. The old prices were
 never written down, so a cut can only be guessed at, never shown.
@@ -28,7 +28,7 @@ A pipeline that runs once a week on its own and keeps every asking price it sees
   <img width="100%" src="docs/how-it-works.svg" alt="How it works: 01 Collect, asking prices from six listing sites in six areas every week; 02 Check, price, size, area and type on every row, failures set aside with the reason; 03 Store, every price kept with its week, never overwritten; 04 Compare, our units against competing listings in the same area and compound; 05 Report, Power BI gaps by area and developer, and who cut prices.">
 </p>
 
-1. **Collect.** Asking prices for units for sale in six areas, from six listing sites, every week.
+1. **Collect.** Asking prices for units for sale in <!--nb:areas_read-->6<!--/nb--> areas, from <!--nb:sites_read-->6<!--/nb--> listing sites, every week.
 2. **Check.** Every row needs a price, a size, an area and a type; a failure is kept with its reason.
 3. **Store.** Every asking price goes into the history with its week, never updated or deleted.
 4. **Compare.** Our units against the listings of the same type in the same area, by compound and developer.
@@ -37,28 +37,30 @@ A pipeline that runs once a week on its own and keeps every asking price it sees
 ### 🔁 The mental model: one strip per area
 
 <p align="center">
-  <img width="100%" src="docs/price-gap-by-area.svg" alt="Where our units sit against the market: one strip per area. A band shows the middle half of competing listings by asking price per square metre, a tick shows the area median, and dots show our units. The gap to the median is written beside each strip, and the share of competing listings cheaper than ours at its right end.">
+  <img width="100%" src="docs/price-gap-by-area.svg" alt="Where our units sit against the market: one strip per area. A band shows the middle half of competing listings by asking price per square metre, a tick shows their median, both over all unit types, and dots show our units. The gap, each unit against the median of the same type in the same area, is written beside each strip, and the share of competing listings cheaper than ours at its right end.">
 </p>
 
 Each area is one strip on one price-per-m² scale: the band is the middle half of the competing
-listings, the tick is the area median, the dots are our units. The further right of the tick a dot
-sits, the more it asks than the market. Every week is kept, so the same picture can be drawn for
-any earlier week, and a cut is a listing asking less per m² than it did the week before.
+listings and the tick is their median, both over all unit types; the dots are our units. The gap
+beside the strip compares each unit with the median of the same type in the same area, so a dot
+left of the tick can still ask more than the units of its own type. Every week is kept, so the same
+picture can be drawn for any earlier week, and a cut is a listing asking less per m² than it did
+the week before.
 
 ## 📈 The result
 
 **<!--nb:listings_compared-->5,782<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
 areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
 in <!--nb:widest_gap_area-->6th of October<!--/nb-->, at <!--nb:widest_gap_pct-->+7.4<!--/nb-->% against the
-area median.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
+median of the same type in the same area.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
 
 - **<!--nb:price_observations-->5,782<!--/nb--> asking prices** kept
-  over <!--nb:run_weeks-->1<!--/nb--> weekly runs
+  over <!--nb:run_weeks_phrase-->1 weekly run<!--/nb-->
   (<!--nb:first_run_week-->4 October 2026<!--/nb--> to <!--nb:latest_run_week-->4 October 2026<!--/nb-->).
-- **<!--nb:compounds_covered-->1,157<!--/nb--> compounds** from <!--nb:developers_covered-->307<!--/nb--> developers
-  covered, against our <!--nb:our_units-->60<!--/nb--> units.
-- **<!--nb:share_listings_cheaper_than_ours-->50.7<!--/nb-->% of competing listings** ask less per m²
-  than our unit of the same type in the same area.
+- **<!--nb:compounds_covered-->1,157<!--/nb--> compound names** (as the sites write them)
+  from <!--nb:developers_covered-->307<!--/nb--> developers covered, against our <!--nb:our_units-->60<!--/nb--> units.
+- **<!--nb:share_listings_cheaper_than_ours-->50.7<!--/nb-->% of the <!--nb:listings_in_our_types-->5,087<!--/nb--> competing listings** in
+  the areas and types where we have units ask less per m² than our median unit of that type and area.
 - **<!--nb:price_cuts-->0<!--/nb--> price cuts** in the latest run week: listings that asked less
   per m² than the week before.
 - **<!--nb:quarantined_rows-->26<!--/nb--> rows set aside** with their reason
@@ -70,7 +72,7 @@ area median.** The checks behind every number are in [the notebook](analysis/ana
 </p>
 
 <p align="center">
-  <img width="49%" src="docs/gap-by-area.png" alt="Our units' median price per square metre against the area median, by area">
+  <img width="49%" src="docs/gap-by-area.png" alt="Median gap of our units by area, each unit against the median of the same type in the same area">
   <img width="49%" src="docs/price-cuts-by-week.png" alt="Listings that asked less per square metre than the week before, by run week">
 </p>
 
@@ -114,8 +116,10 @@ Bayut Egypt and Aqarmap are read once a week, before the run, by `python fetch_b
 in a visible browser window on my machine; before the first browser run, `pip install playwright`
 and `python -m playwright install chromium`. I handle any check, cookie banner or login myself, and
 the session is kept in `.browser-profile/` (gitignored, never committed). A fresh clone rebuilds
-its history by a live read of the sites (a weekly run takes <!--nb:run_minutes-->32<!--/nb--> minutes),
-because the raw pages stay on the machine: they contain sellers' contact details.
+its history by a live read of the sites, because the raw pages stay on the machine: they contain
+sellers' contact details. A live read takes about <!--nb:live_read_minutes_estimate-->40<!--/nb--> minutes, an estimate
+from this week's pages on the slowest site at one request
+every <!--nb:live_read_request_seconds-->2.5<!--/nb--> seconds (the automated sites are read in parallel).
 
 | Where | What |
 |---|---|
@@ -134,7 +138,7 @@ because the raw pages stay on the machine: they contain sellers' contact details
 
 ## 🗂️ Data
 
-- **Competing listings:** residential units for sale in six areas (New Cairo, New Capital, Sheikh
+- **Competing listings:** residential units for sale in <!--nb:areas_read-->6<!--/nb--> areas (New Cairo, New Capital, Sheikh
   Zayed, 6th of October, North Coast and Mostakbal City), asking prices as each site shows them on
   the day of the run.
   - Read by the weekly Airflow run, one request every 2.5 seconds:
