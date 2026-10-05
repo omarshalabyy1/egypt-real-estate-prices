@@ -1,10 +1,19 @@
-"""Egyptian residential asking prices, once a week: load the reference data, read the asking price
-of every residential unit on realestate.eg's index pages for our six areas, and print this week's
-competitor price cuts and our units' gap to the market.
+"""Egyptian residential asking prices, once a week, in three layers:
 
-Each run reads today's asking prices: the site only shows the current price, so a run never uses
-its data interval and there is nothing to catch up on. The first run is the baseline; from the
-second run on, price_change shows each cut and rise between two runs.
+- Bronze: extract_realestate, extract_propertyfinder, extract_dubizzle and extract_nawy read their
+  site in parallel, each at its own pace, and keep every page under data/raw/<source>/<run_week>/
+  (the JSON sites keep only the page's JSON, contact fields removed). Each fails on its own when
+  page 1 of an area gives no priced row. A week already extracted (a _done file) is skipped.
+- Silver: load_silver parses every site's pages for the week, checks each row, quarantines the
+  failures and logs reconciled counts per site and area, in one transaction.
+- Gold: build_gold rebuilds the star for the week; report prints the week's cuts and widest gaps.
+
+Bayut and Aqarmap refuse plain HTTP readers, so they are a manual step BEFORE the weekly run: Omar
+runs fetch_bayut_aqarmap.py in a visible browser, which saves their pages under
+data/raw/bayut/<run_week>/ and data/raw/aqarmap/<run_week>/; load_silver includes them when there.
+
+Every task works on the run week of the run's logical date (the Sunday on or before it), never on
+today's date, so a rerun of a week stays that week. A manual run must be given a logical date.
 """
 
 from datetime import date, datetime, timedelta, timezone
@@ -13,6 +22,10 @@ from airflow.sdk import dag, task
 from airflow.timetables.interval import DeltaDataIntervalTimetable
 
 import tracker
+
+
+def run_week(ds):
+    return tracker.run_week_of(date.fromisoformat(ds))
 
 
 @dag(
@@ -25,22 +38,25 @@ import tracker
 )
 def egypt_real_estate_prices():
     @task
-    def load_reference():
-        tracker.load_reference()
+    def extract(source, ds):
+        tracker.extract(source, run_week(ds))
 
     @task
-    def collect():
-        run_week = tracker.this_week()
-        tracker.collect(run_week)
-        return run_week.isoformat()  # report prints the same week, even if the run crosses midnight
+    def load_silver(ds):
+        tracker.load_silver(run_week(ds))
 
     @task
-    def report(run_week):
-        tracker.report(date.fromisoformat(run_week))
+    def build_gold(ds):
+        tracker.build_gold(run_week(ds))
 
-    run_week = collect()
-    load_reference() >> run_week
-    report(run_week)
+    @task
+    def report(ds):
+        tracker.report(run_week(ds))
+
+    ds = "{{ ds }}"  # the run's logical date; rendering fails loudly when a run has none
+    extracts = [extract.override(task_id=f"extract_{source}")(source, ds)
+                for source in ("realestate", "propertyfinder", "dubizzle", "nawy")]
+    extracts >> load_silver(ds) >> build_gold(ds) >> report(ds)
 
 
 egypt_real_estate_prices()

@@ -1,14 +1,18 @@
-"""Checks for the parts that break when the site changes its pages: run with `pytest`. The
-price_change check needs the warehouse (docker compose up -d warehouse, WAREHOUSE_PASSWORD set)."""
+"""Checks for realestate.eg's pages, the extract's stopping rules and watermark, the row checks and
+their reconciliation, and gold: run with `pytest`. The warehouse checks need the warehouse (docker
+compose up -d warehouse, WAREHOUSE_PASSWORD set); each runs in a transaction that is rolled back."""
 
 import os
-from datetime import date, datetime, timezone
+from collections import Counter
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
 import pytest
+import requests
 from bs4 import BeautifulSoup
 
+import sites
 import tracker
 
 PAGES = Path(__file__).parent / "pages"
@@ -65,110 +69,161 @@ def test_run_week_starts_on_sunday():
     assert tracker.run_week_of(date(2026, 10, 10)) == date(2026, 10, 4)  # a Saturday
 
 
-@pytest.mark.skipif(not os.environ.get("WAREHOUSE_PASSWORD"), reason="needs the warehouse: set WAREHOUSE_PASSWORD")
-def test_price_change_catches_cuts_and_rises():
-    """Two weeks of prices for three test listings: a cut, a rise and an unchanged price. Everything
-    runs in one transaction that is rolled back, so the warehouse is left as it was."""
-    conn = tracker.connect()
-    try:
-        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text())
-        conn.execute("INSERT INTO area VALUES ('test-area', 'Test area', -1)")
-        for listing_id in (-1, -2, -3):
-            conn.execute(
-                "INSERT INTO listing (listing_id, url, area_id, unit_type, size_m2, first_seen, last_seen)"
-                " VALUES (%s, 'test', 'test-area', 'Apartment', 100, '2026-09-28', '2026-10-05')", (listing_id,))
-        for listing_id, old, new in ((-1, 5000000, 4500000), (-2, 5000000, 5250000), (-3, 5000000, 5000000)):
-            for day, week, price in (("2026-09-28", "2026-09-27", old), ("2026-10-05", "2026-10-04", new)):
-                conn.execute(
-                    "INSERT INTO price_observation VALUES (%s, %s, %s, %s / 100.0, %s, %s)",
-                    (listing_id, day, price, price, datetime.now(timezone.utc), week))
-        changes = conn.execute(
-            "SELECT listing_id, old_price, new_price, change_pct, caught_week, is_cut FROM price_change"
-            " WHERE listing_id < 0 ORDER BY listing_id DESC").fetchall()
-        assert changes == [
-            (-1, Decimal("5000000.00"), Decimal("4500000.00"), Decimal("-10.0"), date(2026, 10, 4), True),
-            (-2, Decimal("5000000.00"), Decimal("5250000.00"), Decimal("5.0"), date(2026, 10, 4), False),
-        ]
-    finally:
-        conn.rollback()
-        conn.close()
+def test_page_names():
+    assert tracker.page_name("https://realestate.eg/en/listings/new-cairo?location=8&page=3") == "new-cairo-page-3"
+    assert tracker.page_name(UNIT_URL) == "12324"
 
 
-@pytest.mark.skipif(not os.environ.get("WAREHOUSE_PASSWORD"), reason="needs the warehouse: set WAREHOUSE_PASSWORD")
-def test_rejected_row_goes_to_quarantine_once():
-    """A rejected card is kept with its reason and what was read; saving it again adds nothing."""
-    conn = tracker.connect()
-    try:
-        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text())
-        card = {"listing_id": None, "url": "test-url", "size_m2": Decimal("170.5")}
-        rejected = tracker.reject("test-url", datetime.now(timezone.utc), "unparseable id", card)
-        for _ in range(2):
-            tracker.save(conn, [], [rejected], date(2026, 10, 4))
-        assert conn.execute("SELECT reason, payload->>'size_m2' FROM quarantine WHERE url = 'test-url'").fetchall() == [
-            ("unparseable id", "170.5")
-        ]
-    finally:
-        conn.rollback()
-        conn.close()
+def row(listing_id, area="new-cairo", unit_type="Apartment", price=Decimal("5000000"), size=Decimal("100")):
+    return {**sites.row("nawy", listing_id, f"u{listing_id}", area, None, None, unit_type, 3, 2, size, price, None),
+            "fetched_at": "2026-10-05T00:00:00+00:00"}
 
 
-class FakeResponse:
-    content, url = b"", "https://realestate.eg/en/listings/test"
+def test_every_row_is_counted_once_and_reconciles():
+    rows = [row(1), row(2, area=None), row(3, unit_type="Office"), row(1), row(4, unit_type="iVilla"),
+            row(5, price=None), row(6, size=None), row(7), row(8)]
+    counts, saved, rejected = tracker.check(rows, set(), {("nawy", "8"): "no JSON-LD"})
+    assert counts == Counter(parsed=9, skipped=2, duplicate=1, saved=2, quarantined=4)
+    assert [r["source_listing_id"] for r in saved] == ["1", "7"]
+    assert [reason for reason, _ in rejected] == ["unknown type", "price missing or <= 0", "size missing or <= 0",
+                                                  "no JSON-LD"]
+    tracker.reconcile(counts, "test")
 
-    def raise_for_status(self):
-        pass
+
+def test_a_listing_seen_in_an_earlier_area_is_a_duplicate():
+    seen = set()
+    tracker.check([row(1)], seen, {})
+    assert tracker.check([row(1, area="mostakbal-city")], seen, {})[0]["duplicate"] == 1
 
 
-@pytest.mark.parametrize("residential, has_next, pages_read, cards_kept", [
-    (50, True, 3, 150),  # 150 residential cards reached on page 3
-    (7, True, 8, 56),    # mostly offices: stops at the 8-page cap
-    (50, False, 1, 50),  # the area has one page
+def test_reconciliation_fails_loudly_on_a_mismatch():
+    with pytest.raises(RuntimeError, match="do not reconcile"):
+        tracker.reconcile(Counter(parsed=9, skipped=2, duplicate=1, saved=2, quarantined=3), "test")
+
+
+def fake_site(monkeypatch, priced=True, has_next=True, residential=45):
+    """A JSON site whose every page holds 45 rows, `residential` of them apartments in New Cairo."""
+    calls = []
+
+    def get(url):
+        calls.append(url)
+        response = requests.Response()
+        response.status_code, response._content, response.url = 200, b"page", url
+        return response
+
+    def parse(block, url):
+        return [row(i, unit_type="Apartment" if i < residential else "Office", price=Decimal(1) if priced else None)
+                for i in range(45)], has_next
+    monkeypatch.setattr(tracker.sites, "get", get)
+    monkeypatch.setitem(tracker.sites.SITES, "nawy", (lambda text, url: {"page": url}, parse))
+    search = {"source": "nawy", "area_id": "new-cairo", "search": "all", "url_template": "u?page={page}", "max_pages": 17}
+    return calls, search
+
+
+@pytest.mark.parametrize("residential, has_next, pages", [
+    (45, True, 4),   # 150 residential rows reached on page 4
+    (5, True, 17),   # mostly offices: stops at max_pages
+    (45, False, 1),  # the search has one page
 ])
-def test_index_pages_read_until_150_units_or_8_pages(monkeypatch, residential, has_next, pages_read, cards_kept):
-    """Fake index pages of 50 cards, `residential` of them apartments and the rest offices."""
-    fetched = []
-    monkeypatch.setattr(tracker, "fetch", lambda robots, url, name: (fetched.append(url) or FakeResponse(), None))
-    page = [{"listing_id": i, "url": "", "area_id": "test-area", "is_project": False,
-             "unit_type": "Apartment" if i < residential else "Office"} for i in range(50)]
-    monkeypatch.setattr(tracker, "parse_index", lambda html, url: (page, has_next))
-    counts = tracker.Counter()
-    cards = tracker.read_cards(None, "test-area", -1, {"test-area"}, counts, [])
-    assert (len(fetched), len(cards)) == (pages_read, cards_kept)
-    assert counts["non-residential cards skipped"] == pages_read * (50 - residential)
+def test_a_search_is_read_until_150_rows_or_max_pages(monkeypatch, tmp_path, residential, has_next, pages):
+    calls, search = fake_site(monkeypatch, has_next=has_next, residential=residential)
+    tracker.read_search("nawy", search, tmp_path)
+    assert len(calls) == pages
+    assert len(list(tmp_path.glob("*.json.gz"))) == pages == len(tracker.read_csv(tmp_path / "index.csv"))
+    tracker.read_search("nawy", search, tmp_path)  # a retried task reads its pages from disk
+    assert len(calls) == pages
 
 
-def test_unit_page_without_developer_keeps_the_key(monkeypatch):
-    """save() needs every key: a unit page naming no developer gives developer None, not a missing key."""
-    FakeResponse.status_code = 200
-    monkeypatch.setattr(tracker, "fetch", lambda robots, url, name: (FakeResponse(), datetime.now(timezone.utc)))
-    monkeypatch.setattr(tracker, "parse_unit", lambda html, url: {
-        "asking_price": Decimal("5000000"), "size_m2": Decimal("100"), "price_per_m2": Decimal("50000.00"),
-        "bedrooms": 3, "bathrooms": 2, "compound": "Test", "developer": None})
-    card = {"listing_id": 1, "url": "test", "area_id": "test-area", "unit_type": "Apartment", "compound": "Test",
-            "bedrooms": 3, "bathrooms": 2, "size_m2": Decimal("100"), "is_project": False}
-    units = tracker.read_units(None, [card], tracker.Counter(), [])
-    assert units[0]["developer"] is None
+def test_canary_fails_loudly_when_page_1_has_no_price(monkeypatch, tmp_path):
+    calls, search = fake_site(monkeypatch, priced=False)
+    with pytest.raises(RuntimeError, match="Canary"):
+        tracker.read_search("nawy", search, tmp_path)
 
-@pytest.mark.skipif(not os.environ.get("WAREHOUSE_PASSWORD"), reason="needs the warehouse: set WAREHOUSE_PASSWORD")
-def test_benchmarks_count_only_the_latest_run():
-    """A listing missing from the latest run leaves the benchmarks but stays in latest_price. Rolled back."""
+
+def test_a_finished_week_is_skipped(monkeypatch, tmp_path):
+    monkeypatch.setattr(tracker, "RAW", tmp_path)
+    (tmp_path / "nawy" / "2026-10-04").mkdir(parents=True)
+    (tmp_path / "nawy" / "2026-10-04" / "_done").write_text("")
+    monkeypatch.setattr(tracker, "read_search", lambda *a: pytest.fail("a finished week was read again"))
+    tracker.extract("nawy", date(2026, 10, 4))
+
+
+needs_warehouse = pytest.mark.skipif(not os.environ.get("WAREHOUSE_PASSWORD"),
+                                     reason="needs the warehouse: set WAREHOUSE_PASSWORD")
+
+
+@needs_warehouse
+def test_price_change_over_two_synthetic_weeks():
+    """Three listings over two weeks: a cut, a rise and an unchanged price. Rolled back."""
     conn = tracker.connect()
     try:
-        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text())
-        conn.execute("INSERT INTO area VALUES ('test-area', 'Test area', -1)")
-        conn.execute("INSERT INTO our_unit (unit_code, area_id, compound, unit_type, bedrooms, size_m2, asking_price)"
-                     " VALUES ('test-unit', 'test-area', 'Test', 'Apartment', 3, 100, 5000000)")
-        for listing_id, day, week in ((-1, "2000-01-03", "2000-01-02"), (-2, "2099-01-05", "2099-01-04")):
-            conn.execute(
-                "INSERT INTO listing (listing_id, url, area_id, compound, unit_type, size_m2, first_seen, last_seen)"
-                " VALUES (%s, 'test', 'test-area', 'Test', 'Apartment', 100, %s, %s)", (listing_id, day, day))
-            conn.execute("INSERT INTO price_observation VALUES (%s, %s, 5000000, 50000, %s, %s)",
-                         (listing_id, day, datetime.now(timezone.utc), week))
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
+        for listing_id, old, new in (("t-1", 5000000, 4500000), ("t-2", 5000000, 5250000), ("t-3", 5000000, 5000000)):
+            conn.execute("INSERT INTO silver.listing (source, listing_id, area_id, unit_type, size_m2, first_seen_week,"
+                         " last_seen_week) VALUES ('nawy', %s, 'test-area', 'Apartment', 100, '2099-01-04', '2099-01-11')",
+                         (listing_id,))
+            for week, price in (("2099-01-04", old), ("2099-01-11", new)):
+                conn.execute("INSERT INTO silver.price_observation (source, listing_id, run_week, asking_price, size_m2,"
+                             " fetched_at) VALUES ('nawy', %s, %s, %s, 100, now())", (listing_id, week, price))
+        for week in (date(2099, 1, 4), date(2099, 1, 11)):
+            tracker.build_gold(week, conn)
         assert conn.execute(
-            "SELECT (SELECT listings FROM area_benchmark WHERE area_id = 'test-area'),"
-            " (SELECT listings FROM compound_benchmark WHERE area_id = 'test-area'),"
-            " (SELECT listings_compared FROM unit_gap WHERE unit_code = 'test-unit'),"
-            " (SELECT count(*) FROM latest_price WHERE area_id = 'test-area')").fetchone() == (1, 1, 1, 2)
+            "SELECT listing_id, old_week_key, week_key, old_price_per_m2, new_price_per_m2, change_pct, is_cut"
+            " FROM gold.price_change WHERE listing_id LIKE 't-%' ORDER BY listing_id").fetchall() == [
+            ("t-1", date(2099, 1, 4), date(2099, 1, 11), Decimal("50000.00"), Decimal("45000.00"), Decimal("-10.00"), True),
+            ("t-2", date(2099, 1, 4), date(2099, 1, 11), Decimal("50000.00"), Decimal("52500.00"), Decimal("5.00"), False),
+        ]
+    finally:
+        conn.rollback()
+        conn.close()
+
+
+GOLD_FINGERPRINT = """
+SELECT (SELECT count(*) FROM gold.fact_listing_price WHERE week_key = %(w)s),
+       (SELECT md5(string_agg(f::text, '|' ORDER BY site_key, listing_id)) FROM gold.fact_listing_price f WHERE week_key = %(w)s),
+       (SELECT count(*) FROM gold.fact_our_unit),
+       (SELECT md5(string_agg(u::text, '|' ORDER BY unit_code)) FROM gold.fact_our_unit u),
+       (SELECT md5(string_agg(d::text, '|' ORDER BY site_key)) FROM gold.dim_site d),
+       (SELECT md5(string_agg(d::text, '|' ORDER BY area_key)) FROM gold.dim_area d),
+       (SELECT md5(string_agg(d::text, '|' ORDER BY compound_key)) FROM gold.dim_compound d),
+       (SELECT md5(string_agg(d::text, '|' ORDER BY type_key)) FROM gold.dim_property_type d),
+       (SELECT md5(string_agg(d::text, '|' ORDER BY week_key)) FROM gold.dim_week d)
+"""
+
+
+@needs_warehouse
+def test_rebuilding_gold_for_a_week_twice_gives_the_same_rows():
+    """The latest loaded week, rebuilt twice: same counts and md5 over every fact and dimension. Rolled back."""
+    conn = tracker.connect()
+    try:
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        week = conn.execute("SELECT max(run_week) FROM silver.price_observation").fetchone()[0]
+        if week is None:
+            pytest.skip("no week loaded yet")
+        tracker.build_gold(week, conn)
+        first = conn.execute(GOLD_FINGERPRINT, {"w": week}).fetchone()
+        tracker.build_gold(week, conn)
+        assert conn.execute(GOLD_FINGERPRINT, {"w": week}).fetchone() == first
+        assert first[0] > 0
+    finally:
+        conn.rollback()
+        conn.close()
+
+
+@needs_warehouse
+def test_rejected_row_goes_to_quarantine_once():
+    """A rejected row is kept with its reason and what was parsed; saving it again adds nothing."""
+    conn = tracker.connect()
+    try:
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
+        part = {"pages": 1, "stated_total": None}
+        for _ in range(2):
+            tracker.save(conn, date(2099, 1, 4), "nawy", "test-area", part, Counter(parsed=1, quarantined=1), [],
+                         [("price missing or <= 0", row("q-1", price=None))])
+        assert conn.execute("SELECT reason, payload->>'size_m2', payload ? 'asking_price' FROM silver.quarantine"
+                            " WHERE url = 'uq-1'").fetchall() == [("price missing or <= 0", "100", True)]
     finally:
         conn.rollback()
         conn.close()

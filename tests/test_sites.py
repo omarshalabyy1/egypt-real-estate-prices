@@ -1,22 +1,34 @@
 """Checks for the parts of sites.py that break when a site changes its pages: run with `pytest`, no
 network needed. Each fixture is page 1 of New Cairo as read on 2026-10-05, cut down to the JSON keys
 the parser reads: the agent, broker, seller, contact, title and description fields were left out so
-no contact data is kept in the repo. The parser gives the same rows on the cut page as on the full one."""
+no contact data is kept in the repo. The parser gives the same rows on the cut page as on the full one.
+Each page goes through extract_<site> (the JSON block, contact fields removed) then parse_<site>."""
 
+import json
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
 import pytest
+import requests
 
 import sites
 
 PAGES = Path(__file__).parent / "pages"
 
 
-def parse(source, page=1):
+def url(source, page=1):
+    template = next(s["url_template"] for s in sites.SEARCHES if (s["source"], s["area_id"]) == (source, "new-cairo"))
+    return template.format(page=page)
+
+
+def block(source):
     text = (PAGES / f"{source}-new-cairo-page-1.html").read_text(encoding="utf-8")
-    return sites.SITES[source][1](text, sites.URLS[source, "new-cairo"].format(page=page))
+    return sites.SITES[source][0](text, url(source))
+
+
+def parse(source, page=1):
+    return sites.SITES[source][1](block(source), url(source, page))
 
 
 def test_propertyfinder_page():
@@ -36,7 +48,7 @@ def test_propertyfinder_page():
         "bathrooms": 3,
         "size_m2": Decimal("325"),
         "asking_price": Decimal("10400000"),
-        "listed_on": date(2026, 10, 3),
+        "listed_on": date(2026, 10, 3),  # the listing day in Cairo
     }
 
 
@@ -57,7 +69,7 @@ def test_dubizzle_page():
         "bathrooms": 1,
         "size_m2": Decimal("53"),
         "asking_price": Decimal("2732400"),
-        "listed_on": date(2026, 10, 4),
+        "listed_on": date(2026, 10, 5),  # created 2026-10-04 at 11:30pm UTC, 2:30am on the 5th in Cairo
     }
 
 
@@ -98,17 +110,39 @@ def test_parsing_twice_gives_the_same_rows(source):
 @pytest.mark.parametrize("html", ["<html><body></body></html>", "<html><body><p>Access denied</p></body></html>"])
 def test_page_without_its_json_fails_loudly(source, html):
     with pytest.raises(RuntimeError):
-        sites.SITES[source][1](html, sites.URLS[source, "new-cairo"].format(page=1))
+        sites.SITES[source][0](html, url(source))
 
 
 def test_empty_result_list_fails_loudly():
-    empty = '<script id="__NEXT_DATA__" type="application/json">{}</script>'
     with pytest.raises(RuntimeError):
-        sites.parse_propertyfinder(empty.replace("{}", '{"props": {"pageProps": {"searchResult": {"listings": [], "meta": {}}}}}'), "u")
+        sites.parse_propertyfinder({"props": {"pageProps": {"searchResult": {"listings": [], "meta": {}}}}}, "u")
     with pytest.raises(RuntimeError):
-        sites.parse_nawy(empty.replace("{}", '{"props": {"pageProps": {"loadedSearchResultsSSR": {"results": []}}}}'), "u")
+        sites.parse_nawy({"props": {"pageProps": {"loadedSearchResultsSSR": {"results": []}}}}, "u")
     with pytest.raises(RuntimeError):
-        sites.parse_dubizzle('<script>window.state = {"algolia": {"content": {"hits": []}}};</script>', "u")
+        sites.parse_dubizzle({"algolia": {"content": {"hits": []}}}, "u")
+
+
+@pytest.mark.parametrize("source", sites.SITES)
+def test_contact_fields_are_removed_before_a_block_is_kept(source):
+    """Contact fields put back into the saved page at the top and inside a listing never reach the block."""
+    text = (PAGES / f"{source}-new-cairo-page-1.html").read_text(encoding="utf-8")
+    planted = ('"agent": {"name": "A", "phone": "01000000000"}, "brokerName": "B", "agencyLogo": "x",'
+               ' "client_id": 1, "userId": 2, "contactInfo": {"whatsapp": "01111111111"}, "email": "e@x",'
+               ' "description": "call 01222222222", ')
+    for key in ('"props": {', '"algolia": {'):  # the top of the block
+        text = text.replace(key, key + planted, 1)
+    for key in ('"externalID":', '"shareLink":', '"share_url":'):  # inside the first listing
+        text = text.replace(key, planted + key, 1)
+    kept = json.dumps(sites.SITES[source][0](text, url(source)))
+    for word in ("01000000000", "01111111111", "01222222222", '"agent"', "brokerName", "agencyLogo",
+                 "client_id", "userId", "contactInfo", '"email"', '"description"'):
+        assert word not in kept
+    rows, _ = sites.SITES[source][1](json.loads(kept), url(source))
+    assert repr(rows) == repr(parse(source)[0])  # the planted fields change no row
+
+
+def test_strip_contacts_at_any_depth():
+    assert sites.strip_contacts({"a": [{"Agent": 1, "b": {"PhoneNumber": 2, "c": 3}}], "seller": 4}) == {"a": [{"b": {"c": 3}}]}
 
 
 @pytest.mark.parametrize("label, expected", [
@@ -124,15 +158,12 @@ def test_unit_type(label, expected):
 def test_propertyfinder_hidden_price_is_none():
     listing = ('{"listing_type": "property", "property": {"id": "1", "property_type": "Villa", "listed_date": null,'
                ' "price": {"value": 9000000, "currency": "EGP", "is_hidden": true}, "size": {"value": 300, "unit": "sqm"}}}')
-    page = ('<script id="__NEXT_DATA__" type="application/json">{"props": {"pageProps": {"searchResult":'
-            ' {"meta": {"page": 1, "page_count": 1}, "listings": [' + listing + ']}}}}</script>')
+    page = {"props": {"pageProps": {"searchResult": {"meta": {"page": 1, "page_count": 1}, "listings": [json.loads(listing)]}}}}
     (row,), has_next = sites.parse_propertyfinder(page, "u")
     assert row["asking_price"] is None and row["size_m2"] == Decimal("300") and not has_next
 
 
-def test_get_retries_429_and_5xx_then_fails_loudly(monkeypatch):
-    import requests
-
+def test_get_retries_429_and_5xx_and_a_404_once_then_fails_loudly(monkeypatch):
     def answers(*codes):
         calls = []
 
@@ -146,15 +177,17 @@ def test_get_retries_429_and_5xx_then_fails_loudly(monkeypatch):
 
     monkeypatch.setattr(sites.time, "sleep", lambda seconds: None)
     calls = answers(503, 429, 200)
-    assert sites.get("nawy", "new-cairo", 1) == "ok" and len(calls) == 3
+    assert sites.get("u").content == b"ok" and len(calls) == 3
     calls = answers(503, 503, 503)
     with pytest.raises(requests.HTTPError):
-        sites.get("nawy", "new-cairo", 1)
+        sites.get("u")
     assert len(calls) == 3
-    calls = answers(404)
+    calls = answers(404, 200)
+    assert sites.get("u").content == b"ok" and len(calls) == 2  # a 404 is tried once more
+    calls = answers(404, 404, 200)
     with pytest.raises(requests.HTTPError):
-        sites.get("nawy", "new-cairo", 1)
-    assert len(calls) == 1  # a 404 is not tried again
+        sites.get("u")
+    assert len(calls) == 2  # ...and only once
 
 
 def test_zero_price_and_word_rooms_are_none():

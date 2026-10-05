@@ -1,6 +1,13 @@
-"""The weekly steps Airflow runs: load the reference data, read this week's asking prices from
-realestate.eg, and print the competitor price cuts and our units' gap to the market. Each step is
-one function. Every run reads the prices on the site today: there is no incremental read."""
+"""The weekly steps Airflow runs, one function each, all for one run week (the Sunday its week starts):
+
+- extract(source, run_week): bronze. Read one site's search pages for our six areas and keep every page
+  under data/raw/<source>/<run_week>/ with an index.csv line per page read; realestate.eg also reads
+  each residential unit's page. A folder with a _done file is a finished week and is skipped (the
+  watermark is the run week). A page already on disk is not read again, so a retried task resumes.
+- load_silver(run_week): silver. Parse every source's bronze for the week, check each row, save the
+  good rows, quarantine the rest and log the counts per site and area, in one transaction.
+- build_gold(run_week): gold. Rebuild the star for the week.
+- report(run_week): print the week's price cuts and the widest gaps."""
 
 import csv
 import gzip
@@ -8,7 +15,7 @@ import json
 import os
 import re
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -20,18 +27,20 @@ import requests
 from bs4 import BeautifulSoup
 from psycopg.types.json import Jsonb
 
+import browser_sites
+import sites
+
 ROOT = Path(__file__).parent
+RAW = ROOT / "data" / "raw"
 SITE = "https://realestate.eg"
-USER_AGENT = "egypt-real-estate-prices (+https://github.com/omarshalabyy1/egypt-real-estate-prices)"
-CARDS_PER_AREA = 150  # read an area's index pages until this many residential unit cards...
-MAX_PAGES_PER_AREA = 8  # ...or this many pages (50 cards a page), whichever comes first
+USER_AGENT = sites.USER_AGENT
 DELAY = 2.5  # seconds between any two requests
-# Index badges. Non-residential cards are skipped without reading their page; a badge in neither
-# set is quarantined so a new type is seen, not dropped.
-RESIDENTIAL = {"Apartment", "Apartment With Garden", "Chalet", "Chalet With Garden", "Duplex",
-               "Penthouse", "Studio", "Town House", "Twin House", "Villa"}
-NON_RESIDENTIAL = {"Store", "Clinic", "Office", "Mall", "Administrative", "Commercial", "Pharmacy",
-                   "Shop", "Warehouse"}
+ROWS_PER_SEARCH = 150  # a search's pages are read until this many residential rows in our areas...
+# ...or the search's max_pages in data/site_areas.csv, or its last page, whichever comes first.
+SOURCES = ["realestate", "propertyfinder", "dubizzle", "nawy", "bayut", "aqarmap"]
+BROWSER = {"bayut", "aqarmap"}  # read by Omar's browser run (fetch_bayut_aqarmap.py), not by Airflow
+with open(ROOT / "data" / "areas.csv", newline="", encoding="utf-8") as f:
+    AREAS = [r["area_id"] for r in csv.DictReader(f)]
 
 http = requests.Session()
 http.headers["User-Agent"] = USER_AGENT
@@ -48,34 +57,24 @@ def connect():
 
 
 def run_week_of(day):
-    """The Sunday that starts the day's week."""
+    """The Sunday on or before the day."""
     return day - timedelta(days=(day.weekday() + 1) % 7)
 
 
-def this_week():
-    return run_week_of(datetime.now(timezone.utc).date())
+def folder(source, run_week):
+    return RAW / source / run_week.isoformat()
 
 
-# --- Step 1: reference data ------------------------------------------------------------------
-
-def load_reference():
-    """Create the tables and views, then load the areas and our own units from data/."""
-    with connect() as conn:
-        conn.execute((ROOT / "sql" / "schema.sql").read_text())
-        for table, key, file in (("area", "area_id", "areas.csv"), ("our_unit", "unit_code", "our_units.csv")):
-            with open(ROOT / "data" / file, newline="", encoding="utf-8") as f:
-                rows = list(csv.DictReader(f))
-            cols = list(rows[0])
-            updates = ", ".join(f"{c} = EXCLUDED.{c}" for c in cols if c != key)
-            conn.cursor().executemany(
-                f"INSERT INTO {table} ({', '.join(cols)}) VALUES ({', '.join(['%s'] * len(cols))}) "
-                f"ON CONFLICT ({key}) DO UPDATE SET {updates}",
-                [[r[c] or None for c in cols] for r in rows],
-            )
-            print(f"{table}: {len(rows)} rows loaded")
+def gunzip(path):
+    return gzip.decompress(path.read_bytes())
 
 
-# --- Step 2: this week's asking prices ----------------------------------------------------------
+def read_csv(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+# --- realestate.eg pages ---------------------------------------------------------------------------
 
 def clean(text):
     """One space between words (the site puts non-breaking spaces in names); None stays None."""
@@ -148,6 +147,31 @@ def parse_unit(html, url):
     }
 
 
+def page_name(url):
+    """A realestate.eg page's file name: '<area>-page-<n>' for an index page, the listing id for a unit."""
+    index = re.search(r"/listings/([^/?]+)\?.*page=(\d+)", url)
+    return f"{index.group(1)}-page-{index.group(2)}" if index else re.match(r"/en/(\d+)-", urlparse(url).path).group(1)
+
+
+# --- Bronze: extract ---------------------------------------------------------------------------------
+
+def log(out, url, final_url, fetched_at, status, size, path):
+    """One line per page read in the folder's index.csv."""
+    new = not (out / "index.csv").exists()
+    with open(out / "index.csv", "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if new:
+            writer.writerow(["url", "final_url", "fetched_at", "http_status", "bytes", "path"])
+        writer.writerow([url, final_url, fetched_at.isoformat(), status, size, path])
+
+
+def keep(path, data):
+    """Write a page gzipped, all or nothing."""
+    part = path.with_suffix(".part")
+    part.write_bytes(gzip.compress(data))
+    part.replace(path)
+
+
 def read_robots():
     """robots.txt, read with our User-Agent: the site answers Python's default one with 403, which
     RobotFileParser.read() would take as "nothing allowed"."""
@@ -157,165 +181,351 @@ def read_robots():
     return robots
 
 
-def fetch(robots, url, name):
-    """GET one page as robots.txt allows, keep a gzipped copy in data/raw/<date>/ (listed in its
-    index.csv), then wait DELAY seconds."""
+def fetch(robots, out, url):
+    """One realestate.eg page as robots.txt allows: from disk when this week already has it, else read,
+    kept and logged, then a wait of DELAY seconds. A page answering an error is kept as it came."""
+    path = out / f"{page_name(url)}.html.gz"
+    if path.exists():
+        return gunzip(path)
     if not robots.can_fetch(USER_AGENT, url):
         raise RuntimeError(f"robots.txt does not allow {url}")
     response = http.get(url, timeout=60)
     fetched_at = datetime.now(timezone.utc)
-    folder = ROOT / "data" / "raw" / fetched_at.date().isoformat()
-    folder.mkdir(parents=True, exist_ok=True)
-    (folder / f"{name}.html.gz").write_bytes(gzip.compress(response.content))
-    new_index = not (folder / "index.csv").exists()
-    with open(folder / "index.csv", "a", newline="", encoding="utf-8") as f:
-        if new_index:
-            f.write("url,fetched_at,http_status,bytes\n")
-        csv.writer(f).writerow([url, fetched_at.isoformat(), response.status_code, len(response.content)])
+    keep(path, response.content)
+    log(out, url, response.url, fetched_at, response.status_code, len(response.content), path.name)
     time.sleep(DELAY)
-    return response, fetched_at
+    return response.content
 
 
-def card_problem(card, area_ids):
-    """Why a unit card cannot be used, or None."""
-    if card["listing_id"] is None:
-        return "unparseable id"
-    if card["area_id"] not in area_ids:
-        return "no area"
-    if card["unit_type"] not in RESIDENTIAL:
-        return "unknown type"
-    return None
-
-
-def unit_problem(page):
-    """Why a unit page's values cannot be used, or None."""
-    if not page["asking_price"] or page["asking_price"] <= 0:
-        return "price missing or <= 0"
-    if not page["size_m2"] or page["size_m2"] <= 0:
-        return "size missing or <= 0"
-    return None
-
-
-def reject(url, fetched_at, reason, payload):
-    return {"url": url, "fetched_at": fetched_at, "reason": reason,
-            "payload": Jsonb(payload, dumps=lambda o: json.dumps(o, default=str))}
-
-
-def read_cards(robots, area_id, location_id, area_ids, counts, rejects):
-    """An area's index pages, in order, until CARDS_PER_AREA residential unit cards or
-    MAX_PAGES_PER_AREA pages -> those cards (all of the last page's). Project and non-residential
-    cards are counted and skipped; a card failing card_problem is quarantined."""
+def read_realestate(robots, search, out):
+    """An area's index pages until ROWS_PER_SEARCH residential unit cards in our areas, then each of
+    those cards' unit pages. Canary: page 1's cards must give at least one priced unit page."""
     cards = []
-    for page in range(1, MAX_PAGES_PER_AREA + 1):
-        url = f"{SITE}/en/listings/{area_id}?location={location_id}&page={page}"
-        response, fetched_at = fetch(robots, url, f"{area_id}-page-{page}")
-        response.raise_for_status()
-        page_cards, has_next = parse_index(response.content, response.url)
-        for card in page_cards:
-            counts["cards seen"] += 1
-            if card["is_project"]:
-                counts["project cards skipped"] += 1
-            elif card["unit_type"] in NON_RESIDENTIAL:
-                counts["non-residential cards skipped"] += 1
-            elif reason := card_problem(card, area_ids):
-                rejects.append(reject(card["url"] or url, fetched_at, reason, card))
-            else:
-                cards.append(card)
-        if not has_next or len(cards) >= CARDS_PER_AREA:
+    for page in range(1, search["max_pages"] + 1):
+        url = search["url_template"].format(page=page)
+        page_cards, has_next = parse_index(fetch(robots, out, url), url)
+        cards += [(page, c) for c in page_cards if not c["is_project"] and c["listing_id"]
+                  and c["area_id"] in AREAS and sites.unit_type(c["unit_type"]) in sites.RESIDENTIAL]
+        if not has_next or len(cards) >= ROWS_PER_SEARCH:
             break
-    return cards
+    priced = False
+    for page, card in cards:
+        html = fetch(robots, out, card["url"])
+        priced = priced or (page == 1 and bool((parse_unit(html, card["url"]) or {}).get("asking_price")))
+    if not priced:
+        raise RuntimeError(f"Canary: page 1 of {search['url_template']} gave no priced unit")
 
 
-def read_units(robots, cards, counts, rejects):
-    """Read each card's unit page -> one row per unit with today's asking price. The page's
-    schema.org values win over the card's; a page that fails a check is quarantined."""
-    units = []
-    for card in cards:
-        response, fetched_at = fetch(robots, card["url"], str(card["listing_id"]))
-        counts["unit pages fetched"] += 1
-        page = parse_unit(response.content, card["url"]) if response.status_code == 200 else None
-        # "developer" is on the page only, and a page may name none: save() still needs the key.
-        unit = {**card, "developer": None, **{k: v for k, v in (page or {}).items() if v is not None},
-                "observed_on": fetched_at.date(), "fetched_at": fetched_at}
-        if response.status_code != 200:
-            reason = f"http {response.status_code}"
-        elif page is None:
-            reason = "no JSON-LD"
+def read_search(source, search, out):
+    """A search's pages until ROWS_PER_SEARCH residential rows in our areas. Only the page's JSON block
+    is kept, with its contact fields already removed. Canary: page 1 must give a priced row."""
+    extract_block, parse = sites.SITES[source]
+    kept = 0
+    for page in range(1, search["max_pages"] + 1):
+        url = search["url_template"].format(page=page)
+        path = out / f"{search['area_id']}-{search['search']}-page-{page}.json.gz"
+        if path.exists():
+            block = json.loads(gunzip(path))
         else:
-            reason = unit_problem(page)
+            response = sites.get(url)
+            fetched_at = datetime.now(timezone.utc)
+            block = extract_block(response.content.decode("utf-8"), url)
+            keep(path, json.dumps(block, ensure_ascii=False).encode("utf-8"))
+            log(out, url, response.url, fetched_at, response.status_code, len(response.content), path.name)
+        rows, has_next = parse(block, url)
+        if page == 1 and not any(r["asking_price"] for r in rows):
+            raise RuntimeError(f"Canary: page 1 of {url} gave no priced row")
+        kept += sum(r["area_id"] in AREAS and r["unit_type"] in sites.RESIDENTIAL for r in rows)
+        if not has_next or kept >= ROWS_PER_SEARCH:
+            break
+
+
+def extract(source, run_week):
+    """Bronze for one site and run week. Skipped when the folder already has _done."""
+    out = folder(source, run_week)
+    if (out / "_done").exists():
+        print(f"{source} {run_week}: already extracted, skipped ({out / '_done'})")
+        return
+    out.mkdir(parents=True, exist_ok=True)
+    robots = read_robots() if source == "realestate" else None
+    for search in (s for s in sites.SEARCHES if s["source"] == source):
+        if source == "realestate":
+            read_realestate(robots, search, out)
+        else:
+            read_search(source, search, out)
+    (out / "_done").write_text(f"{datetime.now(timezone.utc).isoformat()}\n")
+    print(f"{source} {run_week}: {len(read_csv(out / 'index.csv'))} pages read")
+
+
+# --- Silver: parse bronze, check, save ------------------------------------------------------------
+
+def last_read(out, file):
+    """url -> its last line in the folder's index or summary file (the page on disk is the last one read)."""
+    return {r["url"]: r for r in read_csv(out / file)} if (out / file).exists() else {}
+
+
+def realestate_parts(out):
+    """area -> pages read, stated total, rows (with fetched_at) and page problems, from the saved pages.
+    Each card is one row; project cards get the label "Project" so they are skipped."""
+    reads, units, parts = last_read(out, "index.csv"), {}, {}
+    for search in (s for s in sites.SEARCHES if s["source"] == "realestate"):
+        part = parts[search["area_id"]] = {"pages": 0, "stated_total": None, "rows": [], "problems": {}}
+        for page in range(1, search["max_pages"] + 1):
+            url = search["url_template"].format(page=page)
+            path = out / f"{page_name(url)}.html.gz"
+            if not path.exists():
+                break
+            html = gunzip(path)
+            part["pages"] += 1
+            if page == 1:
+                total = re.search(rb"of\s*<strong>([\d,]+)</strong>\s*results", html)
+                part["stated_total"] = int(total.group(1).replace(b",", b"")) if total else None
+            for card in parse_index(html, url)[0]:
+                listing_id, unit, fetched_at = card["listing_id"], None, reads[url]["fetched_at"]
+                key = ("realestate", str(listing_id))
+                unit_path = out / f"{listing_id}.html.gz"
+                if card["is_project"]:
+                    pass
+                elif listing_id is None:
+                    part["problems"][key] = "unparseable id"
+                elif not unit_path.exists():
+                    part["problems"][key] = "unit page not read"
+                else:
+                    part["pages"] += 1
+                    read = reads.get(card["url"], {})
+                    fetched_at = read.get("fetched_at", fetched_at)
+                    if listing_id not in units:
+                        units[listing_id] = parse_unit(gunzip(unit_path), card["url"])
+                    unit = units[listing_id]
+                    if read.get("http_status") not in (None, "200"):
+                        part["problems"][key] = f"http {read['http_status']}"
+                    elif unit is None:
+                        part["problems"][key] = "no JSON-LD"
+                unit = unit or {}
+                row = sites.row("realestate", listing_id, card["url"], card["area_id"],
+                                unit.get("compound") or card["compound"], unit.get("developer"),
+                                "Project" if card["is_project"] else card["unit_type"],
+                                unit.get("bedrooms") or card["bedrooms"], unit.get("bathrooms") or card["bathrooms"],
+                                unit.get("size_m2") or card["size_m2"], unit.get("asking_price"), None)
+                part["rows"].append({**row, "fetched_at": fetched_at})
+    return parts
+
+
+def json_site_parts(source, out):
+    """area -> pages read, stated total (summed over the area's searches) and rows, from the kept JSON."""
+    reads, parts = last_read(out, "index.csv"), {}
+    extract_block, parse = sites.SITES[source]
+    for search in (s for s in sites.SEARCHES if s["source"] == source):
+        part = parts.setdefault(search["area_id"], {"pages": 0, "stated_total": None, "rows": [], "problems": {}})
+        for page in range(1, search["max_pages"] + 1):
+            url = search["url_template"].format(page=page)
+            path = out / f"{search['area_id']}-{search['search']}-page-{page}.json.gz"
+            if not path.exists():
+                break
+            block = json.loads(gunzip(path))
+            part["pages"] += 1
+            if page == 1 and sites.stated_total(source, block) is not None:
+                part["stated_total"] = (part["stated_total"] or 0) + sites.stated_total(source, block)
+            part["rows"] += [{**r, "fetched_at": reads[url]["fetched_at"]} for r in parse(block, url)[0]]
+    return parts
+
+
+def browser_parts(source, out):
+    """area -> pages read, stated total and rows, from the pages Omar's browser run saved. A page whose
+    title says it holds 0 listings gives no rows; any other page without listings fails loudly."""
+    parts = {}
+    for page in read_csv(out / "summary.csv"):
+        if not page["area_id"] or page["http_status"] != "200" or page["blocked"] == "True":
+            continue
+        part = parts.setdefault(page["area_id"], {"pages": 0, "stated_total": None, "rows": [], "problems": {}})
+        html = gunzip(out / page["path"]).decode("utf-8")
+        title = re.search(r"<title>(.*?)</title>", html, re.S)
+        total = re.search(r"(\d[\d,]*) [A-Za-z ]*?for sale", title.group(1) if title else "", re.I)
+        total = int(total.group(1).replace(",", "")) if total else None
+        part["pages"] += 1
+        if total is not None:
+            part["stated_total"] = (part["stated_total"] or 0) + total
+        if total == 0:
+            continue
+        rows, _ = browser_sites.BROWSER_SITES[source](html, page["url"])
+        part["rows"] += [{**r, "fetched_at": page["fetched_at"]} for r in rows]
+    return parts
+
+
+def reconcile(counts, where):
+    """Every row parsed is skipped, a duplicate, saved or quarantined, exactly once; else the run fails."""
+    if counts["parsed"] != counts["skipped"] + counts["duplicate"] + counts["saved"] + counts["quarantined"]:
+        raise RuntimeError(f"{where}: counts do not reconcile: {dict(counts)}")
+
+
+def check(rows, seen, problems):
+    """One area's rows -> (counts, rows to save, (reason, row) to quarantine). A row outside our six
+    areas or of a non-residential type is skipped; a listing already read this run (seen) is a
+    duplicate; then a page problem, an unknown type, or a missing price or size quarantines it."""
+    counts, saved, rejected = Counter(parsed=len(rows)), [], []
+    for r in rows:
+        key = (r["source"], r["source_listing_id"])
+        if r["area_id"] not in AREAS or r["unit_type"] in sites.NON_RESIDENTIAL:
+            counts["skipped"] += 1
+            continue
+        if key in seen:
+            counts["duplicate"] += 1
+            continue
+        seen.add(key)
+        reason = (problems.get(key) or ("unknown type" if r["unit_type"] not in sites.RESIDENTIAL else None)
+                  or ("price missing or <= 0" if not r["asking_price"] else None)
+                  or ("size missing or <= 0" if not r["size_m2"] else None))
         if reason:
-            rejects.append(reject(card["url"], fetched_at, reason, {**card, "page": page}))
+            counts["quarantined"] += 1
+            rejected.append((reason, r))
         else:
-            units.append(unit)
-    return units
+            counts["saved"] += 1
+            saved.append(r)
+    return counts, saved, rejected
 
 
-def save(conn, units, rejects, run_week):
-    """Keep each listing's latest description, add each price to the history (never overwritten,
-    the day's first price wins) and keep the rejected rows with their reason."""
+def load_reference(conn):
+    """The areas (upserted) and our units (replaced) from data/."""
+    areas = read_csv(ROOT / "data" / "areas.csv")
+    conn.cursor().executemany(
+        "INSERT INTO silver.area (area_id, name, lat, lon, coordinate_source) VALUES (%(area_id)s, %(name)s,"
+        " %(lat)s, %(lon)s, %(coordinate_source)s) ON CONFLICT (area_id) DO UPDATE SET name = EXCLUDED.name,"
+        " lat = EXCLUDED.lat, lon = EXCLUDED.lon, coordinate_source = EXCLUDED.coordinate_source",
+        [{k: v or None for k, v in a.items()} for a in areas])
+    units = read_csv(ROOT / "data" / "our_units.csv")
+    conn.execute("DELETE FROM silver.our_unit")
+    conn.cursor().executemany(
+        "INSERT INTO silver.our_unit (unit_code, area_id, compound, developer, unit_type, bedrooms, size_m2,"
+        " asking_price) VALUES (%(unit_code)s, %(area_id)s, %(compound)s, %(developer)s, %(unit_type)s,"
+        " %(bedrooms)s, %(size_m2)s, %(asking_price)s)",
+        [{**u, "developer": u.get("developer") or None} for u in units])
+    print(f"silver.area: {len(areas)} rows, silver.our_unit: {len(units)} rows")
+
+
+def load_fetch_log(conn, run_week):
+    """Every page read this week, from each folder's index.csv or summary.csv. A browser page that
+    never answered (an error line, no fetched_at) was not read and is not logged."""
+    rows = []
+    for source in SOURCES:
+        out = folder(source, run_week)
+        for file in ("index.csv", "summary.csv"):
+            for r in read_csv(out / file) if (out / file).exists() else []:
+                if not r.get("fetched_at"):
+                    continue
+                rows.append({"source": source, "run_week": run_week, "url": r["url"],
+                             "final_url": r.get("final_url") or None, "fetched_at": r["fetched_at"],
+                             "http_status": r.get("http_status") or None, "bytes": r.get("bytes") or None,
+                             "path": r.get("path") or f"{page_name(r['url'])}.html.gz"})
+    conn.cursor().executemany(
+        "INSERT INTO bronze.fetch_log VALUES (%(source)s, %(run_week)s, %(url)s, %(final_url)s, %(fetched_at)s,"
+        " %(http_status)s, %(bytes)s, %(path)s) ON CONFLICT DO NOTHING", rows)
+    print(f"bronze.fetch_log: {len(rows)} pages read this week")
+
+
+def save(conn, run_week, source, area_id, part, counts, saved, rejected):
     cur = conn.cursor()
     cur.executemany(
-        "INSERT INTO listing (listing_id, url, area_id, compound, developer, unit_type, bedrooms, bathrooms,"
-        " size_m2, first_seen, last_seen) VALUES (%(listing_id)s, %(url)s, %(area_id)s, %(compound)s,"
-        " %(developer)s, %(unit_type)s, %(bedrooms)s, %(bathrooms)s, %(size_m2)s, %(observed_on)s,"
-        " %(observed_on)s) ON CONFLICT (listing_id) DO UPDATE SET url = EXCLUDED.url,"
-        " area_id = EXCLUDED.area_id, compound = EXCLUDED.compound, developer = EXCLUDED.developer,"
-        " unit_type = EXCLUDED.unit_type, bedrooms = EXCLUDED.bedrooms, bathrooms = EXCLUDED.bathrooms,"
-        " size_m2 = EXCLUDED.size_m2, last_seen = EXCLUDED.last_seen",
-        units,
-    )
+        "INSERT INTO silver.listing (source, listing_id, url, area_id, compound, developer, unit_type, bedrooms,"
+        " bathrooms, size_m2, listed_on, first_seen_week, last_seen_week) VALUES (%(source)s,"
+        " %(source_listing_id)s, %(url)s, %(area_id)s, %(compound)s, %(developer)s, %(unit_type)s, %(bedrooms)s,"
+        " %(bathrooms)s, %(size_m2)s, %(listed_on)s, %(run_week)s, %(run_week)s) ON CONFLICT (source, listing_id)"
+        " DO UPDATE SET url = EXCLUDED.url, area_id = EXCLUDED.area_id, compound = EXCLUDED.compound,"
+        " developer = EXCLUDED.developer, unit_type = EXCLUDED.unit_type, bedrooms = EXCLUDED.bedrooms,"
+        " bathrooms = EXCLUDED.bathrooms, size_m2 = EXCLUDED.size_m2, listed_on = EXCLUDED.listed_on,"
+        " first_seen_week = least(listing.first_seen_week, EXCLUDED.first_seen_week),"
+        " last_seen_week = greatest(listing.last_seen_week, EXCLUDED.last_seen_week)",
+        [{**r, "run_week": run_week} for r in saved])
     cur.executemany(
-        "INSERT INTO price_observation (listing_id, observed_on, asking_price, price_per_m2, fetched_at, run_week)"
-        " VALUES (%(listing_id)s, %(observed_on)s, %(asking_price)s, %(price_per_m2)s, %(fetched_at)s,"
-        " %(run_week)s) ON CONFLICT DO NOTHING",
-        [{**u, "run_week": run_week} for u in units],
-    )
+        "INSERT INTO silver.price_observation (source, listing_id, run_week, asking_price, size_m2, fetched_at)"
+        " VALUES (%(source)s, %(source_listing_id)s, %(run_week)s, %(asking_price)s, %(size_m2)s, %(fetched_at)s)"
+        " ON CONFLICT DO NOTHING",
+        [{**r, "run_week": run_week} for r in saved])
     cur.executemany(
-        "INSERT INTO quarantine (run_week, fetched_at, url, reason, payload) VALUES (%(run_week)s,"
-        " %(fetched_at)s, %(url)s, %(reason)s, %(payload)s) ON CONFLICT DO NOTHING",
-        [{**r, "run_week": run_week} for r in rejects],
-    )
+        "INSERT INTO silver.quarantine (run_week, source, url, reason, payload) VALUES (%s, %s, %s, %s, %s)"
+        " ON CONFLICT DO NOTHING",
+        [(run_week, source, r["url"] or f"{source}:{r['source_listing_id']}", reason,
+          Jsonb(r, dumps=lambda o: json.dumps(o, default=str))) for reason, r in rejected])
+    cur.execute(
+        "INSERT INTO silver.run_log VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (source, area_id,"
+        " run_week) DO UPDATE SET pages_read = EXCLUDED.pages_read, stated_total = EXCLUDED.stated_total,"
+        " rows_parsed = EXCLUDED.rows_parsed, rows_skipped = EXCLUDED.rows_skipped,"
+        " rows_duplicate = EXCLUDED.rows_duplicate, rows_saved = EXCLUDED.rows_saved,"
+        " rows_quarantined = EXCLUDED.rows_quarantined",
+        (source, area_id, run_week, part["pages"], part["stated_total"], counts["parsed"], counts["skipped"],
+         counts["duplicate"], counts["saved"], counts["quarantined"]))
 
 
-def collect(run_week):
-    """Read every area's index pages, then each residential unit's page once, and save the prices
-    and the rejected rows in one transaction. No price read at all fails the run."""
-    robots = read_robots()
+def load_silver(run_week):
+    """Parse every source's bronze for the week and load silver in one transaction. A site Airflow reads
+    without _done fails the run; a browser site's folder is used when Omar's run has finished it."""
     with connect() as conn:
-        areas = conn.execute("SELECT area_id, location_id FROM area ORDER BY area_id").fetchall()
-    counts, rejects, cards = Counter(), [], {}
-    for area_id, location_id in areas:
-        for card in read_cards(robots, area_id, location_id, {a for a, _ in areas}, counts, rejects):
-            if card["listing_id"] in cards:
-                counts["duplicate cards skipped"] += 1  # the same unit on two pages
-            cards[card["listing_id"]] = card
-    units = read_units(robots, cards.values(), counts, rejects)
-    if not units:
-        raise RuntimeError("No asking price read this week")
+        conn.execute((ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
     with connect() as conn:
-        save(conn, units, rejects, run_week)
-    counts["prices saved"] = len(units)
-    for reason, n in Counter(r["reason"] for r in rejects).items():
-        counts[f"quarantined: {reason}"] = n
-    for name, n in counts.items():
-        print(f"{name}: {n}")
+        load_reference(conn)
+        load_fetch_log(conn, run_week)
+        seen, total = set(), Counter()
+        for source in SOURCES:
+            out = folder(source, run_week)
+            if not (out / "_done").exists():
+                if source in BROWSER and not out.exists():
+                    print(f"{source} {run_week}: no pages saved by the browser run, nothing to load")
+                    continue
+                raise RuntimeError(f"{out} has no _done: its extract did not finish")
+            parts = (realestate_parts(out) if source == "realestate" else browser_parts(source, out)
+                     if source in BROWSER else json_site_parts(source, out))
+            for area_id, part in parts.items():
+                counts, saved, rejected = check(part["rows"], seen, part["problems"])
+                reconcile(counts, f"{source} {area_id}")
+                save(conn, run_week, source, area_id, part, counts, saved, rejected)
+                total += counts
+                print(f"{source} {area_id}: {part['pages']} pages, {dict(counts)}")
+        reconcile(total, "all sources")
+        observations, quarantined = conn.execute(
+            "SELECT (SELECT count(*) FROM silver.price_observation WHERE run_week = %(w)s),"
+            " (SELECT count(*) FROM silver.quarantine WHERE run_week = %(w)s)", {"w": run_week}).fetchone()
+        if (observations, quarantined) != (total["saved"], total["quarantined"]):
+            raise RuntimeError(f"The warehouse holds {observations} prices and {quarantined} quarantined rows"
+                               f" for {run_week}, the run counted {total['saved']} and {total['quarantined']}")
+        if not total["saved"]:
+            raise RuntimeError(f"No asking price saved for {run_week}")
+        print(f"{run_week}: {dict(total)}")
 
 
-# --- Step 3: report ------------------------------------------------------------------------------
+# --- Gold and report -----------------------------------------------------------------------------
+
+def build_gold(run_week, conn=None):
+    """Rebuild the star for the week in one transaction; its fact rows must match silver's prices."""
+    own = conn is None
+    conn = conn or connect()
+    try:
+        conn.execute("SELECT gold.build(%s)", (run_week,))
+        facts, prices = conn.execute(
+            "SELECT (SELECT count(*) FROM gold.fact_listing_price WHERE week_key = %(w)s),"
+            " (SELECT count(*) FROM silver.price_observation WHERE run_week = %(w)s)", {"w": run_week}).fetchone()
+        if facts != prices:
+            raise RuntimeError(f"gold holds {facts} prices for {run_week}, silver {prices}")
+        if own:
+            conn.commit()
+        print(f"gold {run_week}: {facts} listing prices")
+    finally:
+        if own:
+            conn.close()
+
 
 def report(run_week):
-    """Print this week's competitor price cuts and each of our units' gap to its area's median."""
+    """Print the week's competitor price cuts and the areas ranked by our units' gap to the market."""
     with connect() as conn:
         cuts = conn.execute(
-            "SELECT listing_id, area_id, compound, unit_type, old_price, new_price, change_pct FROM price_change"
-            " WHERE caught_week = %s AND is_cut ORDER BY change_pct", (run_week,),
-        ).fetchall()
-        print(f"Week of {run_week}: {len(cuts)} competitor price cuts")
-        for listing_id, area, compound, unit_type, old, new, pct in cuts:
-            print(f"- {listing_id} {unit_type} in {compound} ({area}): {old} -> {new} EGP ({pct}%)")
-        print("Our units against the median price per m2 of the same type in the same area:")
-        for code, ours, median, gap, compared in conn.execute(
-            "SELECT unit_code, price_per_m2, median_price_per_m2, gap_pct, listings_compared FROM unit_gap"
-            " ORDER BY unit_code"
-        ).fetchall():
-            print(f"- {code}: {ours} vs {median} ({gap}%, {compared} listings)" if compared else f"- {code}: no listing to compare")
+            "SELECT s.source, c.listing_id, a.name, d.compound, t.unit_type, c.old_price_per_m2, c.new_price_per_m2,"
+            " c.change_pct FROM gold.price_change c JOIN gold.dim_site s USING (site_key)"
+            " JOIN gold.dim_area a USING (area_key) JOIN gold.dim_compound d USING (compound_key)"
+            " JOIN gold.dim_property_type t USING (type_key) WHERE c.week_key = %s AND c.is_cut"
+            " ORDER BY c.change_pct", (run_week,)).fetchall()
+        print(f"Week of {run_week}: {len(cuts)} competitor price cuts per m2")
+        for source, listing_id, area, compound, unit_type, old, new, pct in cuts:
+            print(f"- {source} {listing_id} {unit_type} in {compound} ({area}): {old} -> {new} EGP/m2 ({pct}%)")
+        print("Areas by the median gap of our units to the market, widest first:")
+        for rank, area, median, cheaper, compared in conn.execute(
+            "SELECT g.gap_rank, a.name, g.median_gap_pct, g.pct_listings_cheaper, g.units_compared"
+            " FROM gold.area_gap g JOIN gold.dim_area a USING (area_key) ORDER BY g.gap_rank").fetchall():
+            print(f"{rank}. {area}: {median}% median gap over {compared} units; {cheaper}% of listings ask less per m2")

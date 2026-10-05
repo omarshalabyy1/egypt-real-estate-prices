@@ -1,110 +1,75 @@
-# Medians used, EGP per m² (area_benchmark after the New Cairo sample of 2026-10-05: index page 1, 17 listings): Apartment 48437.5 (8), Duplex 123897.225 (2), Town House 82499.99 (1), Twin House 90000 (1), Villa 103714.27 (3). Penthouse and Chalet had no listing and use the Apartment median; the other five areas use New Cairo's until the full run.
-"""Run once: writes data/our_units.csv, the client's own units. The client is unnamed, so its units
-are generated: ten resale units per area inside real compounds seen on realestate.eg (named as the
-site shows them), each priced per m² at a seeded random -15% to +15% around the market median for
-its type, so some sit above the market and some below. Unit types use the site's spelling so they
-join to the listings."""
+"""Run after a weekly run: writes data/our_units.csv, the client's own units. The client is unnamed, so
+its units are generated: ten resale units per area, 60 in all, each inside a real compound that has at
+least 3 listings in silver for the latest run week (named and with the developer as a site writes them),
+each priced per m² at a seeded random -15% to +15% around the market median for its area and type in
+gold.area_benchmark (pooled over sites), so some sit above the market and some below.
+
+A pair of area and type with no listing that week uses the same type's median pooled over all areas;
+a type with no listing anywhere uses the area's Apartment median. Then reload and rebuild gold:
+
+    python make_units.py
+    python -c "import tracker, datetime; c = tracker.connect(); tracker.load_reference(c); c.commit(); tracker.build_gold(datetime.date(2026, 10, 4))"
+"""
 
 import csv
 import random
 from collections import Counter
 from pathlib import Path
 
-MEDIAN = {"Apartment": 48437.5, "Duplex": 123897.225, "Town House": 82499.99, "Twin House": 90000,
-          "Villa": 103714.27, "Penthouse": 48437.5, "Chalet": 48437.5}
+import tracker
+
 SIZE = {"Apartment": (100, 200), "Duplex": (200, 300), "Penthouse": (150, 250), "Town House": (180, 260),
         "Twin House": (220, 300), "Villa": (280, 450), "Chalet": (80, 160)}  # m², lowest and highest
 BEDROOMS = {"Apartment": 3, "Duplex": 4, "Penthouse": 3, "Town House": 4, "Twin House": 4, "Villa": 5, "Chalet": 2}
 CODE = {"Apartment": "APT", "Duplex": "DUP", "Penthouse": "PH", "Town House": "TH", "Twin House": "TW",
         "Villa": "VIL", "Chalet": "CH"}
-
-UNITS = {  # area: (code prefix, [(unit type, compound)])
-    "new-cairo": ("NC", [
-        ("Apartment", "Jazura Compound New Cairo Samco Holding Developments"),
-        ("Apartment", "Mist New Cairo Compound M Squared Development"),
-        ("Apartment", "Yardin New Cairo Compound Mass Developments"),
-        ("Apartment", "RED G New Cairo Compound Jadeer Group Developments"),
-        ("Duplex", "Jade and Blue New Cairo Compound Aspect Developments"),
-        ("Penthouse", "The Red Residence Compound New Cairo Al Borouj Misr Development"),
-        ("Town House", "Zomra New Cairo Compound Nations Of Sky Development"),
-        ("Twin House", "The Vill New Cairo Compound IL CAZAR Developments"),
-        ("Villa", "Zomra New Cairo Compound Nations Of Sky Development"),
-        ("Villa", "Mist New Cairo Compound M Squared Development"),
-    ]),
-    "new-administrative-capital": ("CAP", [
-        ("Apartment", "Mamsha Vista"),
-        ("Apartment", "Mamsha Vista"),
-        ("Apartment", "Euphoria Queen Land New Capital Compound Euphoria Group Developments"),
-        ("Apartment", "Euphoria Queen Land New Capital Compound Euphoria Group Developments"),
-        ("Duplex", "Euphoria Queen Land New Capital Compound Euphoria Group Developments"),
-        ("Penthouse", "Mamsha Vista"),
-        ("Town House", "Grand Valleys New Capital Compound Mountain View Developments"),
-        ("Twin House", "Grand Valleys New Capital Compound Mountain View Developments"),
-        ("Villa", "Grand Valleys New Capital Compound Mountain View Developments"),
-        ("Villa", "Grand Valleys New Capital Compound Mountain View Developments"),
-    ]),
-    "sheikh-zayed": ("SZ", [
-        ("Apartment", "Summit Sheikh Zayed Compound Ritzy Developments"),
-        ("Apartment", "Valea Sheikh Zayed Compound Saudi Group Developments"),
-        ("Apartment", "Coy Sheikh Zayed Compound Voya Developments"),
-        ("Duplex", "Calma Sheikh Zayed Compound Leaders Developments"),
-        ("Town House", "Ons New Zayed Compound Mabany Edris Developments"),
-        ("Town House", "SVN Shades New Zayed Compound ZG Developments"),
-        ("Twin House", "Clavel New Zayed Compound EDIC Developments"),
-        ("Twin House", "West Line New Zayed Compound Living Lines Developments"),
-        ("Villa", "Belami New Zayed Compound Pyramids Rocks Developments"),
-        ("Villa", "Kinz New Zayed Compound Madaar Developments"),
-    ]),
-    "sixth-october-city": ("OCT", [
-        ("Apartment", "Samaya October Gardens Compound Nilestone Developments"),
-        ("Apartment", "Samaya October Gardens Compound Nilestone Developments"),
-        ("Apartment", "Hyde Park West October Compound"),
-        ("Apartment", "Elm Tree 6 October Compound"),
-        ("Apartment", "Hyde Park West October Compound"),
-        ("Penthouse", "Westdays 6 October Compound IL CAZAR Development"),
-        ("Penthouse", "Westdays 6 October Compound IL CAZAR Development"),
-        ("Duplex", "Elm Tree 6 October Compound"),
-        ("Town House", "Hyde Park West October Compound"),
-        ("Villa", "Hyde Park West October Compound"),
-    ]),
-    "north-coast": ("NCO", [
-        ("Chalet", "Siela North Coast Village Concept Developments"),
-        ("Chalet", "Vero North Coast Village Wadi Degla Developments"),
-        ("Chalet", "Ondixa North Coast Village AWJ Developments"),
-        ("Chalet", "Vista Marina North Coast Village El Tawfiqi Development"),
-        ("Chalet", "Al Alamein Lagoons North Coast Village Modon Developments"),
-        ("Chalet", "Retan North Coast Village Cairo Global Developments"),
-        ("Chalet", "The Island Marina 5 North Coast Village HDP Egypt"),
-        ("Villa", "Shores North Coast Village El Amar Group"),
-        ("Villa", "Mouj North Coast Village Pledge Developments"),
-        ("Villa", "Sky North Village North Coast Sky Ad Developments"),
-    ]),
-    "mostakbal-city": ("MC", [
-        ("Apartment", "Mivida Gardens Mostakbal City Compound Emaar Misr Developments"),
-        ("Apartment", "Park Central Mostakbal City Compound Hassan Allam Properties"),
-        ("Apartment", "Kukun Mostakbal City Compound The Land Development"),
-        ("Duplex", "Park Central Mostakbal City Compound Hassan Allam Properties"),
-        ("Penthouse", "Park Central Mostakbal City Compound Hassan Allam Properties"),
-        ("Town House", "Mivida Gardens Mostakbal City Compound Emaar Misr Developments"),
-        ("Town House", "The Butter Fly Mostakbal City Compound Madinet Masr"),
-        ("Twin House", "Scenes Mostakbal City Compound Tatweer Misr Development"),
-        ("Villa", "Mivida Gardens Mostakbal City Compound Emaar Misr Developments"),
-        ("Villa", "Scenes Mostakbal City Compound Tatweer Misr Development"),
-    ]),
+UNITS = {  # area: (code prefix, the ten unit types)
+    "new-cairo": ("NC", ["Apartment"] * 4 + ["Duplex", "Penthouse", "Town House", "Twin House"] + ["Villa"] * 2),
+    "new-administrative-capital": ("CAP", ["Apartment"] * 4 + ["Duplex", "Penthouse", "Town House", "Twin House"]
+                                   + ["Villa"] * 2),
+    "sheikh-zayed": ("SZ", ["Apartment"] * 3 + ["Duplex"] + ["Town House"] * 2 + ["Twin House"] * 2 + ["Villa"] * 2),
+    "sixth-october-city": ("OCT", ["Apartment"] * 5 + ["Penthouse"] * 2 + ["Duplex", "Town House", "Villa"]),
+    "north-coast": ("NCO", ["Chalet"] * 7 + ["Villa"] * 3),
+    "mostakbal-city": ("MC", ["Apartment"] * 3 + ["Duplex", "Penthouse"] + ["Town House"] * 2 + ["Twin House"]
+                       + ["Villa"] * 2),
 }
 
+with tracker.connect() as conn:
+    median = {(a, t): m for a, t, m in conn.execute(
+        "SELECT a.area_id, t.unit_type, b.median_price_per_m2 FROM gold.area_benchmark b"
+        " JOIN gold.dim_area a USING (area_key) JOIN gold.dim_property_type t USING (type_key)")}
+    type_median = dict(conn.execute(
+        "SELECT t.unit_type, percentile_cont(0.5) WITHIN GROUP (ORDER BY f.price_per_m2)::numeric"
+        " FROM gold.fact_listing_price f JOIN gold.dim_property_type t USING (type_key)"
+        " WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price) GROUP BY t.unit_type"))
+    compounds = conn.execute(
+        "SELECT l.area_id, l.unit_type, l.compound, l.developer, count(*) FROM silver.listing l"
+        " JOIN silver.price_observation o USING (source, listing_id)"
+        " WHERE o.run_week = (SELECT max(run_week) FROM silver.price_observation) AND l.compound IS NOT NULL"
+        " GROUP BY 1, 2, 3, 4 HAVING count(*) >= 3 ORDER BY 1, 2, 3, 4").fetchall()
+
 random.seed(2026)
-rows = []
-for area_id, (prefix, units) in UNITS.items():
+rows, fallbacks = [], Counter()
+for area_id, (prefix, types) in UNITS.items():
     numbers = Counter()
-    for unit_type, compound in units:
+    for unit_type in types:
         numbers[unit_type] += 1
+        # A compound with 3 listings of this type in the area, else with 3 listings of any type there.
+        choices = ([c[2:4] for c in compounds if c[:2] == (area_id, unit_type)]
+                   or sorted({c[2:4] for c in compounds if c[0] == area_id}))
+        compound, developer = random.choice(choices)
+        if (area_id, unit_type) in median:
+            market = median[area_id, unit_type]
+        else:
+            market = type_median.get(unit_type) or median[area_id, "Apartment"]
+            fallbacks[f"{area_id} {unit_type}"] += 1
         size = random.randrange(SIZE[unit_type][0], SIZE[unit_type][1] + 1, 5)
-        price_per_m2 = MEDIAN[unit_type] * random.uniform(0.85, 1.15)
+        price_per_m2 = float(market) * random.uniform(0.85, 1.15)
         rows.append({
             "unit_code": f"{prefix}-{CODE[unit_type]}-{numbers[unit_type]:02d}",
             "area_id": area_id,
             "compound": compound,
+            "developer": developer or "",
             "unit_type": unit_type,
             "bedrooms": BEDROOMS[unit_type],
             "size_m2": size,
@@ -112,7 +77,7 @@ for area_id, (prefix, units) in UNITS.items():
         })
 
 with open(Path(__file__).parent / "data" / "our_units.csv", "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+    writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
-print(f"{len(rows)} units written to data/our_units.csv")
+print(f"{len(rows)} units written to data/our_units.csv; fallback medians used: {dict(fallbacks) or 'none'}")

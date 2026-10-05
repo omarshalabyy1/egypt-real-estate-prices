@@ -1,9 +1,9 @@
 """Asking prices from three more listing sites: Property Finder Egypt, Dubizzle (OLX) Egypt and Nawy.
-For each site, fetch_<site>(area_id, page) returns one search page's text and parse_<site>(text, url)
-turns it into (rows, whether there is a next page). Every row has the same shape (see row()). The
-parsers only read the JSON the site embeds in the page and never read agent, broker, seller or contact
-fields. A row's area_id comes from the listing's own location, not from the URL asked for: a listing
-outside our six areas gets None, so the loader can quarantine it as "no area"."""
+Each site's search page embeds its results as JSON. extract_<site>(text, url) takes that JSON block out
+of the page and removes every agent, broker, agency, client, user and contact field (strip_contacts)
+before anything is written; parse_<site>(block, url) turns the stripped block into (rows, whether there
+is a next page). Every row has the same shape (see row()). A row's area_id comes from the listing's own
+location, not from the URL asked for: a listing outside our six areas gets None."""
 
 import csv
 import json
@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -20,14 +21,24 @@ ROOT = Path(__file__).parent
 USER_AGENT = "egypt-real-estate-prices (+https://github.com/omarshalabyy1/egypt-real-estate-prices)"
 DELAY = 2.5  # seconds between any two requests
 TRIES = 3  # tries for one page when the site answers 429 or 5xx
-# Each site's search page per area and page number (data/site_areas.csv).
+CAIRO = ZoneInfo("Africa/Cairo")
+# Every search the weekly run reads: one row per site, area and search, with its URL per page number
+# and the most pages read (data/site_areas.csv). Dubizzle has two searches per area.
 with open(ROOT / "data" / "site_areas.csv", newline="", encoding="utf-8") as f:
-    URLS = {(r["source"], r["area_id"]): r["url_template"] for r in csv.DictReader(f)}
+    SEARCHES = [{**r, "max_pages": int(r["max_pages"])} for r in csv.DictReader(f)]
 # The unit types we compare, keyed by the site's label in lower case without spaces or punctuation.
 # Any other label (Office, Hotel Apartment, iVilla...) is kept as the site wrote it.
-UNIT_TYPES = {"apartment": "Apartment", "villa": "Villa", "townhouse": "Town House",
-              "twinhouse": "Twin House", "duplex": "Duplex", "penthouse": "Penthouse",
-              "chalet": "Chalet", "studio": "Studio"}
+UNIT_TYPES = {"apartment": "Apartment", "apartmentwithgarden": "Apartment", "villa": "Villa",
+              "townhouse": "Town House", "twinhouse": "Twin House", "duplex": "Duplex",
+              "penthouse": "Penthouse", "chalet": "Chalet", "chaletwithgarden": "Chalet", "studio": "Studio"}
+RESIDENTIAL = set(UNIT_TYPES.values())
+# Labels known not to be homes: skipped and counted, never quarantined. "Project" is a realestate.eg
+# card for a whole compound, not a unit. A label in neither set is quarantined as "unknown type".
+NON_RESIDENTIAL = {"Office", "Administrative", "Retail", "Medical", "Clinic", "Store", "Shop", "Commercial",
+                   "Pharmacy", "Hotel Apartment", "Mall", "Warehouse", "Project"}
+# A JSON key holding any of these words is removed, with everything under it, before a block is kept.
+CONTACT = re.compile(r"agent|broker|agency|client|user|contact|phone|mobile|whatsapp|email|seller|owner"
+                     r"|description|title", re.I)
 # Each site's own location for our six areas.
 PROPERTYFINDER_AREAS = {"new-cairo-city": "new-cairo", "new-capital-city": "new-administrative-capital",
                         "sheikh-zayed-city": "sheikh-zayed", "6-october-city": "sixth-october-city",
@@ -43,18 +54,18 @@ http = requests.Session()
 http.headers["User-Agent"] = USER_AGENT
 
 
-def get(source, area_id, page):
-    """GET one search page and wait DELAY seconds. A 429 or 5xx answer is tried again, up to TRIES
-    times in all, waiting longer each time; an error answer left after that fails loudly."""
-    url = URLS[source, area_id].format(page=page)
+def get(url):
+    """GET one page and wait DELAY seconds. A 429 or 5xx answer is tried again, up to TRIES times in
+    all, waiting longer each time; a 404 is tried once more. An error answer left after that fails loudly."""
     for attempt in range(TRIES):
         response = http.get(url, timeout=60)
         time.sleep(DELAY)
-        if response.status_code not in (429, 500, 502, 503, 504) or attempt == TRIES - 1:
+        again = response.status_code in (429, 500, 502, 503, 504) or (response.status_code == 404 and attempt == 0)
+        if not again or attempt == TRIES - 1:
             break
         time.sleep(DELAY * 2 ** (attempt + 1))
     response.raise_for_status()
-    return response.content.decode("utf-8")
+    return response
 
 
 def unit_type(label):
@@ -97,27 +108,42 @@ def row(source, listing_id, url, area_id, compound, developer, label, bedrooms, 
     }
 
 
+def cairo_date(moment):
+    """The day in Cairo of an aware datetime."""
+    return moment.astimezone(CAIRO).date()
+
+
+def strip_contacts(value):
+    """The JSON value without any key naming a person or a way to reach one (CONTACT), at any depth."""
+    if isinstance(value, dict):
+        return {k: strip_contacts(v) for k, v in value.items() if not CONTACT.search(k)}
+    if isinstance(value, list):
+        return [strip_contacts(v) for v in value]
+    return value
+
+
 def next_data(text, url):
-    """The JSON a Next.js page embeds in <script id="__NEXT_DATA__">."""
+    """The JSON a Next.js page embeds in <script id="__NEXT_DATA__">, contact fields removed."""
     found = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', text, re.S)
     if not found:
         raise RuntimeError(f"No __NEXT_DATA__ on {url}: has the site changed its pages?")
-    return json.loads(found.group(1))
+    return strip_contacts(json.loads(found.group(1)))
 
 
 # --- Property Finder Egypt -------------------------------------------------------------------
 
-def fetch_propertyfinder(area_id, page):
-    return get("propertyfinder", area_id, page)
+def extract_propertyfinder(text, url):
+    return next_data(text, url)
 
 
-def parse_propertyfinder(text, url):
+def parse_propertyfinder(block, url):
     """One search page -> its single-unit listings. Project cards (a development) and project_unit
     cards (a developer's price range for a unit type) are skipped. The compound is the location's
     COMPOUND level, else the level just below a "... Compounds" district (La Vista City under "New
     Capital Compounds"), else the listing's own location when the site files it as a STREET, TOWER or
-    SUBCOMMUNITY (Solana East, Mayan New Cairo); otherwise None. The site gives no developer name."""
-    result = next_data(text, url)["props"]["pageProps"]["searchResult"]
+    SUBCOMMUNITY (Solana East, Mayan New Cairo); otherwise None. The site gives no developer name.
+    listed_on is the listing day in Cairo."""
+    result = block["props"]["pageProps"]["searchResult"]
     if not result["listings"]:
         raise RuntimeError(f"No listings on {url}: has the site changed its pages?")
     rows = []
@@ -136,7 +162,7 @@ def parse_propertyfinder(text, url):
             compound, None, p.get("property_type"), p.get("bedrooms"), p.get("bathrooms"),
             size.get("value") if size.get("unit") == "sqm" else None,
             price.get("value") if price.get("currency") == "EGP" and not price.get("is_hidden") else None,
-            datetime.fromisoformat(p["listed_date"].replace("Z", "+00:00")).date() if p.get("listed_date") else None,
+            cairo_date(datetime.fromisoformat(p["listed_date"].replace("Z", "+00:00"))) if p.get("listed_date") else None,
         ))
     meta = result["meta"]
     return rows, meta["page"] < meta["page_count"]
@@ -144,20 +170,21 @@ def parse_propertyfinder(text, url):
 
 # --- Dubizzle (OLX) Egypt --------------------------------------------------------------------
 
-def fetch_dubizzle(area_id, page):
-    return get("dubizzle", area_id, page)
-
-
-def parse_dubizzle(text, url):
-    """One search page -> its for-sale ads. The compound is the ad's deepest location below the city
-    (level 3 or 4: a compound or a district, the site does not tell them apart). The price is the
-    ad's own, also when it is marked negotiable; the site gives no developer name. listed_on is the
-    ad's creation day (UTC). The site's nbPages does not follow nbHits, so the next page is counted
-    from nbHits."""
+def extract_dubizzle(text, url):
+    """The window.state JSON the page embeds, contact fields removed."""
     start = text.find("window.state = ")
     if start < 0:
         raise RuntimeError(f"No window.state on {url}: has the site changed its pages?")
-    content = json.JSONDecoder().raw_decode(text, start + len("window.state = "))[0]["algolia"]["content"]
+    return strip_contacts(json.JSONDecoder().raw_decode(text, start + len("window.state = "))[0])
+
+
+def parse_dubizzle(block, url):
+    """One search page -> its for-sale ads. The compound is the ad's deepest location below the city
+    (level 3 or 4: a compound or a district, the site does not tell them apart). The price is the
+    ad's own, also when it is marked negotiable; the site gives no developer name. listed_on is the
+    ad's creation day in Cairo. The site's nbPages does not follow nbHits, so the next page is counted
+    from nbHits."""
+    content = block["algolia"]["content"]
     if not content["hits"]:
         raise RuntimeError(f"No ads on {url}: has the site changed its pages?")
     rows = []
@@ -173,7 +200,7 @@ def parse_dubizzle(text, url):
             levels[-1]["name"] if levels and levels[-1].get("level", 0) >= 3 else None, None,
             next((f.get("formattedValue_l1") for f in hit.get("formattedExtraFields") or [] if f.get("attribute") == "type"), None),
             fields.get("rooms"), fields.get("bathrooms"), fields.get("ft"), fields.get("price"),
-            datetime.fromtimestamp(hit["createdAt"], timezone.utc).date() if hit.get("createdAt") else None,
+            cairo_date(datetime.fromtimestamp(hit["createdAt"], timezone.utc)) if hit.get("createdAt") else None,
         ))
     page = int(parse_qs(urlparse(url).query).get("page", ["1"])[0])
     return rows, page * content["hitsPerPage"] < content["nbHits"]
@@ -181,15 +208,15 @@ def parse_dubizzle(text, url):
 
 # --- Nawy ------------------------------------------------------------------------------------
 
-def fetch_nawy(area_id, page):
-    return get("nawy", area_id, page)
+def extract_nawy(text, url):
+    return next_data(text, url)
 
 
-def parse_nawy(text, url):
+def parse_nawy(block, url):
     """One property search page -> its units. The price is the payment plan's minPrice, the price
     the unit page shows. Nawy gives no listing date (readyBy is the delivery date), so listed_on is
     None. The area is the unit's area, else its parent area (Golden Square -> New Cairo)."""
-    result = next_data(text, url)["props"]["pageProps"]["loadedSearchResultsSSR"]
+    result = block["props"]["pageProps"]["loadedSearchResultsSSR"]
     if not result["results"]:
         raise RuntimeError(f"No units on {url}: has the site changed its pages?")
     rows = []
@@ -205,8 +232,17 @@ def parse_nawy(text, url):
     return rows, result["page"] * result["pageSize"] < result["total"]
 
 
+def stated_total(source, block):
+    """How many listings the site says the search has, or None."""
+    if source == "propertyfinder":
+        return block["props"]["pageProps"]["searchResult"]["meta"].get("total_count")
+    if source == "dubizzle":
+        return block["algolia"]["content"].get("nbHits")
+    return block["props"]["pageProps"]["loadedSearchResultsSSR"].get("total")
+
+
 SITES = {
-    "propertyfinder": (fetch_propertyfinder, parse_propertyfinder),
-    "dubizzle": (fetch_dubizzle, parse_dubizzle),
-    "nawy": (fetch_nawy, parse_nawy),
+    "propertyfinder": (extract_propertyfinder, parse_propertyfinder),
+    "dubizzle": (extract_dubizzle, parse_dubizzle),
+    "nawy": (extract_nawy, parse_nawy),
 }
