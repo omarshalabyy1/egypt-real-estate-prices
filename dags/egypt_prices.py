@@ -24,7 +24,9 @@ from airflow.timetables.interval import DeltaDataIntervalTimetable
 
 import tracker
 
-DAY = "{{ data_interval_end | ds }}"  # the day the run's data interval ends
+# The day the run's data interval ends; a run triggered by API with a null logical date has no
+# interval, so it falls back to the day the run was asked for.
+DAY = "{{ (data_interval_end if data_interval_end is defined else dag_run.run_after) | ds }}"
 
 
 def run_week(day):

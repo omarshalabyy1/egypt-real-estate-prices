@@ -116,15 +116,20 @@ cp .env.example .env          # set WAREHOUSE_PASSWORD
 docker compose up -d --build  # Airflow http://127.0.0.1:8101, warehouse localhost:5451
 ```
 
-Open Airflow, unpause `egypt_real_estate_prices` and trigger it. It then runs once a week on its
-own; a week already read is skipped, so a rerun gives the same rows.
+Open Airflow, unpause `egypt_real_estate_prices` and trigger it, from its page (Trigger DAG) or by
+the API with a logical date. It then runs once a week on its own; a week already read is skipped,
+so a rerun gives the same rows.
 
-Then the numbers and the tests:
+Then the numbers and the tests, in a virtual environment, with the stack still up:
 
 ```bash
+python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scriptsctivate
 pip install -r analysis/requirements.txt
-jupyter lab analysis/analysis.ipynb
-pip install -r requirements.txt pytest && pytest
+jupyter lab analysis/analysis.ipynb  # or headless:
+python -m jupyter nbconvert --to notebook --execute --inplace analysis/analysis.ipynb
+pip install -r requirements.txt pytest
+export $(grep '^WAREHOUSE_PASSWORD=' .env)  # else the warehouse tests skip
+pytest
 ```
 
 Bayut Egypt and Aqarmap are read once a week, before the run, by `python fetch_bayut_aqarmap.py`
