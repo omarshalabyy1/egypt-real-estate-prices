@@ -41,4 +41,4 @@ seen on the sites, prices near the market median of their type and area). A clie
 
 Each area is one entry with its `id`, `name`, map coordinates and, per site, the search pages to
 read and how the site names the area in a listing. "Tell me the area and I'll add it" is this edit:
-`docs/new-client.md` says how to find each site's address for a new area.
+`config/client.yaml` lists each area's search address per site.

@@ -12,8 +12,6 @@
 
 <h3 align="center">Know every week how your asking price per m² compares with the market,<br>who cut prices, and where the gap is widest.</h3>
 
-New client? See [docs/new-client.md](docs/new-client.md).
-
 ## The problem
 
 An Egyptian developer or brokerage sells units in New Cairo, the New Capital, Sheikh Zayed and the

@@ -85,7 +85,7 @@ gap_pct_<area>                    gold.area_gap.median_gap_pct: the median of ou
 share_cheaper_<area>              percent of that area's competing listings asking less per m² than our median unit
   where <area> is an area id in config/client.yaml with _ for -: new_cairo, new_administrative_capital, sheikh_zayed,
   sixth_october_city, north_coast, mostakbal_city for the demo. The notebook redraws the file only when its strips are
-  the config's areas; another client's areas need their strips drawn once (docs/new-client.md)
+  the config's areas; another client's areas need their strips drawn once
 
 powerbi/06-checks.md (each value is what the SQL under its check returns, run by the notebook as printed;
 where a key above holds the same number, the notebook asserts that the two agree)
