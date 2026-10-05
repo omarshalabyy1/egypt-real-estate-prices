@@ -56,7 +56,7 @@ areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
 in <!--nb:widest_gap_area-->6th of October<!--/nb-->, at <!--nb:widest_gap_pct-->+7.4<!--/nb-->% against the
 median of the same type in the same area.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
 
-- **<!--nb:price_observations-->5,786<!--/nb--> asking prices** kept
+- **<!--nb:price_observations-->5,757<!--/nb--> asking prices** kept
   over <!--nb:run_weeks_phrase-->1 weekly run<!--/nb-->
   (<!--nb:first_run_week-->4 October 2026<!--/nb--> to <!--nb:latest_run_week-->4 October 2026<!--/nb-->).
 - **<!--nb:compounds_covered-->1,152<!--/nb--> compound names** (as the sites write them)
