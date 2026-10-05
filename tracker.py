@@ -58,6 +58,8 @@ http.headers["User-Agent"] = USER_AGENT
 
 
 def connect():
+    if not os.environ.get("WAREHOUSE_PASSWORD"):
+        raise SystemExit("WAREHOUSE_PASSWORD is not set (copy .env.example to .env; outside Docker, export it)")
     return psycopg.connect(
         host=os.environ.get("WAREHOUSE_HOST", "localhost"),
         port=os.environ.get("WAREHOUSE_PORT", "5451"),

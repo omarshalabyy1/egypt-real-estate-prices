@@ -3,7 +3,8 @@
 
 client:
   name: Demo developer                # the weekly report's first line and the notebook's
-  currency: EGP                       # a listing priced in another currency gets no price; the label on every price
+  currency: EGP                       # the label on every price. The sites price in EGP: Property Finder, Nawy, Bayut and
+                                      # Aqarmap drop a price in another currency; realestate.eg and Dubizzle name none
 
 inputs:                               # file names in data/input/ (columns: data/input/README.md)
   units: our_units.csv                # the client's units for sale, compared with the market

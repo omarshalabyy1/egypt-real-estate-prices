@@ -426,3 +426,9 @@ def test_an_empty_week_fails_loudly(monkeypatch, tmp_path):
         (tmp_path / source / "2026-10-04" / "_done").write_text("")
     with pytest.raises(RuntimeError, match="No asking price saved for 2026-10-04"):
         tracker.load_silver(date(2026, 10, 4))
+
+
+def test_no_password_stops_with_one_line(monkeypatch):
+    monkeypatch.delenv("WAREHOUSE_PASSWORD", raising=False)
+    with pytest.raises(SystemExit, match=r"^WAREHOUSE_PASSWORD is not set \(copy .env.example to .env; outside Docker, export it\)$"):
+        tracker.connect()
