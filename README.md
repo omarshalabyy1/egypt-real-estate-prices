@@ -49,23 +49,33 @@ the week before.
 
 ## 📈 The result
 
-**<!--nb:listings_compared-->5,782<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
+**<!--nb:listings_compared-->5,757<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
 areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
 in <!--nb:widest_gap_area-->6th of October<!--/nb-->, at <!--nb:widest_gap_pct-->+7.4<!--/nb-->% against the
 median of the same type in the same area.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
 
-- **<!--nb:price_observations-->5,782<!--/nb--> asking prices** kept
+- **<!--nb:price_observations-->5,786<!--/nb--> asking prices** kept
   over <!--nb:run_weeks_phrase-->1 weekly run<!--/nb-->
   (<!--nb:first_run_week-->4 October 2026<!--/nb--> to <!--nb:latest_run_week-->4 October 2026<!--/nb-->).
-- **<!--nb:compounds_covered-->1,157<!--/nb--> compound names** (as the sites write them)
+- **<!--nb:compounds_covered-->1,152<!--/nb--> compound names** (as the sites write them)
   from <!--nb:developers_covered-->307<!--/nb--> developers covered, against our <!--nb:our_units-->60<!--/nb--> units.
-- **<!--nb:share_listings_cheaper_than_ours-->50.7<!--/nb-->% of the <!--nb:listings_in_our_types-->5,087<!--/nb--> competing listings** in
+- **<!--nb:share_listings_cheaper_than_ours-->50.4<!--/nb-->% of the <!--nb:listings_in_our_types-->4,929<!--/nb--> competing listings** in
   the areas and types where we have units ask less per m² than our median unit of that type and area.
 - **<!--nb:price_cuts-->0<!--/nb--> price cuts** in the latest run week: listings that asked less
   per m² than the week before.
-- **<!--nb:quarantined_rows-->26<!--/nb--> rows set aside** with their reason
-  (<!--nb:quarantine_share_pct-->0.4<!--/nb-->% of all rows read); every run's counts reconcile site
+- **<!--nb:quarantined_rows-->41<!--/nb--> rows set aside** with their reason
+  (<!--nb:quarantine_share_pct-->0.7<!--/nb-->% of all rows read); every run's counts reconcile site
   by site and area by area.
+- **<!--nb:i1_premium_pct-->114.2<!--/nb-->% more per m²** asked in <!--nb:i1_dearest_area-->North Coast<!--/nb--> than
+  in <!--nb:i1_cheapest_area-->New Capital<!--/nb-->, the cheapest area, comparing median asking prices.
+- **<!--nb:i2_gap_pct-->224.8<!--/nb-->% between the dearest and the cheapest unit type** in <!--nb:i2_area-->North Coast<!--/nb-->
+  (<!--nb:i2_dearest_type-->Duplex<!--/nb--> against <!--nb:i2_cheapest_type-->Apartment<!--/nb-->), the widest spread of any area.
+- **Index <!--nb:i3_top_index-->219<!--/nb--> for <!--nb:i3_top_developer-->ADD Properties<!--/nb-->**, the dearest of <!--nb:i3_developers-->48<!--/nb--> developers
+  with 10 or more listings (100 = the area median); the lowest is <!--nb:i3_bottom_developer-->Amer Group<!--/nb--> at <!--nb:i3_bottom_index-->62<!--/nb-->.
+- **Nawy above Dubizzle in <!--nb:i6_nawy_above_areas-->6<!--/nb--> of <!--nb:i6_areas_compared-->6<!--/nb--> areas** by median asking price per m²;
+  Nawy shows mostly developers' launch prices and Dubizzle is a resale marketplace, the likely reason.
+- **About <!--nb:i7_twin_share_pct-->1.7<!--/nb-->% of listings with a named compound** likely appear on another site
+  too (same area, compound and type, size within 2 m², price within 2%): an estimate.
 
 <p align="center">
   <img width="100%" src="docs/listings-by-area.png" alt="Competing listings read in each area, latest run week">
@@ -74,6 +84,11 @@ median of the same type in the same area.** The checks behind every number are i
 <p align="center">
   <img width="49%" src="docs/gap-by-area.png" alt="Median gap of our units by area, each unit against the median of the same type in the same area">
   <img width="49%" src="docs/price-cuts-by-week.png" alt="Listings that asked less per square metre than the week before, by run week">
+</p>
+
+<p align="center">
+  <img width="49%" src="docs/insight-1-area-ranking.png" alt="Median asking price per square metre by area, with the middle half of the listings">
+  <img width="49%" src="docs/insight-3-developer-index.png" alt="Developer price index against the area median, the top five and the bottom five">
 </p>
 
 ## 📦 For developers and brokerages

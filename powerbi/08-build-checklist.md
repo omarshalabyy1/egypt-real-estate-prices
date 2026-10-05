@@ -38,7 +38,7 @@ it is off, fix that step first.
 11. Open **Table view** (second icon on the left) and click each table; the row count is at the
     bottom left.
     **Check C2:** Site <!--nb:table_rows_site-->6<!--/nb--> · Area <!--nb:table_rows_area-->6<!--/nb--> · Compound <!--nb:table_rows_compound-->1,336<!--/nb--> ·
-    Property Type <!--nb:table_rows_property_type-->11<!--/nb--> · Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,782<!--/nb--> ·
+    Property Type <!--nb:table_rows_property_type-->11<!--/nb--> · Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,757<!--/nb--> ·
     Our Unit <!--nb:table_rows_our_unit-->60<!--/nb--> · Price Change <!--nb:table_rows_price_change-->0<!--/nb--> ·
     Area Benchmark <!--nb:table_rows_area_benchmark-->55<!--/nb--> · Area Site Benchmark <!--nb:table_rows_area_site_benchmark-->234<!--/nb--> · Unit Gap <!--nb:table_rows_unit_gap-->60<!--/nb--> ·
     Area Gap <!--nb:table_rows_area_gap-->6<!--/nb-->.
@@ -62,7 +62,7 @@ it is off, fix that step first.
     folder. Hide the empty column.
 19. On a blank page, drop a card with `[Listings]` and one with `[Units Compared]` (Display units:
     None).
-    **Check:** `[Listings]` is <!--nb:listings_compared-->5,782<!--/nb--> (C1 `prices_latest_week`) and `[Units Compared]`
+    **Check:** `[Listings]` is <!--nb:listings_compared-->5,757<!--/nb--> (C1 `prices_latest_week`) and `[Units Compared]`
     equals Our units minus the units with no comparison (C6). Delete both cards.
 
 ## Page 1: Market position (`04-pages.md`)
@@ -70,7 +70,7 @@ it is off, fix that step first.
 20. Rename the page to **Market position**. Build visuals 1 to 12 in order, with their position and
     size. For the map (#10), pick **Azure Maps** in the Visualizations pane.
 21. **Check C3:** the six cards. Widest gap equals `gap_rank` 1 in `Area Gap`, and Listings cheaper
-    than ours equals `share_listings_cheaper_than_ours` in `analysis/numbers.json` (each listing of an
+    than ours equals `report_share_cheaper_pct` in `analysis/numbers.json` (each listing of an
     area and type where we have units, against our median unit of that type and area); it is not the
     pooled `pct_listings_cheaper` of the views, which compares every unit with every listing.
 22. **Check C4:** the bar chart's labels, top to bottom.

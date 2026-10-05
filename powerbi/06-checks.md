@@ -12,7 +12,9 @@ measures must equal it. Where a check picks one site, the SQL recomputes from
 `gold.fact_listing_price`, as the measures do. The share of listings cheaper than ours is
 recomputed from the fact too: of the competing listings in the areas and unit types where we have
 units, the share asking less per m² than our median unit of that type and area, the definition the
-README uses; no gold view holds it.
+README uses; no gold view holds it. The README counts it over the listings pooled over sites, without
+the Bayut Egypt rows that copy a Dubizzle ad; the report and the SQL here count every fact row, so
+the two can differ by those rows.
 
 **Building on a later date?** The sites show today's asking prices, so every weekly run changes the
 latest week and the numbers move. Run the notebook once, or the SQL under each check, and compare
@@ -27,7 +29,7 @@ Run the SQL in any SQL tool on `127.0.0.1:5451`, database `prices`, user `prices
 ## The warehouse, before Power BI
 
 **C1.** The runs are in: <!--nb:run_weeks_phrase-->1 weekly run<!--/nb-->, the latest one the week
-of <!--nb:latest_run_week-->4 October 2026<!--/nb-->, with <!--nb:listings_compared-->5,782<!--/nb--> asking prices in it (one per site and listing).
+of <!--nb:latest_run_week-->4 October 2026<!--/nb-->, with <!--nb:listings_compared-->5,757<!--/nb--> asking prices in it (one per site and listing).
 
 ```sql
 SELECT count(*) AS run_weeks, max(week_key) AS latest_week,
@@ -38,7 +40,7 @@ FROM gold.dim_week;
 
 **C2.** Rows per table after **Close & apply** (Table view, bottom left): Site <!--nb:table_rows_site-->6<!--/nb--> ·
 Area <!--nb:table_rows_area-->6<!--/nb--> · Compound <!--nb:table_rows_compound-->1,336<!--/nb--> · Property Type <!--nb:table_rows_property_type-->11<!--/nb--> ·
-Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,782<!--/nb--> · Our Unit <!--nb:table_rows_our_unit-->60<!--/nb--> ·
+Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,757<!--/nb--> · Our Unit <!--nb:table_rows_our_unit-->60<!--/nb--> ·
 Price Change <!--nb:table_rows_price_change-->0<!--/nb--> · Area Benchmark <!--nb:table_rows_area_benchmark-->55<!--/nb--> ·
 Area Site Benchmark <!--nb:table_rows_area_site_benchmark-->234<!--/nb--> · Unit Gap <!--nb:table_rows_unit_gap-->60<!--/nb--> ·
 Area Gap <!--nb:table_rows_area_gap-->6<!--/nb-->.
@@ -59,10 +61,10 @@ SELECT (SELECT count(*) FROM gold.dim_site) AS site, (SELECT count(*) FROM gold.
 ## Page 1: Market position
 
 **C3.** Cards, no slicer: Our units <!--nb:our_units-->60<!--/nb--> · Above market <!--nb:units_above_market_pct-->58.3<!--/nb-->% · At or
-below market <!--nb:units_below_market_pct-->41.7<!--/nb-->% · Listings cheaper than ours <!--nb:share_listings_cheaper_than_ours-->50.7<!--/nb-->%
-(measure `Share Of Listings Cheaper Than Ours`: of the <!--nb:listings_in_our_types-->5,087<!--/nb--> competing listings in
+below market <!--nb:units_below_market_pct-->41.7<!--/nb-->% · Listings cheaper than ours <!--nb:report_share_cheaper_pct-->50.7<!--/nb-->%
+(measure `Share Of Listings Cheaper Than Ours`: of the <!--nb:report_listings_in_our_types-->5,066<!--/nb--> competing listings in
 the areas and types where we have units, the share asking less per m² than our median unit of that
-type and area) · Widest gap <!--nb:widest_gap_area-->6th of October<!--/nb--> · Competitor listings this week <!--nb:listings_compared-->5,782<!--/nb-->.
+type and area) · Widest gap <!--nb:widest_gap_area-->6th of October<!--/nb--> · Competitor listings this week <!--nb:listings_compared-->5,757<!--/nb-->.
 
 ```sql
 WITH ours AS (
@@ -87,7 +89,7 @@ SELECT count(*) AS our_units,
 FROM gold.unit_gap;
 ```
 
-**C4.** Area bar (#11) data labels, top to bottom: <!--nb:area_bar_labels-->6th of October 7.4%, Sheikh Zayed 2.8%, New Capital 1.8%, North Coast -0.1%, Mostakbal City -0.6%, New Cairo -0.7%<!--/nb--> (six areas, or fewer if
+**C4.** Area bar (#11) data labels, top to bottom: <!--nb:area_bar_labels-->6th of October 7.4%, Sheikh Zayed 2.8%, New Capital 1.9%, North Coast -0.1%, Mostakbal City -0.6%, New Cairo -0.7%<!--/nb--> (six areas, or fewer if
 an area has no unit with a comparison).
 
 ```sql
@@ -125,7 +127,7 @@ SELECT count(*) AS units, count(*) FILTER (WHERE gap_pct IS NULL) AS no_comparis
 
 **C7.** Area slicer (#3) on **New Cairo**: Our units <!--nb:new_cairo_our_units-->10<!--/nb--> · Above
 market <!--nb:new_cairo_units_above_pct-->50.0<!--/nb-->% · At or below market <!--nb:new_cairo_units_below_pct-->50.0<!--/nb-->% · Listings cheaper
-than ours <!--nb:share_cheaper_new_cairo-->52.0<!--/nb-->% · Competitor listings this week <!--nb:new_cairo_listings-->941<!--/nb-->. Clear the
+than ours <!--nb:report_share_cheaper_new_cairo_pct-->52.2<!--/nb-->% · Competitor listings this week <!--nb:new_cairo_listings-->939<!--/nb-->. Clear the
 slicer.
 
 ```sql
@@ -149,8 +151,8 @@ WHERE a.area_id = 'new-cairo';
 
 **C8.** Site slicer (#2) on **Dubizzle Egypt**: Our units <!--nb:our_units-->60<!--/nb--> (unchanged: our units
 are not on a site) · Above market <!--nb:dubizzle_units_above_pct-->91.5<!--/nb-->% · At or below
-market <!--nb:dubizzle_units_below_pct-->8.5<!--/nb-->% · Listings cheaper than ours <!--nb:dubizzle_share_cheaper_pct-->63.6<!--/nb-->% · Widest
-gap <!--nb:dubizzle_widest_gap_area-->Mostakbal City<!--/nb--> · Competitor listings this week <!--nb:dubizzle_listings-->2,152<!--/nb-->. Every unit is now
+market <!--nb:dubizzle_units_below_pct-->8.5<!--/nb-->% · Listings cheaper than ours <!--nb:dubizzle_share_cheaper_pct-->63.7<!--/nb-->% · Widest
+gap <!--nb:dubizzle_widest_gap_area-->Mostakbal City<!--/nb--> · Competitor listings this week <!--nb:dubizzle_listings-->2,150<!--/nb-->. Every unit is now
 compared with Dubizzle's listings only, and only Dubizzle's listings are counted as cheaper, so this
 is recomputed from the fact. Clear the slicer.
 
@@ -184,9 +186,9 @@ FROM per_unit;
 
 ## Page 2: Compounds and developers
 
-**C9.** Cards, no slicer: Listings this week <!--nb:listings_compared-->5,782<!--/nb--> (equal to Competitor listings
-this week in C3) · Compounds <!--nb:compounds_latest_week-->1,157<!--/nb--> · Developers <!--nb:developers_latest_week-->307<!--/nb--> ·
-Cheapest compound per m² <!--nb:cheapest_compound-->New October<!--/nb--> · Dearest compound per m² <!--nb:dearest_compound-->Hacienda West<!--/nb-->.
+**C9.** Cards, no slicer: Listings this week <!--nb:listings_compared-->5,757<!--/nb--> (equal to Competitor listings
+this week in C3) · Compounds <!--nb:compounds_latest_week-->1,152<!--/nb--> · Developers <!--nb:developers_latest_week-->307<!--/nb--> ·
+Cheapest compound per m² <!--nb:cheapest_compound-->Haram City Compound<!--/nb--> · Dearest compound per m² <!--nb:dearest_compound-->Yemm Views<!--/nb-->.
 
 ```sql
 WITH latest AS (
@@ -228,7 +230,7 @@ GROUP BY c.developer ORDER BY median_per_m2 DESC LIMIT 3;
 ```
 
 **C12.** Market band table (#11), sorted by Listings descending: the top rows
-are <!--nb:band_table_top_rows-->North Coast Chalet (472 listings), Mostakbal City Apartment (460 listings), New Capital Apartment (437 listings), 6th of October Apartment (408 listings), New Cairo Apartment (408 listings)<!--/nb-->, with their lower quarter, median and upper quarter per m² as below.
+are <!--nb:band_table_top_rows-->North Coast Chalet (458 listings), Mostakbal City Apartment (448 listings), New Capital Apartment (423 listings), New Cairo Apartment (398 listings), 6th of October Apartment (395 listings)<!--/nb-->, with their lower quarter, median and upper quarter per m² as below.
 
 ```sql
 SELECT a.name AS area, t.unit_type, b.listings, b.p25_price_per_m2, b.median_price_per_m2,
@@ -239,9 +241,9 @@ JOIN gold.dim_property_type t USING (type_key)
 ORDER BY b.listings DESC, a.name, t.unit_type LIMIT 5;
 ```
 
-**C13.** Area slicer (#3) on **New Cairo**: Listings this week <!--nb:new_cairo_listings-->941<!--/nb--> ·
-Compounds <!--nb:new_cairo_compounds-->297<!--/nb--> · Developers <!--nb:new_cairo_developers-->81<!--/nb--> · Cheapest compound per
-m² <!--nb:new_cairo_cheapest_compound-->Mayan New Cairo<!--/nb--> · Dearest compound per m² <!--nb:new_cairo_dearest_compound-->Selina SwanLake Residences<!--/nb-->. Clear the slicer.
+**C13.** Area slicer (#3) on **New Cairo**: Listings this week <!--nb:new_cairo_listings-->939<!--/nb--> ·
+Compounds <!--nb:new_cairo_compounds-->295<!--/nb--> · Developers <!--nb:new_cairo_developers-->81<!--/nb--> · Cheapest compound per
+m² <!--nb:new_cairo_cheapest_compound-->Shalya Taj City<!--/nb--> · Dearest compound per m² <!--nb:new_cairo_dearest_compound-->WBR1<!--/nb-->. Clear the slicer.
 
 ```sql
 WITH latest AS (
@@ -267,7 +269,7 @@ From the second weekly run on. After the first run, C14 shows "(Blank)" on the f
 
 **C14.** Cards, no slicer: Price changes <!--nb:price_changes-->0<!--/nb--> · Cuts <!--nb:cuts_all_weeks-->0<!--/nb--> ·
 Rises <!--nb:rises_all_weeks-->0<!--/nb--> · Average change, in percent, <!--nb:average_change_pct-->(Blank)<!--/nb--> · Listings seen this
-week <!--nb:listings_compared-->5,782<!--/nb-->.
+week <!--nb:listings_compared-->5,757<!--/nb-->.
 
 ```sql
 SELECT count(*) AS price_changes, count(*) FILTER (WHERE is_cut) AS cuts,
@@ -317,7 +319,7 @@ ORDER BY c.change_pct LIMIT 5;
 ```
 
 **C18.** Area slicer (#3) on **New Cairo**: Price changes <!--nb:new_cairo_price_changes-->0<!--/nb--> ·
-Cuts <!--nb:new_cairo_cuts-->0<!--/nb--> · Rises <!--nb:new_cairo_rises-->0<!--/nb--> · Listings seen this week <!--nb:new_cairo_listings-->941<!--/nb-->.
+Cuts <!--nb:new_cairo_cuts-->0<!--/nb--> · Rises <!--nb:new_cairo_rises-->0<!--/nb--> · Listings seen this week <!--nb:new_cairo_listings-->939<!--/nb-->.
 Clear the slicer.
 
 ```sql

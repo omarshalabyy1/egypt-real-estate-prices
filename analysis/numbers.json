@@ -2,29 +2,29 @@
   "latest_run_week": "2026-10-04",
   "first_run_week": "2026-10-04",
   "run_weeks": 1,
-  "price_observations": 5782,
-  "listings_compared": 5782,
+  "price_observations": 5786,
+  "listings_compared": 5757,
   "sites_read": 6,
   "areas_read": 6,
-  "rows_parsed": 6988,
-  "rows_skipped": 960,
-  "rows_duplicate": 220,
-  "rows_saved": 5782,
+  "rows_parsed": 6854,
+  "rows_skipped": 935,
+  "rows_duplicate": 121,
+  "rows_saved": 5757,
   "run_weeks_phrase": "1 weekly run",
   "listings_by_site": {
-    "realestate": 936,
-    "propertyfinder": 974,
-    "dubizzle": 2152,
-    "nawy": 858,
+    "realestate": 935,
+    "propertyfinder": 958,
+    "dubizzle": 2150,
+    "nawy": 850,
     "bayut": 143,
-    "aqarmap": 719
+    "aqarmap": 721
   },
   "listings_by_area": {
-    "new_cairo": 941,
-    "new_capital": 877,
-    "sheikh_zayed": 969,
-    "sixth_october": 982,
-    "north_coast": 1030,
+    "new_cairo": 939,
+    "new_capital": 874,
+    "sheikh_zayed": 965,
+    "sixth_october": 977,
+    "north_coast": 1019,
     "mostakbal_city": 983
   },
   "listings_by_site_and_area": {
@@ -33,31 +33,31 @@
       "new_capital": 101,
       "sheikh_zayed": 168,
       "sixth_october": 154,
-      "north_coast": 184,
+      "north_coast": 183,
       "mostakbal_city": 178
     },
     "propertyfinder": {
-      "new_cairo": 179,
-      "new_capital": 159,
-      "sheikh_zayed": 160,
-      "sixth_october": 161,
-      "north_coast": 156,
+      "new_cairo": 178,
+      "new_capital": 158,
+      "sheikh_zayed": 155,
+      "sixth_october": 155,
+      "north_coast": 153,
       "mostakbal_city": 159
     },
     "dubizzle": {
       "new_cairo": 359,
       "new_capital": 360,
       "sheikh_zayed": 354,
-      "sixth_october": 360,
-      "north_coast": 359,
+      "sixth_october": 359,
+      "north_coast": 358,
       "mostakbal_city": 360
     },
     "nawy": {
-      "new_cairo": 127,
-      "new_capital": 118,
+      "new_cairo": 126,
+      "new_capital": 116,
       "sheikh_zayed": 141,
       "sixth_october": 157,
-      "north_coast": 163,
+      "north_coast": 158,
       "mostakbal_city": 152
     },
     "bayut": {
@@ -71,9 +71,9 @@
     "aqarmap": {
       "new_cairo": 101,
       "new_capital": 115,
-      "sheikh_zayed": 122,
-      "sixth_october": 126,
-      "north_coast": 145,
+      "sheikh_zayed": 123,
+      "sixth_october": 128,
+      "north_coast": 144,
       "mostakbal_city": 110
     }
   },
@@ -81,25 +81,25 @@
     "realestate": {
       "stated_total": 13242,
       "rows_parsed": 1650,
-      "rows_saved": 936,
+      "rows_saved": 935,
       "read_pct": 12.46
     },
     "propertyfinder": {
       "stated_total": 124083,
       "rows_parsed": 983,
-      "rows_saved": 974,
+      "rows_saved": 958,
       "read_pct": 0.79
     },
     "dubizzle": {
       "stated_total": 120186,
       "rows_parsed": 2160,
-      "rows_saved": 2152,
+      "rows_saved": 2150,
       "read_pct": 1.8
     },
     "nawy": {
       "stated_total": 18636,
       "rows_parsed": 1104,
-      "rows_saved": 858,
+      "rows_saved": 850,
       "read_pct": 5.92
     },
     "bayut": {
@@ -109,92 +109,92 @@
       "read_pct": 0.12
     },
     "aqarmap": {
-      "stated_total": 748210,
-      "rows_parsed": 947,
-      "rows_saved": 719,
-      "read_pct": 0.13
+      "stated_total": 41309,
+      "rows_parsed": 813,
+      "rows_saved": 721,
+      "read_pct": 1.97
     }
   },
-  "median_m2_north_coast": 114285.71,
+  "median_m2_north_coast": 113511.1,
   "p25_m2_north_coast": 70000.0,
-  "p75_m2_north_coast": 158232.05,
-  "median_m2_new_cairo": 75842.7,
-  "p25_m2_new_cairo": 54385.96,
-  "p75_m2_new_cairo": 104597.7,
-  "median_m2_sheikh_zayed": 61926.61,
-  "p25_m2_sheikh_zayed": 41420.45,
-  "p75_m2_sheikh_zayed": 92658.16,
-  "median_m2_sixth_october": 57849.11,
-  "p25_m2_sixth_october": 40199.88,
-  "p75_m2_sixth_october": 85714.29,
-  "median_m2_mostakbal_city": 55859.38,
-  "p25_m2_mostakbal_city": 40038.46,
-  "p75_m2_mostakbal_city": 74165.16,
+  "p75_m2_north_coast": 155729.4,
+  "median_m2_new_cairo": 76142.13,
+  "p25_m2_new_cairo": 54600.88,
+  "p75_m2_new_cairo": 104602.12,
+  "median_m2_sheikh_zayed": 62068.97,
+  "p25_m2_sheikh_zayed": 42211.06,
+  "p75_m2_sheikh_zayed": 93333.33,
+  "median_m2_sixth_october": 58148.89,
+  "p25_m2_sixth_october": 40586.47,
+  "p75_m2_sixth_october": 87083.33,
+  "median_m2_mostakbal_city": 56311.21,
+  "p25_m2_mostakbal_city": 40896.86,
+  "p75_m2_mostakbal_city": 75460.64,
   "median_m2_new_capital": 53000.0,
-  "p25_m2_new_capital": 34841.1,
-  "p75_m2_new_capital": 82157.26,
+  "p25_m2_new_capital": 35008.07,
+  "p75_m2_new_capital": 82189.32,
   "our_units": 60,
   "units_without_comparison": 0,
   "units_above_market": 35,
-  "gap_pct_sixth_october": 7.39,
+  "gap_pct_sixth_october": 7.38,
   "our_units_m2_sixth_october": [
-    46700.0,
-    49515.15,
-    53555.56,
-    53828.57,
-    53935.48,
-    59294.12,
-    61225.81,
-    64083.33,
-    68320.0,
-    69888.89
+    46400.0,
+    49151.52,
+    53371.43,
+    54088.89,
+    54451.61,
+    58823.53,
+    60774.19,
+    65888.89,
+    66444.44,
+    68520.0
   ],
-  "gap_pct_sheikh_zayed": 2.81,
+  "gap_pct_sheikh_zayed": 2.83,
   "our_units_m2_sheikh_zayed": [
     46368.42,
     50777.78,
     57523.81,
     58039.22,
-    58346.15,
-    61016.95,
+    61307.69,
     62139.53,
+    64101.69,
     67487.18,
     71013.33,
     74159.09
   ],
-  "gap_pct_new_capital": 1.8,
+  "gap_pct_new_capital": 1.87,
   "our_units_m2_new_capital": [
-    32666.67,
-    33100.0,
-    35736.84,
-    37448.28,
-    38545.45,
+    33300.0,
+    35921.57,
+    35947.37,
+    37655.17,
+    38818.18,
     57904.76,
     85700.0,
-    86745.1,
-    87487.8,
-    96592.59
+    87176.47,
+    87243.9,
+    96296.3
   ],
-  "gap_pct_new_cairo": -0.74,
+  "gap_pct_new_cairo": -0.73,
   "our_units_m2_new_cairo": [
-    61675.68,
     61714.29,
-    63200.0,
-    67689.66,
-    70000.0,
-    70666.67,
+    62324.32,
+    63866.67,
+    66241.38,
+    70700.0,
+    71407.41,
     79259.26,
     83692.31,
-    103179.49,
-    103725.0
+    103641.03,
+    104175.0
   ],
-  "gap_pct_mostakbal_city": -0.62,
+  "gap_pct_mostakbal_city": -0.59,
   "our_units_m2_mostakbal_city": [
     40000.0,
     42166.67,
     50880.0,
-    51680.0,
-    52631.58,
+    55013.33,
+    56035.09,
     57105.26,
     63285.71,
     66260.87,
@@ -203,61 +203,62 @@
   ],
   "gap_pct_north_coast": -0.05,
   "our_units_m2_north_coast": [
-    80666.67,
-    83407.41,
-    84086.96,
-    93500.0,
-    98000.0,
-    99111.11,
-    104620.69,
-    122615.38,
-    145968.75,
-    163711.11
+    80222.22,
+    82888.89,
+    83565.22,
+    92900.0,
+    97444.44,
+    98555.56,
+    104000.0,
+    120769.23,
+    143781.25,
+    161244.44
   ],
   "scale_min_m2": 30000,
   "scale_max_m2": 170000,
-  "listings_in_our_types": 5087,
-  "listings_cheaper_than_ours": 2580,
-  "share_listings_cheaper_than_ours": 50.717515234912526,
-  "share_cheaper_mostakbal_city": 47.51322751322751,
-  "share_cheaper_new_capital": 53.10262529832935,
-  "share_cheaper_new_cairo": 51.995438996579246,
-  "share_cheaper_north_coast": 49.930651872399444,
-  "share_cheaper_sheikh_zayed": 50.62146892655367,
-  "share_cheaper_sixth_october": 51.40073081607795,
+  "listings_in_our_types": 4929,
+  "listings_cheaper_than_ours": 2485,
+  "share_listings_cheaper_than_ours": 50.41590586325827,
+  "share_cheaper_mostakbal_city": 46.90553745928339,
+  "share_cheaper_new_capital": 52.89052890528906,
+  "share_cheaper_new_cairo": 51.87793427230047,
+  "share_cheaper_north_coast": 49.494949494949495,
+  "share_cheaper_sheikh_zayed": 50.64177362893816,
+  "share_cheaper_sixth_october": 50.945775535939475,
   "share_cheaper_by_type": {
-    "Apartment": 48.67298578199052,
-    "Chalet": 48.940677966101696,
-    "Duplex": 50.0,
-    "Penthouse": 58.139534883720934,
-    "Town House": 51.699463327370296,
-    "Twin House": 50.171821305841924,
-    "Villa": 53.535353535353536
+    "Apartment": 48.12103465104929,
+    "Chalet": 48.90829694323144,
+    "Duplex": 47.89473684210526,
+    "Penthouse": 59.06432748538012,
+    "Town House": 51.736745886654475,
+    "Twin House": 50.69444444444444,
+    "Villa": 53.344208809135395
   },
   "gold_area_gap_pct_listings_cheaper": {
-    "sixth_october": 51.35,
-    "sheikh_zayed": 49.86,
-    "new_capital": 48.85,
-    "new_cairo": 53.52,
-    "mostakbal_city": 48.36,
-    "north_coast": 48.16
+    "sixth_october": 50.96,
+    "sheikh_zayed": 49.95,
+    "new_capital": 48.68,
+    "new_cairo": 53.32,
+    "mostakbal_city": 47.71,
+    "north_coast": 48.07
   },
-  "compounds_covered": 1157,
+  "compounds_covered": 1152,
   "developers_covered": 307,
-  "area_compounds_covered": 1176,
-  "listings_without_compound": 658,
-  "listings_without_developer": 3588,
+  "area_compounds_covered": 1171,
+  "listings_without_compound": 656,
+  "listings_without_developer": 3572,
   "price_cuts": 0,
   "price_rises": 0,
   "price_changes": 0,
   "widest_gap_area": "6th of October",
-  "widest_gap_pct": 7.39,
-  "quarantined_rows": 26,
-  "quarantine_share_pct": 0.4476584022038568,
+  "widest_gap_pct": 7.38,
+  "quarantined_rows": 41,
+  "rows_checked": 5798,
+  "quarantine_share_pct": 0.707140393239048,
   "quarantine_by_reason": {
     "price missing or <= 0": 11,
-    "unit page not read": 1,
-    "unknown type": 14
+    "price per m² outside 10,000 to 400,000": 29,
+    "unknown type": 1
   },
   "run_id": "manual__run_week_2026-10-04",
   "run_seconds": 1944.942728,
@@ -271,44 +272,2474 @@
   "live_read_request_seconds": 2.5,
   "live_read_slowest_site": "realestate",
   "live_read_minutes_estimate": 40.375,
+  "insights": {
+    "1": {
+      "title": "Area ranking",
+      "grain": "one row per area, latest run week, pooled over sites and unit types",
+      "groups": [
+        {
+          "area": "North Coast",
+          "n": 1000,
+          "p25": 70000.0,
+          "median": 113511.095,
+          "p75": 155729.4025,
+          "iqr": 85729.4025,
+          "premium_pct": 114.17187735849055
+        },
+        {
+          "area": "New Cairo",
+          "n": 916,
+          "p25": 54600.88,
+          "median": 76142.13,
+          "p75": 104602.12,
+          "iqr": 50001.24,
+          "premium_pct": 43.664396226415114
+        },
+        {
+          "area": "Sheikh Zayed",
+          "n": 941,
+          "p25": 42211.06,
+          "median": 62068.97,
+          "p75": 93333.33,
+          "iqr": 51122.270000000004,
+          "premium_pct": 17.111264150943395
+        },
+        {
+          "area": "6th of October",
+          "n": 953,
+          "p25": 40586.47,
+          "median": 58148.89,
+          "p75": 87083.33,
+          "iqr": 46496.86,
+          "premium_pct": 9.714886792452827
+        },
+        {
+          "area": "Mostakbal City",
+          "n": 959,
+          "p25": 40896.854999999996,
+          "median": 56311.21,
+          "p75": 75460.64,
+          "iqr": 34563.785,
+          "premium_pct": 6.247566037735841
+        },
+        {
+          "area": "New Capital",
+          "n": 850,
+          "p25": 35008.065,
+          "median": 53000.0,
+          "p75": 82189.315,
+          "iqr": 47181.25,
+          "premium_pct": 0.0
+        }
+      ],
+      "groups_skipped": 0,
+      "listings_skipped": 0,
+      "dearest_area": "North Coast",
+      "dearest_n": 1000,
+      "dearest_median_m2": 113511.095,
+      "cheapest_area": "New Capital",
+      "cheapest_n": 850,
+      "cheapest_median_m2": 53000.0,
+      "premium_pct": 114.17187735849055,
+      "chart": "docs/insight-1-area-ranking.png",
+      "sentence": "North Coast has the highest median asking price per m² (113,511 EGP, n = 1,000), 114.2% above New Capital, the lowest (53,000 EGP, n = 850); no area skipped."
+    },
+    "2": {
+      "title": "Unit type within each area",
+      "grain": "one row per area and unit type, latest run week, pooled over sites",
+      "groups": [
+        {
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "n": 395,
+          "p25": 31936.114999999998,
+          "median": 53935.48,
+          "p75": 89000.0
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Duplex",
+          "n": 28,
+          "p25": 49750.0,
+          "median": 58568.0,
+          "p75": 87507.0925
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Penthouse",
+          "n": 64,
+          "p25": 44118.6075,
+          "median": 49518.975,
+          "p75": 69401.19499999999
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Studio",
+          "n": 47,
+          "p25": 52155.535,
+          "median": 76403.51,
+          "p75": 93826.185
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Town House",
+          "n": 122,
+          "p25": 53167.2825,
+          "median": 64825.58,
+          "p75": 86741.07
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Twin House",
+          "n": 66,
+          "p25": 54371.9825,
+          "median": 66000.0,
+          "p75": 85622.47
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Villa",
+          "n": 184,
+          "p25": 45132.082500000004,
+          "median": 67382.42,
+          "p75": 91038.95999999999
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "iVilla",
+          "n": 43,
+          "p25": 37831.17,
+          "median": 41015.63,
+          "p75": 51165.9
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Apartment",
+          "n": 448,
+          "p25": 34311.075,
+          "median": 45000.0,
+          "p75": 65000.0
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Duplex",
+          "n": 52,
+          "p25": 39794.445,
+          "median": 65000.0,
+          "p75": 80000.0
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Penthouse",
+          "n": 40,
+          "p25": 53139.520000000004,
+          "median": 60674.134999999995,
+          "p75": 70588.4625
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Studio",
+          "n": 26,
+          "p25": 58679.097499999996,
+          "median": 65289.270000000004,
+          "p75": 77871.2675
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Town House",
+          "n": 138,
+          "p25": 48526.345,
+          "median": 65966.845,
+          "p75": 91469.035
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Twin House",
+          "n": 35,
+          "p25": 56750.0,
+          "median": 85000.0,
+          "p75": 116086.84
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "Villa",
+          "n": 208,
+          "p25": 43278.305,
+          "median": 55850.715,
+          "p75": 71854.82
+        },
+        {
+          "area": "Mostakbal City",
+          "unit_type": "iVilla",
+          "n": 12,
+          "p25": 51305.695,
+          "median": 60565.8,
+          "p75": 70898.03
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Apartment",
+          "n": 398,
+          "p25": 46206.2975,
+          "median": 63818.18,
+          "p75": 93534.5275
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Duplex",
+          "n": 47,
+          "p25": 58846.155,
+          "median": 67441.86,
+          "p75": 85897.275
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Penthouse",
+          "n": 43,
+          "p25": 50522.705,
+          "median": 70588.24,
+          "p75": 94792.245
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Studio",
+          "n": 45,
+          "p25": 69117.65,
+          "median": 93877.55,
+          "p75": 105000.0
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Town House",
+          "n": 91,
+          "p25": 65869.57,
+          "median": 85000.0,
+          "p75": 108599.8
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Twin House",
+          "n": 57,
+          "p25": 72666.67,
+          "median": 86792.45,
+          "p75": 124649.86
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Villa",
+          "n": 216,
+          "p25": 69703.2475,
+          "median": 90604.14,
+          "p75": 125133.33
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "iVilla",
+          "n": 18,
+          "p25": 41944.16,
+          "median": 50531.915,
+          "p75": 61481.9025
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Apartment",
+          "n": 423,
+          "p25": 29819.56,
+          "median": 38122.64,
+          "p75": 52352.04
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Duplex",
+          "n": 32,
+          "p25": 24978.615,
+          "median": 36353.619999999995,
+          "p75": 53000.0
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Penthouse",
+          "n": 24,
+          "p25": 34100.759999999995,
+          "median": 51822.649999999994,
+          "p75": 55565.8275
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Studio",
+          "n": 37,
+          "p25": 46329.55,
+          "median": 61422.68,
+          "p75": 72811.11
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Town House",
+          "n": 105,
+          "p25": 65128.21,
+          "median": 78530.61,
+          "p75": 93976.23
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Twin House",
+          "n": 68,
+          "p25": 67964.285,
+          "median": 78571.43,
+          "p75": 102227.1025
+        },
+        {
+          "area": "New Capital",
+          "unit_type": "Villa",
+          "n": 161,
+          "p25": 68085.11,
+          "median": 85600.0,
+          "p75": 107476.64
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Apartment",
+          "n": 72,
+          "p25": 37346.7675,
+          "median": 52666.825,
+          "p75": 139628.0
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "n": 458,
+          "p25": 65000.0,
+          "median": 94309.295,
+          "p75": 140775.5525
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Duplex",
+          "n": 10,
+          "p25": 143518.555,
+          "median": 171058.37,
+          "p75": 189067.265
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Penthouse",
+          "n": 28,
+          "p25": 91648.005,
+          "median": 121132.35,
+          "p75": 146678.0475
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Studio",
+          "n": 28,
+          "p25": 44014.4475,
+          "median": 65000.0,
+          "p75": 183594.9275
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Town House",
+          "n": 72,
+          "p25": 117507.0725,
+          "median": 141555.555,
+          "p75": 170062.16749999998
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Twin House",
+          "n": 88,
+          "p25": 93341.56,
+          "median": 130795.64499999999,
+          "p75": 178993.425
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Villa",
+          "n": 235,
+          "p25": 86321.70000000001,
+          "median": 141818.18,
+          "p75": 194410.0
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Apartment",
+          "n": 385,
+          "p25": 37500.0,
+          "median": 50520.83,
+          "p75": 79750.0
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Duplex",
+          "n": 31,
+          "p25": 41859.68,
+          "median": 58333.33,
+          "p75": 85833.33499999999
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Penthouse",
+          "n": 37,
+          "p25": 60000.0,
+          "median": 85000.0,
+          "p75": 106584.36
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Studio",
+          "n": 37,
+          "p25": 89466.43,
+          "median": 115000.0,
+          "p75": 153680.0
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Town House",
+          "n": 91,
+          "p25": 49813.36,
+          "median": 65000.0,
+          "p75": 88982.83
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Twin House",
+          "n": 128,
+          "p25": 44811.24,
+          "median": 60212.244999999995,
+          "p75": 84439.3025
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Villa",
+          "n": 222,
+          "p25": 50985.292499999996,
+          "median": 70000.0,
+          "p75": 104212.9625
+        }
+      ],
+      "groups_skipped": 9,
+      "listings_skipped": 24,
+      "skipped_groups": [
+        {
+          "area": "6th of October",
+          "unit_type": "Chalet",
+          "n": 2
+        },
+        {
+          "area": "6th of October",
+          "unit_type": "Loft",
+          "n": 2
+        },
+        {
+          "area": "New Cairo",
+          "unit_type": "Chalet",
+          "n": 1
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "Cabin",
+          "n": 8
+        },
+        {
+          "area": "North Coast",
+          "unit_type": "iVilla",
+          "n": 1
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Cabin",
+          "n": 1
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Chalet",
+          "n": 1
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "Loft",
+          "n": 4
+        },
+        {
+          "area": "Sheikh Zayed",
+          "unit_type": "iVilla",
+          "n": 4
+        }
+      ],
+      "by_area": [
+        {
+          "area": "North Coast",
+          "types": 8,
+          "cheapest_type": "Apartment",
+          "cheapest_n": 72,
+          "cheapest_median_m2": 52666.825,
+          "dearest_type": "Duplex",
+          "dearest_n": 10,
+          "dearest_median_m2": 171058.37,
+          "gap_pct": 224.79339698187619
+        },
+        {
+          "area": "New Capital",
+          "types": 7,
+          "cheapest_type": "Duplex",
+          "cheapest_n": 32,
+          "cheapest_median_m2": 36353.619999999995,
+          "dearest_type": "Villa",
+          "dearest_n": 161,
+          "dearest_median_m2": 85600.0,
+          "gap_pct": 135.4648587953552
+        },
+        {
+          "area": "Sheikh Zayed",
+          "types": 7,
+          "cheapest_type": "Apartment",
+          "cheapest_n": 385,
+          "cheapest_median_m2": 50520.83,
+          "dearest_type": "Studio",
+          "dearest_n": 37,
+          "dearest_median_m2": 115000.0,
+          "gap_pct": 127.6288809981942
+        },
+        {
+          "area": "Mostakbal City",
+          "types": 8,
+          "cheapest_type": "Apartment",
+          "cheapest_n": 448,
+          "cheapest_median_m2": 45000.0,
+          "dearest_type": "Twin House",
+          "dearest_n": 35,
+          "dearest_median_m2": 85000.0,
+          "gap_pct": 88.88888888888889
+        },
+        {
+          "area": "6th of October",
+          "types": 8,
+          "cheapest_type": "iVilla",
+          "cheapest_n": 43,
+          "cheapest_median_m2": 41015.63,
+          "dearest_type": "Studio",
+          "dearest_n": 47,
+          "dearest_median_m2": 76403.51,
+          "gap_pct": 86.2790111964634
+        },
+        {
+          "area": "New Cairo",
+          "types": 8,
+          "cheapest_type": "iVilla",
+          "cheapest_n": 18,
+          "cheapest_median_m2": 50531.915,
+          "dearest_type": "Studio",
+          "dearest_n": 45,
+          "dearest_median_m2": 93877.55,
+          "gap_pct": 85.77873013520268
+        }
+      ],
+      "area": "North Coast",
+      "dearest_type": "Duplex",
+      "cheapest_type": "Apartment",
+      "gap_pct": 224.79339698187619,
+      "chart": "docs/insight-2-type-by-area.png",
+      "sentence": "The gap between the dearest and the cheapest unit type is widest in North Coast: Duplex at 171,058 EGP per m² (n = 10) against Apartment at 52,667 EGP (n = 72), 224.8% apart; 9 area and type groups under 10 listings skipped (24 listings)."
+    },
+    "3": {
+      "title": "Developer premium",
+      "grain": "one row per developer, latest run week, pooled over sites; index 100 = the area median",
+      "developers": 48,
+      "groups_skipped": 259,
+      "listings_skipped": 1002,
+      "listings_with_developer": 2185,
+      "sites_naming_developers": [
+        "Aqarmap",
+        "Nawy",
+        "realestate.eg"
+      ],
+      "top": [
+        {
+          "developer": "ADD Properties",
+          "n": 12,
+          "p25": 194.9753395295588,
+          "median": 218.6498905975079,
+          "p75": 239.42425659713706
+        },
+        {
+          "developer": "Founders Development",
+          "n": 13,
+          "p25": 144.4666704228001,
+          "median": 207.54716981132074,
+          "p75": 207.54716981132074
+        },
+        {
+          "developer": "Marakez",
+          "n": 15,
+          "p25": 184.11801189100078,
+          "median": 198.84621037000144,
+          "p75": 218.31648033948716
+        },
+        {
+          "developer": "Sodic",
+          "n": 20,
+          "p25": 132.78239916016005,
+          "median": 194.7742247805792,
+          "p75": 212.95943329924518
+        },
+        {
+          "developer": "Hyde Park",
+          "n": 26,
+          "p25": 162.29891073585642,
+          "median": 192.82807550668596,
+          "p75": 235.1419003870925
+        }
+      ],
+      "bottom": [
+        {
+          "developer": "Modon Developments",
+          "n": 13,
+          "p25": 85.98616413830084,
+          "median": 85.98616413830084,
+          "p75": 140.44407382496897
+        },
+        {
+          "developer": "IGI",
+          "n": 20,
+          "p25": 75.8717965209654,
+          "median": 84.9758267096758,
+          "p75": 92.6337716850657
+        },
+        {
+          "developer": "Arab Developers Holding",
+          "n": 18,
+          "p25": 79.91304040527632,
+          "median": 79.91304040527632,
+          "p75": 90.3687762857014
+        },
+        {
+          "developer": "Land Mark Sabbour (LMD)",
+          "n": 12,
+          "p25": 78.80000204880004,
+          "median": 79.91304040527632,
+          "p75": 79.91304040527632
+        },
+        {
+          "developer": "Amer Group",
+          "n": 16,
+          "p25": 55.40207545350523,
+          "median": 61.67151325603898,
+          "p75": 123.08224143199394
+        }
+      ],
+      "top_developer": "ADD Properties",
+      "top_index": 218.6498905975079,
+      "top_n": 12,
+      "bottom_developer": "Amer Group",
+      "bottom_index": 61.67151325603898,
+      "bottom_n": 16,
+      "chart": "docs/insight-3-developer-index.png",
+      "sentence": "Of 48 developers with 10 or more listings, ADD Properties has the highest index, 219 (n = 12), and Amer Group the lowest, 62 (n = 16), where 100 is the median asking price per m² of the listing's area; developers are named on Aqarmap, Nawy and realestate.eg only, and 259 developers under 10 listings skipped (1,002 listings)."
+    },
+    "4": {
+      "title": "Compound ranking",
+      "grain": "one row per area and compound name as the sites write it, latest run week, pooled over sites",
+      "compounds": 76,
+      "groups_skipped": 1095,
+      "listings_skipped": 3067,
+      "listings_without_compound": 654,
+      "by_area": [
+        {
+          "area": "North Coast",
+          "compounds": 9,
+          "cheapest": "Telal North Coast",
+          "cheapest_n": 10,
+          "cheapest_median_m2": 65508.795,
+          "dearest": "Dayz",
+          "dearest_n": 10,
+          "dearest_median_m2": 338127.305,
+          "spread_pct": 416.1555864369052
+        },
+        {
+          "area": "New Cairo",
+          "compounds": 16,
+          "cheapest": "Mountain View iCity",
+          "cheapest_n": 18,
+          "cheapest_median_m2": 36853.26,
+          "dearest": "Mivida Compound",
+          "dearest_n": 11,
+          "dearest_median_m2": 102500.0,
+          "spread_pct": 178.13007587388466
+        },
+        {
+          "area": "Sheikh Zayed",
+          "compounds": 15,
+          "cheapest": "Park Valley Compound",
+          "cheapest_n": 17,
+          "cheapest_median_m2": 36082.47,
+          "dearest": "The Hillage",
+          "dearest_n": 11,
+          "dearest_median_m2": 114941.18,
+          "spread_pct": 218.55130760172457
+        },
+        {
+          "area": "6th of October",
+          "compounds": 17,
+          "cheapest": "9th District",
+          "cheapest_n": 11,
+          "cheapest_median_m2": 19000.0,
+          "dearest": "New Giza",
+          "dearest_n": 10,
+          "dearest_median_m2": 82412.175,
+          "spread_pct": 333.7482894736842
+        },
+        {
+          "area": "Mostakbal City",
+          "compounds": 11,
+          "cheapest": "L’Avenir",
+          "cheapest_n": 16,
+          "cheapest_median_m2": 31273.855,
+          "dearest": "At East Compound",
+          "dearest_n": 11,
+          "dearest_median_m2": 102631.58,
+          "spread_pct": 228.17054373373543
+        },
+        {
+          "area": "New Capital",
+          "compounds": 8,
+          "cheapest": "Al Maqsad",
+          "cheapest_n": 53,
+          "cheapest_median_m2": 30344.83,
+          "dearest": "La Vista City",
+          "dearest_n": 109,
+          "dearest_median_m2": 84836.07,
+          "spread_pct": 179.5733902612076
+        }
+      ],
+      "widest_area": "North Coast",
+      "widest_spread_pct": 416.1555864369052,
+      "chart": "docs/insight-4-compounds.png",
+      "sentence": "Inside one area the spread between the dearest and the cheapest compound with 10 or more listings is widest in North Coast: Dayz at 338,127 EGP per m² (n = 10) against Telal North Coast at 65,509 EGP (n = 10), 416.2% apart; 76 compounds measured, 1,095 compounds under 10 listings skipped (3,067 listings), and the names are as the sites write them."
+    },
+    "5": {
+      "title": "Size and bedrooms",
+      "grain": "one row per unit type and size band; one row per bedroom count; latest run week, pooled over sites",
+      "size_groups": [
+        {
+          "unit_type": "Apartment",
+          "band": "under 100",
+          "n": 246,
+          "p25": 42501.345,
+          "median": 63330.42,
+          "p75": 94197.46
+        },
+        {
+          "unit_type": "Apartment",
+          "band": "100 to 150",
+          "n": 802,
+          "p25": 36313.135,
+          "median": 50000.0,
+          "p75": 74951.55
+        },
+        {
+          "unit_type": "Apartment",
+          "band": "150 to 200",
+          "n": 779,
+          "p25": 32379.9,
+          "median": 45000.0,
+          "p75": 65625.98000000001
+        },
+        {
+          "unit_type": "Apartment",
+          "band": "200 to 300",
+          "n": 267,
+          "p25": 31869.120000000003,
+          "median": 48076.92,
+          "p75": 74681.31
+        },
+        {
+          "unit_type": "Apartment",
+          "band": "300 and over",
+          "n": 27,
+          "p25": 31016.614999999998,
+          "median": 40000.0,
+          "p75": 67051.595
+        },
+        {
+          "unit_type": "Chalet",
+          "band": "under 100",
+          "n": 124,
+          "p25": 63825.7575,
+          "median": 94628.695,
+          "p75": 141318.2525
+        },
+        {
+          "unit_type": "Chalet",
+          "band": "100 to 150",
+          "n": 213,
+          "p25": 65000.0,
+          "median": 96000.0,
+          "p75": 141000.0
+        },
+        {
+          "unit_type": "Chalet",
+          "band": "150 to 200",
+          "n": 81,
+          "p25": 67000.0,
+          "median": 89080.46,
+          "p75": 135294.12
+        },
+        {
+          "unit_type": "Chalet",
+          "band": "200 to 300",
+          "n": 40,
+          "p25": 72237.39,
+          "median": 95097.56,
+          "p75": 135788.4625
+        },
+        {
+          "unit_type": "Duplex",
+          "band": "100 to 150",
+          "n": 12,
+          "p25": 82250.0,
+          "median": 83000.0,
+          "p75": 106899.4775
+        },
+        {
+          "unit_type": "Duplex",
+          "band": "150 to 200",
+          "n": 28,
+          "p25": 59148.3525,
+          "median": 101027.13,
+          "p75": 133835.0925
+        },
+        {
+          "unit_type": "Duplex",
+          "band": "200 to 300",
+          "n": 121,
+          "p25": 45000.0,
+          "median": 62136.0,
+          "p75": 80000.0
+        },
+        {
+          "unit_type": "Duplex",
+          "band": "300 and over",
+          "n": 38,
+          "p25": 31648.35,
+          "median": 42050.44,
+          "p75": 64170.635
+        },
+        {
+          "unit_type": "Penthouse",
+          "band": "100 to 150",
+          "n": 42,
+          "p25": 50667.7625,
+          "median": 72483.495,
+          "p75": 92473.2875
+        },
+        {
+          "unit_type": "Penthouse",
+          "band": "150 to 200",
+          "n": 77,
+          "p25": 55089.82,
+          "median": 72625.7,
+          "p75": 108632.6
+        },
+        {
+          "unit_type": "Penthouse",
+          "band": "200 to 300",
+          "n": 74,
+          "p25": 50453.662500000006,
+          "median": 65036.585,
+          "p75": 91232.25
+        },
+        {
+          "unit_type": "Penthouse",
+          "band": "300 and over",
+          "n": 37,
+          "p25": 30681.82,
+          "median": 34135.57,
+          "p75": 52631.12
+        },
+        {
+          "unit_type": "Studio",
+          "band": "under 100",
+          "n": 198,
+          "p25": 56806.1725,
+          "median": 76403.51,
+          "p75": 104802.6325
+        },
+        {
+          "unit_type": "Studio",
+          "band": "100 to 150",
+          "n": 21,
+          "p25": 50000.0,
+          "median": 65067.37,
+          "p75": 80000.0
+        },
+        {
+          "unit_type": "Town House",
+          "band": "100 to 150",
+          "n": 10,
+          "p25": 48086.535,
+          "median": 75579.435,
+          "p75": 135434.615
+        },
+        {
+          "unit_type": "Town House",
+          "band": "150 to 200",
+          "n": 153,
+          "p25": 59028.57,
+          "median": 88383.84,
+          "p75": 117435.9
+        },
+        {
+          "unit_type": "Town House",
+          "band": "200 to 300",
+          "n": 372,
+          "p25": 56402.825,
+          "median": 73678.18,
+          "p75": 100275.5675
+        },
+        {
+          "unit_type": "Town House",
+          "band": "300 and over",
+          "n": 84,
+          "p25": 48214.4925,
+          "median": 67916.67,
+          "p75": 81366.8675
+        },
+        {
+          "unit_type": "Twin House",
+          "band": "150 to 200",
+          "n": 44,
+          "p25": 72968.3,
+          "median": 103219.015,
+          "p75": 148936.17
+        },
+        {
+          "unit_type": "Twin House",
+          "band": "200 to 300",
+          "n": 239,
+          "p25": 62937.06,
+          "median": 85714.29,
+          "p75": 119834.71
+        },
+        {
+          "unit_type": "Twin House",
+          "band": "300 and over",
+          "n": 154,
+          "p25": 53031.25,
+          "median": 70000.0,
+          "p75": 86583.33499999999
+        },
+        {
+          "unit_type": "Villa",
+          "band": "100 to 150",
+          "n": 21,
+          "p25": 41666.67,
+          "median": 85000.0,
+          "p75": 120000.0
+        },
+        {
+          "unit_type": "Villa",
+          "band": "150 to 200",
+          "n": 93,
+          "p25": 66666.67,
+          "median": 84266.67,
+          "p75": 134693.88
+        },
+        {
+          "unit_type": "Villa",
+          "band": "200 to 300",
+          "n": 544,
+          "p25": 51358.042499999996,
+          "median": 80000.0,
+          "p75": 109487.75
+        },
+        {
+          "unit_type": "Villa",
+          "band": "300 and over",
+          "n": 567,
+          "p25": 51910.625,
+          "median": 80000.0,
+          "p75": 123832.36
+        },
+        {
+          "unit_type": "iVilla",
+          "band": "150 to 200",
+          "n": 13,
+          "p25": 38000.0,
+          "median": 40452.26,
+          "p75": 50157.89
+        },
+        {
+          "unit_type": "iVilla",
+          "band": "200 to 300",
+          "n": 60,
+          "p25": 37948.915,
+          "median": 47544.645000000004,
+          "p75": 57339.45
+        }
+      ],
+      "size_groups_skipped": 14,
+      "size_listings_skipped": 38,
+      "by_type": [
+        {
+          "unit_type": "Apartment",
+          "bands": 5,
+          "smallest_band": "under 100",
+          "smallest_median_m2": 63330.42,
+          "largest_band": "300 and over",
+          "largest_median_m2": 40000.0,
+          "change_pct": -36.83919986635175
+        },
+        {
+          "unit_type": "Chalet",
+          "bands": 4,
+          "smallest_band": "under 100",
+          "smallest_median_m2": 94628.695,
+          "largest_band": "200 to 300",
+          "largest_median_m2": 95097.56,
+          "change_pct": 0.49547867060830697
+        },
+        {
+          "unit_type": "Duplex",
+          "bands": 4,
+          "smallest_band": "100 to 150",
+          "smallest_median_m2": 83000.0,
+          "largest_band": "300 and over",
+          "largest_median_m2": 42050.44,
+          "change_pct": -49.33681927710843
+        },
+        {
+          "unit_type": "Penthouse",
+          "bands": 4,
+          "smallest_band": "100 to 150",
+          "smallest_median_m2": 72483.495,
+          "largest_band": "300 and over",
+          "largest_median_m2": 34135.57,
+          "change_pct": -52.905733919149455
+        },
+        {
+          "unit_type": "Studio",
+          "bands": 2,
+          "smallest_band": "under 100",
+          "smallest_median_m2": 76403.51,
+          "largest_band": "100 to 150",
+          "largest_median_m2": 65067.37,
+          "change_pct": -14.83719792454561
+        },
+        {
+          "unit_type": "Town House",
+          "bands": 4,
+          "smallest_band": "100 to 150",
+          "smallest_median_m2": 75579.435,
+          "largest_band": "300 and over",
+          "largest_median_m2": 67916.67,
+          "change_pct": -10.138690504897262
+        },
+        {
+          "unit_type": "Twin House",
+          "bands": 3,
+          "smallest_band": "150 to 200",
+          "smallest_median_m2": 103219.015,
+          "largest_band": "300 and over",
+          "largest_median_m2": 70000.0,
+          "change_pct": -32.183038173731845
+        },
+        {
+          "unit_type": "Villa",
+          "bands": 4,
+          "smallest_band": "100 to 150",
+          "smallest_median_m2": 85000.0,
+          "largest_band": "300 and over",
+          "largest_median_m2": 80000.0,
+          "change_pct": -5.882352941176472
+        },
+        {
+          "unit_type": "iVilla",
+          "bands": 2,
+          "smallest_band": "150 to 200",
+          "smallest_median_m2": 40452.26,
+          "largest_band": "200 to 300",
+          "largest_median_m2": 47544.645000000004,
+          "change_pct": 17.53272870292044
+        }
+      ],
+      "types_compared": 9,
+      "types_lower_in_largest_band": 7,
+      "bedroom_groups": [
+        {
+          "bedrooms": 1,
+          "n": 385,
+          "p25": 3700256.0,
+          "median": 5235000.0,
+          "p75": 8125000.0
+        },
+        {
+          "bedrooms": 2,
+          "n": 847,
+          "p25": 2450000.0,
+          "median": 3600000.0,
+          "p75": 5670750.0
+        },
+        {
+          "bedrooms": 3,
+          "n": 2192,
+          "p25": 2147500.0,
+          "median": 3420333.3333333335,
+          "p75": 5666666.666666667
+        },
+        {
+          "bedrooms": 4,
+          "n": 1205,
+          "p25": 3000000.0,
+          "median": 4500000.0,
+          "p75": 6475000.0
+        },
+        {
+          "bedrooms": 5,
+          "n": 512,
+          "p25": 3200000.0,
+          "median": 4993037.0,
+          "p75": 7600000.0
+        },
+        {
+          "bedrooms": 6,
+          "n": 174,
+          "p25": 2741666.6666666665,
+          "median": 4333333.333333333,
+          "p75": 6666666.666666667
+        },
+        {
+          "bedrooms": 7,
+          "n": 67,
+          "p25": 2242857.1428571427,
+          "median": 3342857.1428571427,
+          "p75": 5921428.571428571
+        },
+        {
+          "bedrooms": 8,
+          "n": 37,
+          "p25": 2500000.0,
+          "median": 3187500.0,
+          "p75": 4550000.0
+        },
+        {
+          "bedrooms": 9,
+          "n": 26,
+          "p25": 2361111.111111111,
+          "median": 2867128.333333333,
+          "p75": 3401943.9722222225
+        },
+        {
+          "bedrooms": 10,
+          "n": 14,
+          "p25": 2604500.0,
+          "median": 3477800.0,
+          "p75": 4148916.25
+        }
+      ],
+      "bedroom_groups_skipped": 4,
+      "bedroom_listings_skipped": 10,
+      "listings_without_bedrooms": 138,
+      "listings_with_0_bedrooms": 12,
+      "chart": "docs/insight-5-size-and-bedrooms.png",
+      "sentence": "In 7 of 9 unit types with two or more size bands, the largest band's median asking price per m² is below the smallest band's; the median asking price per bedroom is 5,235,000 EGP at 1 bedroom (n = 385) and 3,477,800 EGP at 10 bedrooms (n = 14). These are different listings side by side, not the effect of size; 14 type and band groups under 10 listings skipped (38 listings), 4 bedroom counts under 10 listings skipped (10 listings), and 138 listings without a bedroom count and 12 with 0 bedrooms are left out of the bedroom figures."
+    },
+    "6": {
+      "title": "Site differences",
+      "grain": "one row per area and site, latest run week, each site's own rows",
+      "groups": [
+        {
+          "area": "6th of October",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 128,
+          "p25": 33157.54,
+          "median": 51542.11,
+          "p75": 68706.9325
+        },
+        {
+          "area": "6th of October",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 24,
+          "p25": 42516.667499999996,
+          "median": 55564.515,
+          "p75": 61729.9975
+        },
+        {
+          "area": "6th of October",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 359,
+          "p25": 37105.26,
+          "median": 51470.59,
+          "p75": 66035.715
+        },
+        {
+          "area": "6th of October",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 157,
+          "p25": 63924.05,
+          "median": 93546.65,
+          "p75": 117772.73
+        },
+        {
+          "area": "6th of October",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 155,
+          "p25": 25915.754999999997,
+          "median": 43269.23,
+          "p75": 65630.345
+        },
+        {
+          "area": "6th of October",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 154,
+          "p25": 58924.8225,
+          "median": 90000.0,
+          "p75": 98490.0
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 110,
+          "p25": 59003.845,
+          "median": 67801.845,
+          "p75": 90955.31
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 24,
+          "p25": 36108.435,
+          "median": 38074.33,
+          "p75": 41427.575000000004
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 360,
+          "p25": 37207.1175,
+          "median": 43566.535,
+          "p75": 57661.28999999999
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 152,
+          "p25": 57583.81,
+          "median": 75763.25,
+          "p75": 105861.8175
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 159,
+          "p25": 28996.48,
+          "median": 38846.15,
+          "p75": 53740.05
+        },
+        {
+          "area": "Mostakbal City",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 178,
+          "p25": 56000.0,
+          "median": 65000.0,
+          "p75": 80000.0
+        },
+        {
+          "area": "New Cairo",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 101,
+          "p25": 42000.0,
+          "median": 86666.67,
+          "p75": 112697.58
+        },
+        {
+          "area": "New Cairo",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 24,
+          "p25": 54427.145000000004,
+          "median": 71695.03,
+          "p75": 101250.0
+        },
+        {
+          "area": "New Cairo",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 359,
+          "p25": 53924.04,
+          "median": 70731.71,
+          "p75": 97576.52
+        },
+        {
+          "area": "New Cairo",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 126,
+          "p25": 70837.0225,
+          "median": 93894.77,
+          "p75": 138141.185
+        },
+        {
+          "area": "New Cairo",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 178,
+          "p25": 42798.7675,
+          "median": 63373.979999999996,
+          "p75": 90948.275
+        },
+        {
+          "area": "New Cairo",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 151,
+          "p25": 60136.3,
+          "median": 85000.0,
+          "p75": 105000.0
+        },
+        {
+          "area": "New Capital",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 115,
+          "p25": 45959.42,
+          "median": 72032.61,
+          "p75": 96992.33499999999
+        },
+        {
+          "area": "New Capital",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 24,
+          "p25": 23141.1675,
+          "median": 36880.869999999995,
+          "p75": 45163.655
+        },
+        {
+          "area": "New Capital",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 360,
+          "p25": 31941.75,
+          "median": 49423.055,
+          "p75": 78094.1925
+        },
+        {
+          "area": "New Capital",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 116,
+          "p25": 41481.8025,
+          "median": 56345.485,
+          "p75": 77976.1925
+        },
+        {
+          "area": "New Capital",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 158,
+          "p25": 29184.73,
+          "median": 37529.345,
+          "p75": 58886.8125
+        },
+        {
+          "area": "New Capital",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 101,
+          "p25": 53000.0,
+          "median": 73000.0,
+          "p75": 105500.0
+        },
+        {
+          "area": "North Coast",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 144,
+          "p25": 56033.5025,
+          "median": 121103.07999999999,
+          "p75": 182473.6175
+        },
+        {
+          "area": "North Coast",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 23,
+          "p25": 69710.495,
+          "median": 97459.31,
+          "p75": 146442.495
+        },
+        {
+          "area": "North Coast",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 358,
+          "p25": 67733.01,
+          "median": 95703.705,
+          "p75": 145275.1225
+        },
+        {
+          "area": "North Coast",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 158,
+          "p25": 116196.9,
+          "median": 156911.52500000002,
+          "p75": 217237.6525
+        },
+        {
+          "area": "North Coast",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 153,
+          "p25": 46000.0,
+          "median": 83695.65,
+          "p75": 115533.33
+        },
+        {
+          "area": "North Coast",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 183,
+          "p25": 90000.0,
+          "median": 136654.6,
+          "p75": 143153.87
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 123,
+          "p25": 53209.675,
+          "median": 84364.82,
+          "p75": 104511.92
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 24,
+          "p25": 45489.7825,
+          "median": 64285.715,
+          "p75": 88125.0
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 354,
+          "p25": 37256.04,
+          "median": 50990.195,
+          "p75": 72662.0025
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 141,
+          "p25": 64189.19,
+          "median": 93750.0,
+          "p75": 119251.7
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 155,
+          "p25": 22791.845,
+          "median": 35759.49,
+          "p75": 61378.505
+        },
+        {
+          "area": "Sheikh Zayed",
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 168,
+          "p25": 60000.0,
+          "median": 83188.89,
+          "p75": 105000.0
+        }
+      ],
+      "groups_skipped": 0,
+      "listings_skipped": 0,
+      "skipped_groups": [],
+      "nawy_vs_dubizzle": [
+        {
+          "area": "North Coast",
+          "nawy_median_m2": 156911.52500000002,
+          "dubizzle_median_m2": 95703.705,
+          "nawy_over_dubizzle_pct": 63.95553860741339
+        },
+        {
+          "area": "New Cairo",
+          "nawy_median_m2": 93894.77,
+          "dubizzle_median_m2": 70731.71,
+          "nawy_over_dubizzle_pct": 32.747773240601695
+        },
+        {
+          "area": "Sheikh Zayed",
+          "nawy_median_m2": 93750.0,
+          "dubizzle_median_m2": 50990.195,
+          "nawy_over_dubizzle_pct": 83.85887718217198
+        },
+        {
+          "area": "6th of October",
+          "nawy_median_m2": 93546.65,
+          "dubizzle_median_m2": 51470.59,
+          "nawy_over_dubizzle_pct": 81.747770911505
+        },
+        {
+          "area": "Mostakbal City",
+          "nawy_median_m2": 75763.25,
+          "dubizzle_median_m2": 43566.535,
+          "nawy_over_dubizzle_pct": 73.90240008759015
+        },
+        {
+          "area": "New Capital",
+          "nawy_median_m2": 56345.485,
+          "dubizzle_median_m2": 49423.055,
+          "nawy_over_dubizzle_pct": 14.00647936474182
+        }
+      ],
+      "areas_compared": 6,
+      "nawy_above_areas": 6,
+      "nawy_gap_min_pct": 14.00647936474182,
+      "nawy_gap_max_pct": 83.85887718217198,
+      "aqarmap_pages_read": 42,
+      "aqarmap_rows": 721,
+      "aqarmap_flags": {
+        "not_featured": 581,
+        "sold_by_owner": 3,
+        "sold_by_owner_sponsored": 1,
+        "sponsored": 116,
+        "spotlight": 20
+      },
+      "aqarmap_sponsored": 116,
+      "aqarmap_sponsored_pct": 16.08876560332871,
+      "chart": "docs/insight-6-site-differences.png",
+      "sentence": "Nawy's median asking price per m² is above Dubizzle's in 6 of 6 areas compared (from +14.0% to +83.9%); Nawy shows mostly developers' launch prices and Dubizzle is a resale marketplace, the likely reason, not a proven one. 116 of Aqarmap's 721 rows (16.1%) are sponsored placements, read from its saved pages because gold does not keep the flag, so Aqarmap's numbers lean towards paid listings; no area and site group skipped."
+    },
+    "7": {
+      "title": "Cross-site duplicates, estimated",
+      "grain": "one row per pooled listing with a named compound, latest run week",
+      "estimate": true,
+      "listings_checked": 4965,
+      "listings_without_compound": 654,
+      "listings_with_twin": 84,
+      "twin_share_pct": 1.6918429003021147,
+      "twin_share_of_all_pooled_pct": 1.4949279231179926,
+      "by_site": [
+        {
+          "source": "realestate",
+          "site": "realestate.eg",
+          "n": 757,
+          "twins": 0,
+          "twin_pct": 0.0
+        },
+        {
+          "source": "propertyfinder",
+          "site": "Property Finder Egypt",
+          "n": 773,
+          "twins": 33,
+          "twin_pct": 4.269081500646831
+        },
+        {
+          "source": "dubizzle",
+          "site": "Dubizzle Egypt",
+          "n": 2116,
+          "twins": 42,
+          "twin_pct": 1.9848771266540641
+        },
+        {
+          "source": "nawy",
+          "site": "Nawy",
+          "n": 850,
+          "twins": 7,
+          "twin_pct": 0.823529411764706
+        },
+        {
+          "source": "bayut",
+          "site": "Bayut Egypt",
+          "n": 5,
+          "twins": 0,
+          "twin_pct": 0.0
+        },
+        {
+          "source": "aqarmap",
+          "site": "Aqarmap",
+          "n": 464,
+          "twins": 2,
+          "twin_pct": 0.43103448275862066
+        }
+      ],
+      "site_pairs": [
+        {
+          "site": "Dubizzle Egypt",
+          "site_other": "Property Finder Egypt",
+          "pairs": 40
+        },
+        {
+          "site": "Dubizzle Egypt",
+          "site_other": "Nawy",
+          "pairs": 5
+        },
+        {
+          "site": "Nawy",
+          "site_other": "Property Finder Egypt",
+          "pairs": 3
+        },
+        {
+          "site": "Aqarmap",
+          "site_other": "Dubizzle Egypt",
+          "pairs": 1
+        },
+        {
+          "site": "Aqarmap",
+          "site_other": "Nawy",
+          "pairs": 1
+        }
+      ],
+      "bayut_rows": 143,
+      "bayut_exact_copies_of_dubizzle": 138,
+      "chart": "docs/insight-7-cross-site-duplicates.png",
+      "sentence": "An estimated 1.7% of the 4,965 pooled listings with a named compound (84 listings) match a listing on another site in the same area and compound, of the same type, within 2 m² and 2% of price; it is an estimate, as the sites spell compounds differently and two units can match by chance. Apart from these, 138 of Bayut Egypt's 143 rows are exact copies of Dubizzle ads (the same listing id) and are left out of every pooled number."
+    },
+    "8": {
+      "title": "Our units",
+      "grain": "one row per unit of ours (generated units), latest run week",
+      "units": 60,
+      "units_with_compound_median": 18,
+      "units_without_compound_median": 42,
+      "units_above_compound_median": 12,
+      "units_at_or_below_compound_median": 6,
+      "by_unit": [
+        {
+          "unit_code": "CAP-APT-01",
+          "area": "New Capital",
+          "unit_type": "Apartment",
+          "compound": "New Garden City",
+          "compound_n": 54,
+          "compound_gap_pct": -12.618928786788619,
+          "compound_note": "",
+          "gap_pct": -12.65
+        },
+        {
+          "unit_code": "CAP-APT-02",
+          "area": "New Capital",
+          "unit_type": "Apartment",
+          "compound": "Green Avenue",
+          "compound_n": 4,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 1.82
+        },
+        {
+          "unit_code": "CAP-APT-03",
+          "area": "New Capital",
+          "unit_type": "Apartment",
+          "compound": "EL Captain New Capital Compound",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.23
+        },
+        {
+          "unit_code": "CAP-APT-04",
+          "area": "New Capital",
+          "unit_type": "Apartment",
+          "compound": "Stau",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -5.71
+        },
+        {
+          "unit_code": "CAP-DUP-01",
+          "area": "New Capital",
+          "unit_type": "Duplex",
+          "compound": "Hava",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.19
+        },
+        {
+          "unit_code": "CAP-PH-01",
+          "area": "New Capital",
+          "unit_type": "Penthouse",
+          "compound": "Armonia",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 11.74
+        },
+        {
+          "unit_code": "CAP-TH-01",
+          "area": "New Capital",
+          "unit_type": "Town House",
+          "compound": "Vinci",
+          "compound_n": 13,
+          "compound_gap_pct": 74.35294000000002,
+          "compound_note": "",
+          "gap_pct": 11.01
+        },
+        {
+          "unit_code": "CAP-TW-01",
+          "area": "New Capital",
+          "unit_type": "Twin House",
+          "compound": "La Vista City",
+          "compound_n": 109,
+          "compound_gap_pct": 1.0183522173999648,
+          "compound_note": "",
+          "gap_pct": 9.07
+        },
+        {
+          "unit_code": "CAP-VIL-01",
+          "area": "New Capital",
+          "unit_type": "Villa",
+          "compound": "Noor City",
+          "compound_n": 53,
+          "compound_gap_pct": 74.57588033677942,
+          "compound_note": "",
+          "gap_pct": 12.5
+        },
+        {
+          "unit_code": "CAP-VIL-02",
+          "area": "New Capital",
+          "unit_type": "Villa",
+          "compound": "Granville",
+          "compound_n": 17,
+          "compound_gap_pct": 11.095405982457018,
+          "compound_note": "",
+          "gap_pct": 1.92
+        },
+        {
+          "unit_code": "MC-APT-01",
+          "area": "Mostakbal City",
+          "unit_type": "Apartment",
+          "compound": "Roofscape - At East",
+          "compound_n": 4,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -11.11
+        },
+        {
+          "unit_code": "MC-APT-02",
+          "area": "Mostakbal City",
+          "unit_type": "Apartment",
+          "compound": "The City of Odyssia",
+          "compound_n": 9,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -6.3
+        },
+        {
+          "unit_code": "MC-APT-03",
+          "area": "Mostakbal City",
+          "unit_type": "Apartment",
+          "compound": "Park Central",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 13.07
+        },
+        {
+          "unit_code": "MC-DUP-01",
+          "area": "Mostakbal City",
+          "unit_type": "Duplex",
+          "compound": "Lagoon Beach Park - Aliva",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -2.64
+        },
+        {
+          "unit_code": "MC-PH-01",
+          "area": "Mostakbal City",
+          "unit_type": "Penthouse",
+          "compound": "Neopolis Compound",
+          "compound_n": 20,
+          "compound_gap_pct": 15.383273876436142,
+          "compound_note": "",
+          "gap_pct": 9.21
+        },
+        {
+          "unit_code": "MC-TH-01",
+          "area": "Mostakbal City",
+          "unit_type": "Town House",
+          "compound": "L’Avenir",
+          "compound_n": 16,
+          "compound_gap_pct": 139.99458972998374,
+          "compound_note": "",
+          "gap_pct": 13.78
+        },
+        {
+          "unit_code": "MC-TH-02",
+          "area": "Mostakbal City",
+          "unit_type": "Town House",
+          "compound": "L’Avenir",
+          "compound_n": 16,
+          "compound_gap_pct": 82.5974444148315,
+          "compound_note": "",
+          "gap_pct": -13.43
+        },
+        {
+          "unit_code": "MC-TW-01",
+          "area": "Mostakbal City",
+          "unit_type": "Twin House",
+          "compound": "East Vale Compound",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 13.03
+        },
+        {
+          "unit_code": "MC-VIL-01",
+          "area": "Mostakbal City",
+          "unit_type": "Villa",
+          "compound": "At East",
+          "compound_n": 8,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 0.33
+        },
+        {
+          "unit_code": "MC-VIL-02",
+          "area": "Mostakbal City",
+          "unit_type": "Villa",
+          "compound": "Rosail",
+          "compound_n": 4,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.5
+        },
+        {
+          "unit_code": "NC-APT-01",
+          "area": "New Cairo",
+          "unit_type": "Apartment",
+          "compound": "Eastown",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 0.08
+        },
+        {
+          "unit_code": "NC-APT-02",
+          "area": "New Cairo",
+          "unit_type": "Apartment",
+          "compound": "RED G New Cairo Compound Jadeer Group Developments",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 10.78
+        },
+        {
+          "unit_code": "NC-APT-03",
+          "area": "New Cairo",
+          "unit_type": "Apartment",
+          "compound": "District 5 Compound",
+          "compound_n": 10,
+          "compound_gap_pct": -16.847096922759384,
+          "compound_note": "",
+          "gap_pct": 11.89
+        },
+        {
+          "unit_code": "NC-APT-04",
+          "area": "New Cairo",
+          "unit_type": "Apartment",
+          "compound": "Taj City Compound",
+          "compound_n": 21,
+          "compound_gap_pct": 20.889648901206325,
+          "compound_note": "",
+          "gap_pct": -2.34
+        },
+        {
+          "unit_code": "NC-DUP-01",
+          "area": "New Cairo",
+          "unit_type": "Duplex",
+          "compound": "Yardin New Cairo Compound Mass Developments",
+          "compound_n": 8,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.78
+        },
+        {
+          "unit_code": "NC-PH-01",
+          "area": "New Cairo",
+          "unit_type": "Penthouse",
+          "compound": "Fifth Square Compound",
+          "compound_n": 15,
+          "compound_gap_pct": -32.11428032114279,
+          "compound_note": "",
+          "gap_pct": -12.57
+        },
+        {
+          "unit_code": "NC-TH-01",
+          "area": "New Cairo",
+          "unit_type": "Town House",
+          "compound": "El Patio Hills New Cairo Compound La vista Developments",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.54
+        },
+        {
+          "unit_code": "NC-TW-01",
+          "area": "New Cairo",
+          "unit_type": "Twin House",
+          "compound": "Palm Hills New Cairo Compound",
+          "compound_n": 9,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -8.68
+        },
+        {
+          "unit_code": "NC-VIL-01",
+          "area": "New Cairo",
+          "unit_type": "Villa",
+          "compound": "Hyde Park New Cairo Compound",
+          "compound_n": 28,
+          "compound_gap_pct": 24.38845152799205,
+          "compound_note": "",
+          "gap_pct": 14.39
+        },
+        {
+          "unit_code": "NC-VIL-02",
+          "area": "New Cairo",
+          "unit_type": "Villa",
+          "compound": "Mist New Cairo Compound M Squared Development",
+          "compound_n": 8,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 14.98
+        },
+        {
+          "unit_code": "NCO-CH-01",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Haceinda Waters North Coast Village Palm Hills Developments",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 10.28
+        },
+        {
+          "unit_code": "NCO-CH-02",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Shamasi Sidi Abd El Rahman Village Serac Development",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 4.5
+        },
+        {
+          "unit_code": "NCO-CH-03",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Sia Village North Coast Arab Developers Holding",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -12.11
+        },
+        {
+          "unit_code": "NCO-CH-04",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Riv Sidi AbdelRahman North Coast Village Melee Development",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.49
+        },
+        {
+          "unit_code": "NCO-CH-05",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Amwaj",
+          "compound_n": 21,
+          "compound_gap_pct": -0.24541287084562935,
+          "compound_note": "",
+          "gap_pct": -14.94
+        },
+        {
+          "unit_code": "NCO-CH-06",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Wanas North Coast Village Master Group",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 3.32
+        },
+        {
+          "unit_code": "NCO-CH-07",
+          "area": "North Coast",
+          "unit_type": "Chalet",
+          "compound": "Heaven Hills North Coast Village Al Borouj Misr Developments",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -11.39
+        },
+        {
+          "unit_code": "NCO-VIL-01",
+          "area": "North Coast",
+          "unit_type": "Villa",
+          "compound": "Beit Al Bahr",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 13.7
+        },
+        {
+          "unit_code": "NCO-VIL-02",
+          "area": "North Coast",
+          "unit_type": "Villa",
+          "compound": "Perla Resort",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -14.84
+        },
+        {
+          "unit_code": "NCO-VIL-03",
+          "area": "North Coast",
+          "unit_type": "Villa",
+          "compound": "Stella Heights",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 1.38
+        },
+        {
+          "unit_code": "OCT-APT-01",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "compound": "O West",
+          "compound_n": 39,
+          "compound_gap_pct": -1.696960000000003,
+          "compound_note": "",
+          "gap_pct": -8.87
+        },
+        {
+          "unit_code": "OCT-APT-02",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "compound": "Ixora 6 October Compound Jora Developments",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -13.97
+        },
+        {
+          "unit_code": "OCT-APT-03",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "compound": "West Somid",
+          "compound_n": 7,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 9.06
+        },
+        {
+          "unit_code": "OCT-APT-04",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "compound": "Samaya October Gardens Compound Nilestone Developments",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 12.68
+        },
+        {
+          "unit_code": "OCT-APT-05",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "compound": "Hyde Park West October Compound",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.05
+        },
+        {
+          "unit_code": "OCT-DUP-01",
+          "area": "6th of October",
+          "unit_type": "Duplex",
+          "compound": "West Clay 6 October Compound Remal Developments",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 12.5
+        },
+        {
+          "unit_code": "OCT-PH-01",
+          "area": "6th of October",
+          "unit_type": "Penthouse",
+          "compound": "Westdays 6 October Compound IL CAZAR Development",
+          "compound_n": 7,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 9.23
+        },
+        {
+          "unit_code": "OCT-PH-02",
+          "area": "6th of October",
+          "unit_type": "Penthouse",
+          "compound": "Mountain View iCity Compound",
+          "compound_n": 50,
+          "compound_gap_pct": 27.465363569861,
+          "compound_note": "",
+          "gap_pct": 9.96
+        },
+        {
+          "unit_code": "OCT-TH-01",
+          "area": "6th of October",
+          "unit_type": "Town House",
+          "compound": "EL Patio 6 Compound",
+          "compound_n": 4,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 5.7
+        },
+        {
+          "unit_code": "OCT-VIL-01",
+          "area": "6th of October",
+          "unit_type": "Villa",
+          "compound": "West Dunes 6 October Compound Pledge Real Estate",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -1.39
+        },
+        {
+          "unit_code": "SZ-APT-01",
+          "area": "Sheikh Zayed",
+          "unit_type": "Apartment",
+          "compound": "Ons New Zayed Compound Mabany Edris Developments",
+          "compound_n": 9,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 0.51
+        },
+        {
+          "unit_code": "SZ-APT-02",
+          "area": "Sheikh Zayed",
+          "unit_type": "Apartment",
+          "compound": "205 Arkan Palm",
+          "compound_n": 4,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -8.22
+        },
+        {
+          "unit_code": "SZ-APT-03",
+          "area": "Sheikh Zayed",
+          "unit_type": "Apartment",
+          "compound": "Beverly Hills Compound",
+          "compound_n": 26,
+          "compound_gap_pct": 7.036504901591822,
+          "compound_note": "",
+          "gap_pct": 13.86
+        },
+        {
+          "unit_code": "SZ-DUP-01",
+          "area": "Sheikh Zayed",
+          "unit_type": "Duplex",
+          "compound": "Westown Residences",
+          "compound_n": 6,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 6.52
+        },
+        {
+          "unit_code": "SZ-TH-01",
+          "area": "Sheikh Zayed",
+          "unit_type": "Town House",
+          "compound": "Lake West Compound",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": -10.71
+        },
+        {
+          "unit_code": "SZ-TH-02",
+          "area": "Sheikh Zayed",
+          "unit_type": "Town House",
+          "compound": "Etapa Compound",
+          "compound_n": 8,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 3.83
+        },
+        {
+          "unit_code": "SZ-TW-01",
+          "area": "Sheikh Zayed",
+          "unit_type": "Twin House",
+          "compound": "Sukoon",
+          "compound_n": 5,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 6.46
+        },
+        {
+          "unit_code": "SZ-TW-02",
+          "area": "Sheikh Zayed",
+          "unit_type": "Twin House",
+          "compound": "Telal Al Guezira",
+          "compound_n": 3,
+          "compound_gap_pct": null,
+          "compound_note": "no compound median",
+          "gap_pct": 1.82
+        },
+        {
+          "unit_code": "SZ-VIL-01",
+          "area": "Sheikh Zayed",
+          "unit_type": "Villa",
+          "compound": "The Estates Compound",
+          "compound_n": 13,
+          "compound_gap_pct": -15.855898875405972,
+          "compound_note": "",
+          "gap_pct": 1.45
+        },
+        {
+          "unit_code": "SZ-VIL-02",
+          "area": "Sheikh Zayed",
+          "unit_type": "Villa",
+          "compound": "The Estates",
+          "compound_n": 12,
+          "compound_gap_pct": 63.87698909904118,
+          "compound_note": "",
+          "gap_pct": 5.94
+        }
+      ],
+      "top_units": [
+        {
+          "unit_code": "NC-VIL-02",
+          "area": "New Cairo",
+          "unit_type": "Villa",
+          "gap_pct": 14.98,
+          "listings_compared": 216
+        },
+        {
+          "unit_code": "NC-VIL-01",
+          "area": "New Cairo",
+          "unit_type": "Villa",
+          "gap_pct": 14.39,
+          "listings_compared": 216
+        },
+        {
+          "unit_code": "SZ-APT-03",
+          "area": "Sheikh Zayed",
+          "unit_type": "Apartment",
+          "gap_pct": 13.86,
+          "listings_compared": 385
+        },
+        {
+          "unit_code": "MC-TH-01",
+          "area": "Mostakbal City",
+          "unit_type": "Town House",
+          "gap_pct": 13.78,
+          "listings_compared": 138
+        },
+        {
+          "unit_code": "NCO-VIL-01",
+          "area": "North Coast",
+          "unit_type": "Villa",
+          "gap_pct": 13.7,
+          "listings_compared": 235
+        },
+        {
+          "unit_code": "MC-APT-03",
+          "area": "Mostakbal City",
+          "unit_type": "Apartment",
+          "gap_pct": 13.07,
+          "listings_compared": 448
+        },
+        {
+          "unit_code": "MC-TW-01",
+          "area": "Mostakbal City",
+          "unit_type": "Twin House",
+          "gap_pct": 13.03,
+          "listings_compared": 35
+        },
+        {
+          "unit_code": "OCT-APT-04",
+          "area": "6th of October",
+          "unit_type": "Apartment",
+          "gap_pct": 12.68,
+          "listings_compared": 395
+        },
+        {
+          "unit_code": "CAP-VIL-01",
+          "area": "New Capital",
+          "unit_type": "Villa",
+          "gap_pct": 12.5,
+          "listings_compared": 161
+        },
+        {
+          "unit_code": "OCT-DUP-01",
+          "area": "6th of October",
+          "unit_type": "Duplex",
+          "gap_pct": 12.5,
+          "listings_compared": 28
+        }
+      ],
+      "top_unit": "NC-VIL-02",
+      "top_gap_pct": 14.98,
+      "share_cheaper_by_area": [
+        {
+          "area": "Mostakbal City",
+          "listings": 921,
+          "cheaper": 432,
+          "cheaper_pct": 46.90553745928339
+        },
+        {
+          "area": "New Capital",
+          "listings": 813,
+          "cheaper": 430,
+          "cheaper_pct": 52.89052890528906
+        },
+        {
+          "area": "New Cairo",
+          "listings": 852,
+          "cheaper": 442,
+          "cheaper_pct": 51.87793427230047
+        },
+        {
+          "area": "North Coast",
+          "listings": 693,
+          "cheaper": 343,
+          "cheaper_pct": 49.494949494949495
+        },
+        {
+          "area": "Sheikh Zayed",
+          "listings": 857,
+          "cheaper": 434,
+          "cheaper_pct": 50.64177362893816
+        },
+        {
+          "area": "6th of October",
+          "listings": 793,
+          "cheaper": 404,
+          "cheaper_pct": 50.945775535939475
+        }
+      ],
+      "share_cheaper_by_type": [
+        {
+          "unit_type": "Apartment",
+          "listings": 2049,
+          "cheaper": 986,
+          "cheaper_pct": 48.12103465104929
+        },
+        {
+          "unit_type": "Chalet",
+          "listings": 458,
+          "cheaper": 224,
+          "cheaper_pct": 48.90829694323144
+        },
+        {
+          "unit_type": "Duplex",
+          "listings": 190,
+          "cheaper": 91,
+          "cheaper_pct": 47.89473684210526
+        },
+        {
+          "unit_type": "Penthouse",
+          "listings": 171,
+          "cheaper": 101,
+          "cheaper_pct": 59.06432748538012
+        },
+        {
+          "unit_type": "Town House",
+          "listings": 547,
+          "cheaper": 283,
+          "cheaper_pct": 51.736745886654475
+        },
+        {
+          "unit_type": "Twin House",
+          "listings": 288,
+          "cheaper": 146,
+          "cheaper_pct": 50.69444444444444
+        },
+        {
+          "unit_type": "Villa",
+          "listings": 1226,
+          "cheaper": 654,
+          "cheaper_pct": 53.344208809135395
+        }
+      ],
+      "chart": "docs/insight-8-our-units.png",
+      "sentence": "18 of our 60 generated units sit in a compound with 10 or more listings: 12 ask more per m² than the compound's median over all types and 6 ask the same or less; the other 42 have no compound median. NC-VIL-02 is furthest above the median of its type in its area, at +15.0%. The share of competing listings cheaper per m² than our median unit runs from 46.9% in Mostakbal City to 52.9% in New Capital, and from 47.9% for Duplex to 59.1% for Penthouse."
+    },
+    "9": {
+      "title": "Week over week",
+      "grain": "one row per site and listing in the last two run weeks",
+      "latest_week": "2026-10-04",
+      "previous_week": null,
+      "price_cuts": null,
+      "price_rises": null,
+      "new_listings": null,
+      "dropped_listings": null,
+      "chart": null,
+      "sentence": "Week over week needs two run weeks; the warehouse has one, 4 October 2026."
+    }
+  },
   "table_rows_site": 6,
   "table_rows_area": 6,
   "table_rows_compound": 1336,
   "table_rows_property_type": 11,
   "table_rows_week": 1,
-  "table_rows_listing_price": 5782,
+  "table_rows_listing_price": 5757,
   "table_rows_our_unit": 60,
   "table_rows_price_change": 0,
   "table_rows_area_benchmark": 55,
   "table_rows_area_site_benchmark": 234,
   "table_rows_unit_gap": 60,
   "table_rows_area_gap": 6,
+  "report_listings_in_our_types": 5066,
+  "report_listings_cheaper": 2568,
+  "report_share_cheaper_pct": 50.7,
   "units_above_market_pct": 58.3,
   "units_below_market_pct": 41.7,
-  "area_bar_labels": "6th of October 7.4%, Sheikh Zayed 2.8%, New Capital 1.8%, North Coast -0.1%, Mostakbal City -0.6%, New Cairo -0.7%",
+  "area_bar_labels": "6th of October 7.4%, Sheikh Zayed 2.8%, New Capital 1.9%, North Coast -0.1%, Mostakbal City -0.6%, New Cairo -0.7%",
   "map_bubbles": 6,
   "map_biggest_area": "North Coast",
   "units_top_by_gap": "NC-VIL-02 (15.0%), NC-VIL-01 (14.4%), SZ-APT-03 (13.9%), MC-TH-01 (13.8%), NCO-VIL-01 (13.7%)",
+  "report_share_cheaper_new_cairo_pct": 52.2,
   "new_cairo_our_units": 10,
   "new_cairo_units_above_pct": 50.0,
   "new_cairo_units_below_pct": 50.0,
-  "new_cairo_listings": 941,
+  "new_cairo_listings": 939,
   "dubizzle_units_above_pct": 91.5,
   "dubizzle_units_below_pct": 8.5,
-  "dubizzle_share_cheaper_pct": 63.6,
+  "dubizzle_share_cheaper_pct": 63.7,
   "dubizzle_widest_gap_area": "Mostakbal City",
-  "dubizzle_listings": 2152,
-  "compounds_latest_week": 1157,
+  "dubizzle_listings": 2150,
+  "compounds_latest_week": 1152,
   "developers_latest_week": 307,
-  "cheapest_compound": "New October",
-  "dearest_compound": "Hacienda West",
+  "cheapest_compound": "Haram City Compound",
+  "dearest_compound": "Yemm Views",
   "matrix_first_compounds": "11th District, 13th District, 16th District, 1st District, 205 Arkan Palm, 205 Towers, 2nd District, 31 West",
   "dearest_developers": "Mercon Developments, Melee Development, Mercon",
-  "band_table_top_rows": "North Coast Chalet (472 listings), Mostakbal City Apartment (460 listings), New Capital Apartment (437 listings), 6th of October Apartment (408 listings), New Cairo Apartment (408 listings)",
-  "new_cairo_compounds": 297,
+  "band_table_top_rows": "North Coast Chalet (458 listings), Mostakbal City Apartment (448 listings), New Capital Apartment (423 listings), New Cairo Apartment (398 listings), 6th of October Apartment (395 listings)",
+  "new_cairo_compounds": 295,
   "new_cairo_developers": 81,
-  "new_cairo_cheapest_compound": "Mayan New Cairo",
-  "new_cairo_dearest_compound": "Selina SwanLake Residences",
+  "new_cairo_cheapest_compound": "Shalya Taj City",
+  "new_cairo_dearest_compound": "WBR1",
   "cuts_all_weeks": 0,
   "rises_all_weeks": 0,
   "average_change_pct": null,
@@ -320,6 +2751,6 @@
   "new_cairo_price_changes": 0,
   "new_cairo_cuts": 0,
   "new_cairo_rises": 0,
-  "card_title": "Our asking price per m² against 5,782 competing listings, every week",
-  "card_result": "5,782 competing listings from 6 sites in 6 areas read and checked, 1,157 compound names and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 26 rows (0.4%) were set aside with their reason."
+  "card_title": "Our asking price per m² against 5,757 competing listings, every week",
+  "card_result": "5,757 competing listings from 6 sites in 6 areas read and checked, 1,152 compound names and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 41 rows (0.7%) were set aside with their reason."
 }

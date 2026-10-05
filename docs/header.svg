@@ -27,7 +27,7 @@
   <circle cx="830" cy="150" r="190" fill="url(#glow)"/>
 
   <text x="50" y="100" class="title">Egypt real estate prices</text>
-  <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">5,782</tspan> competing listings compared with ours every week;</text>
+  <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">5,757</tspan> competing listings compared with ours every week;</text>
   <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">+7.4</tspan>% in <tspan id="nb-widest_gap_area">6th of October</tspan></tspan>,</text>
   <text x="50" y="192" class="sub">against the median of the same type in the same area.</text>
 

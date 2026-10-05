@@ -34,53 +34,53 @@
 
   <!-- New Cairo -->
   <text x="40" y="174" class="area">New Cairo</text>
-  <text x="40" y="192" class="cap">median <tspan id="nb-median_m2_new_cairo">75,843</tspan></text>
+  <text x="40" y="192" class="cap">median <tspan id="nb-median_m2_new_cairo">76,142</tspan></text>
   <line x1="230" y1="176" x2="690" y2="176" class="track"/>
-  <rect x="310.1" y="167" width="165" height="18" rx="4" class="band"/>
-  <line x1="380.6" y1="162" x2="380.6" y2="190" class="median"/>
-  <circle cx="334.1" cy="176" r="7" class="ours"/>
+  <rect x="310.8" y="167" width="164.3" height="18" rx="4" class="band"/>
+  <line x1="381.6" y1="162" x2="381.6" y2="190" class="median"/>
   <circle cx="334.2" cy="176" r="7" class="ours"/>
-  <circle cx="339.1" cy="176" r="7" class="ours"/>
-  <circle cx="353.8" cy="176" r="7" class="ours"/>
-  <circle cx="361.4" cy="176" r="7" class="ours"/>
-  <circle cx="363.6" cy="176" r="7" class="ours"/>
+  <circle cx="336.2" cy="176" r="7" class="ours"/>
+  <circle cx="341.3" cy="176" r="7" class="ours"/>
+  <circle cx="349.1" cy="176" r="7" class="ours"/>
+  <circle cx="363.7" cy="176" r="7" class="ours"/>
+  <circle cx="366.1" cy="176" r="7" class="ours"/>
   <circle cx="391.9" cy="176" r="7" class="ours"/>
   <circle cx="406.4" cy="176" r="7" class="ours"/>
-  <circle cx="470.4" cy="176" r="7" class="ours"/>
-  <circle cx="472.2" cy="176" r="7" class="ours"/>
+  <circle cx="472" cy="176" r="7" class="ours"/>
+  <circle cx="473.7" cy="176" r="7" class="ours"/>
   <text x="760" y="181" class="val" text-anchor="middle"><tspan id="nb-gap_pct_new_cairo">-0.7</tspan>%</text>
-  <text x="960" y="181" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_cairo">52.0</tspan>%</text>
+  <text x="960" y="181" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_cairo">51.9</tspan>%</text>
   <!-- New Capital -->
   <text x="40" y="226" class="area">New Capital</text>
   <text x="40" y="244" class="cap">median <tspan id="nb-median_m2_new_capital">53,000</tspan></text>
   <line x1="230" y1="228" x2="690" y2="228" class="track"/>
-  <rect x="245.9" y="219" width="155.5" height="18" rx="4" class="band"/>
+  <rect x="246.5" y="219" width="155" height="18" rx="4" class="band"/>
   <line x1="305.6" y1="214" x2="305.6" y2="242" class="median"/>
-  <circle cx="238.8" cy="228" r="7" class="ours"/>
-  <circle cx="240.2" cy="228" r="7" class="ours"/>
-  <circle cx="248.8" cy="228" r="7" class="ours"/>
-  <circle cx="254.5" cy="228" r="7" class="ours"/>
-  <circle cx="258.1" cy="228" r="7" class="ours"/>
+  <circle cx="240.8" cy="228" r="7" class="ours"/>
+  <circle cx="249.5" cy="228" r="7" class="ours"/>
+  <circle cx="249.5" cy="228" r="7" class="ours"/>
+  <circle cx="255.2" cy="228" r="7" class="ours"/>
+  <circle cx="259" cy="228" r="7" class="ours"/>
   <circle cx="321.7" cy="228" r="7" class="ours"/>
   <circle cx="413" cy="228" r="7" class="ours"/>
-  <circle cx="416.4" cy="228" r="7" class="ours"/>
-  <circle cx="418.9" cy="228" r="7" class="ours"/>
-  <circle cx="448.8" cy="228" r="7" class="ours"/>
-  <text x="760" y="233" class="val" text-anchor="middle"><tspan id="nb-gap_pct_new_capital">+1.8</tspan>%</text>
-  <text x="960" y="233" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_capital">53.1</tspan>%</text>
+  <circle cx="417.9" cy="228" r="7" class="ours"/>
+  <circle cx="418.1" cy="228" r="7" class="ours"/>
+  <circle cx="447.8" cy="228" r="7" class="ours"/>
+  <text x="760" y="233" class="val" text-anchor="middle"><tspan id="nb-gap_pct_new_capital">+1.9</tspan>%</text>
+  <text x="960" y="233" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_capital">52.9</tspan>%</text>
   <!-- Sheikh Zayed -->
   <text x="40" y="278" class="area">Sheikh Zayed</text>
-  <text x="40" y="296" class="cap">median <tspan id="nb-median_m2_sheikh_zayed">61,927</tspan></text>
+  <text x="40" y="296" class="cap">median <tspan id="nb-median_m2_sheikh_zayed">62,069</tspan></text>
   <line x1="230" y1="280" x2="690" y2="280" class="track"/>
-  <rect x="267.5" y="271" width="168.4" height="18" rx="4" class="band"/>
-  <line x1="334.9" y1="266" x2="334.9" y2="294" class="median"/>
+  <rect x="270.1" y="271" width="168" height="18" rx="4" class="band"/>
+  <line x1="335.4" y1="266" x2="335.4" y2="294" class="median"/>
   <circle cx="283.8" cy="280" r="7" class="ours"/>
   <circle cx="298.3" cy="280" r="7" class="ours"/>
   <circle cx="320.4" cy="280" r="7" class="ours"/>
   <circle cx="322.1" cy="280" r="7" class="ours"/>
-  <circle cx="323.1" cy="280" r="7" class="ours"/>
-  <circle cx="331.9" cy="280" r="7" class="ours"/>
+  <circle cx="332.9" cy="280" r="7" class="ours"/>
   <circle cx="335.6" cy="280" r="7" class="ours"/>
+  <circle cx="342" cy="280" r="7" class="ours"/>
   <circle cx="353.2" cy="280" r="7" class="ours"/>
   <circle cx="364.8" cy="280" r="7" class="ours"/>
   <circle cx="375.1" cy="280" r="7" class="ours"/>
@@ -88,58 +88,58 @@
   <text x="960" y="285" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sheikh_zayed">50.6</tspan>%</text>
   <!-- 6th of October -->
   <text x="40" y="330" class="area">6th of October</text>
-  <text x="40" y="348" class="cap">median <tspan id="nb-median_m2_sixth_october">57,849</tspan></text>
+  <text x="40" y="348" class="cap">median <tspan id="nb-median_m2_sixth_october">58,149</tspan></text>
   <line x1="230" y1="332" x2="690" y2="332" class="track"/>
-  <rect x="263.5" y="323" width="149.6" height="18" rx="4" class="band"/>
-  <line x1="321.5" y1="318" x2="321.5" y2="346" class="median"/>
-  <circle cx="284.9" cy="332" r="7" class="ours"/>
-  <circle cx="294.1" cy="332" r="7" class="ours"/>
-  <circle cx="307.4" cy="332" r="7" class="ours"/>
-  <circle cx="308.3" cy="332" r="7" class="ours"/>
-  <circle cx="308.6" cy="332" r="7" class="ours"/>
-  <circle cx="326.3" cy="332" r="7" class="ours"/>
-  <circle cx="332.6" cy="332" r="7" class="ours"/>
-  <circle cx="342" cy="332" r="7" class="ours"/>
-  <circle cx="355.9" cy="332" r="7" class="ours"/>
-  <circle cx="361.1" cy="332" r="7" class="ours"/>
+  <rect x="264.8" y="323" width="152.8" height="18" rx="4" class="band"/>
+  <line x1="322.5" y1="318" x2="322.5" y2="346" class="median"/>
+  <circle cx="283.9" cy="332" r="7" class="ours"/>
+  <circle cx="292.9" cy="332" r="7" class="ours"/>
+  <circle cx="306.8" cy="332" r="7" class="ours"/>
+  <circle cx="309.1" cy="332" r="7" class="ours"/>
+  <circle cx="310.3" cy="332" r="7" class="ours"/>
+  <circle cx="324.7" cy="332" r="7" class="ours"/>
+  <circle cx="331.1" cy="332" r="7" class="ours"/>
+  <circle cx="347.9" cy="332" r="7" class="ours"/>
+  <circle cx="349.7" cy="332" r="7" class="ours"/>
+  <circle cx="356.6" cy="332" r="7" class="ours"/>
   <text x="760" y="337" class="val" text-anchor="middle"><tspan id="nb-gap_pct_sixth_october">+7.4</tspan>%</text>
-  <text x="960" y="337" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sixth_october">51.4</tspan>%</text>
+  <text x="960" y="337" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sixth_october">50.9</tspan>%</text>
   <!-- North Coast -->
   <text x="40" y="382" class="area">North Coast</text>
-  <text x="40" y="400" class="cap">median <tspan id="nb-median_m2_north_coast">114,286</tspan></text>
+  <text x="40" y="400" class="cap">median <tspan id="nb-median_m2_north_coast">113,511</tspan></text>
   <line x1="230" y1="384" x2="690" y2="384" class="track"/>
-  <rect x="361.4" y="375" width="289.9" height="18" rx="4" class="band"/>
-  <line x1="506.9" y1="370" x2="506.9" y2="398" class="median"/>
-  <circle cx="396.5" cy="384" r="7" class="ours"/>
-  <circle cx="405.5" cy="384" r="7" class="ours"/>
-  <circle cx="407.7" cy="384" r="7" class="ours"/>
-  <circle cx="438.6" cy="384" r="7" class="ours"/>
-  <circle cx="453.4" cy="384" r="7" class="ours"/>
-  <circle cx="457.1" cy="384" r="7" class="ours"/>
-  <circle cx="475.2" cy="384" r="7" class="ours"/>
-  <circle cx="534.3" cy="384" r="7" class="ours"/>
-  <circle cx="611" cy="384" r="7" class="ours"/>
-  <circle cx="669.3" cy="384" r="7" class="ours"/>
+  <rect x="361.4" y="375" width="281.7" height="18" rx="4" class="band"/>
+  <line x1="504.4" y1="370" x2="504.4" y2="398" class="median"/>
+  <circle cx="395" cy="384" r="7" class="ours"/>
+  <circle cx="403.8" cy="384" r="7" class="ours"/>
+  <circle cx="406" cy="384" r="7" class="ours"/>
+  <circle cx="436.7" cy="384" r="7" class="ours"/>
+  <circle cx="451.6" cy="384" r="7" class="ours"/>
+  <circle cx="455.3" cy="384" r="7" class="ours"/>
+  <circle cx="473.1" cy="384" r="7" class="ours"/>
+  <circle cx="528.2" cy="384" r="7" class="ours"/>
+  <circle cx="603.9" cy="384" r="7" class="ours"/>
+  <circle cx="661.2" cy="384" r="7" class="ours"/>
   <text x="760" y="389" class="val" text-anchor="middle"><tspan id="nb-gap_pct_north_coast">-0.1</tspan>%</text>
-  <text x="960" y="389" class="val" text-anchor="end"><tspan id="nb-share_cheaper_north_coast">49.9</tspan>%</text>
+  <text x="960" y="389" class="val" text-anchor="end"><tspan id="nb-share_cheaper_north_coast">49.5</tspan>%</text>
   <!-- Mostakbal City -->
   <text x="40" y="434" class="area">Mostakbal City</text>
-  <text x="40" y="452" class="cap">median <tspan id="nb-median_m2_mostakbal_city">55,859</tspan></text>
+  <text x="40" y="452" class="cap">median <tspan id="nb-median_m2_mostakbal_city">56,311</tspan></text>
   <line x1="230" y1="436" x2="690" y2="436" class="track"/>
-  <rect x="263" y="427" width="112.1" height="18" rx="4" class="band"/>
-  <line x1="315" y1="422" x2="315" y2="450" class="median"/>
+  <rect x="265.8" y="427" width="113.6" height="18" rx="4" class="band"/>
+  <line x1="316.5" y1="422" x2="316.5" y2="450" class="median"/>
   <circle cx="262.9" cy="436" r="7" class="ours"/>
   <circle cx="270" cy="436" r="7" class="ours"/>
   <circle cx="298.6" cy="436" r="7" class="ours"/>
-  <circle cx="301.2" cy="436" r="7" class="ours"/>
-  <circle cx="304.4" cy="436" r="7" class="ours"/>
+  <circle cx="312.2" cy="436" r="7" class="ours"/>
+  <circle cx="315.5" cy="436" r="7" class="ours"/>
   <circle cx="319.1" cy="436" r="7" class="ours"/>
   <circle cx="339.4" cy="436" r="7" class="ours"/>
   <circle cx="349.1" cy="436" r="7" class="ours"/>
   <circle cx="378" cy="436" r="7" class="ours"/>
   <circle cx="447.1" cy="436" r="7" class="ours"/>
   <text x="760" y="441" class="val" text-anchor="middle"><tspan id="nb-gap_pct_mostakbal_city">-0.6</tspan>%</text>
-  <text x="960" y="441" class="val" text-anchor="end"><tspan id="nb-share_cheaper_mostakbal_city">47.5</tspan>%</text>
+  <text x="960" y="441" class="val" text-anchor="end"><tspan id="nb-share_cheaper_mostakbal_city">46.9</tspan>%</text>
 
   <!-- legend -->
   <line x1="40" y1="482" x2="960" y2="482" stroke="#334155" stroke-width="1.5"/>
