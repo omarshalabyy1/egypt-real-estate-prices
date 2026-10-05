@@ -1,0 +1,167 @@
+// 3. Measures
+//
+// First create the measures table: Home > Enter data, name the table _Measures, keep the
+// one empty column, Load. Then for each measure below: select _Measures, Home > New measure,
+// paste the measure (from its name to the end of its expression), press Enter, and set
+// the format string and display folder in the Measure tools ribbon and the Properties pane.
+// When all measures exist, hide the empty column; _Measures moves to the top of the field list.
+//
+// Each measure's comment says what it returns, its format string and its display folder.
+// Visuals use these measures only: no implicit sums dragged from columns. 20 measures.
+//
+// "The latest run" is the newest run_week in the whole warehouse, as in the views'
+// (SELECT max(run_week) FROM price_observation): REMOVEFILTERS () makes it the same week in
+// every area, so an area missing from the latest run shows blank, not an older week.
+
+
+// ---------- Page 1: Market position (display folder: Market position) ----------
+
+// Competitor listings seen in the latest run: what the area medians rest on. Format: #,0  Folder: Market position
+Listings Compared =
+SUM ( 'Area Benchmark'[listings] )
+
+// Compounds with at least one listing in the latest run; a listing without a compound is not counted.
+// Format: #,0  Folder: Market position
+Compounds Covered =
+DISTINCTCOUNTNOBLANK ( 'Compound Benchmark'[compound] )
+
+// Developers with at least one listing in the latest run; a listing without a developer is not counted.
+// Format: #,0  Folder: Market position
+Developers Covered =
+DISTINCTCOUNTNOBLANK ( 'Compound Benchmark'[developer] )
+
+// Our units for sale. Format: #,0  Folder: Market position
+Our Units =
+COUNTROWS ( 'Unit Gap' )
+
+// Our units priced per m² above the median of the same type in their area. Format: #,0  Folder: Market position
+Units Above Market =
+CALCULATE ( [Our Units], 'Unit Gap'[gap_pct] > 0 )
+
+// Share of our units with a comparison that are above the market; units with no listing of their
+// type in their area are left out of both counts. Format: 0.0%  Folder: Market position
+Share Above Market =
+VAR _Above = [Units Above Market]
+VAR _Compared = CALCULATE ( [Our Units], NOT ISBLANK ( 'Unit Gap'[gap_pct] ) )
+RETURN
+    DIVIDE ( _Above, _Compared )
+
+// Average gap of our price per m² against the market median; above zero means we ask more.
+// gap_pct is stored in percent (4.5), so it is divided by 100 for the % format. Format: 0.0%  Folder: Market position
+Average Gap =
+VAR _GapInPercent = AVERAGE ( 'Unit Gap'[gap_pct] )
+RETURN
+    DIVIDE ( _GapInPercent, 100 )
+
+// The area whose average gap is furthest from zero, above or below; on a tie, the name last in
+// alphabetical order. Format: none (text)  Folder: Market position
+Widest Gap Area =
+VAR _Areas = FILTER ( VALUES ( Area[name] ), NOT ISBLANK ( [Average Gap] ) )
+VAR _Widest = TOPN ( 1, _Areas, ABS ( [Average Gap] ), DESC )
+RETURN
+    MAXX ( _Widest, Area[name] )
+
+// Median competitor asking price per m² in the latest run, for whatever area, compound, developer
+// or unit type is in the filter. Format: #,0  Folder: Market position
+Median Price Per m² =
+VAR _LatestWeek = CALCULATE ( MAX ( 'Price Observation'[run_week] ), REMOVEFILTERS () )
+RETURN
+    CALCULATE (
+        MEDIAN ( 'Price Observation'[price_per_m2] ),
+        'Price Observation'[run_week] = _LatestWeek
+    )
+
+// Median price per m² of our units in the filter. Format: #,0  Folder: Market position
+Our Price Per m² =
+MEDIAN ( 'Our Unit'[price_per_m2] )
+
+
+// ---------- Page 2: Compounds and developers (display folder: Compounds) ----------
+
+// Competitor listings seen in the latest run, for whatever area, compound, developer or unit type
+// is in the filter. With only an area in the filter it equals Listings Compared. Also the
+// "Listings seen this week" card on page 3. Format: #,0  Folder: Compounds
+Listings =
+VAR _LatestWeek = CALCULATE ( MAX ( 'Price Observation'[run_week] ), REMOVEFILTERS () )
+RETURN
+    CALCULATE (
+        DISTINCTCOUNT ( 'Price Observation'[listing_id] ),
+        'Price Observation'[run_week] = _LatestWeek
+    )
+
+// The compound with the lowest median price per m² in the latest run; listings without a compound
+// are left out; on a tie, the name last in alphabetical order. Format: none (text)  Folder: Compounds
+Cheapest Compound =
+VAR _Compounds =
+    FILTER (
+        VALUES ( Listing[compound] ),
+        NOT ISBLANK ( Listing[compound] ) && NOT ISBLANK ( [Median Price Per m²] )
+    )
+VAR _Cheapest = TOPN ( 1, _Compounds, [Median Price Per m²], ASC )
+RETURN
+    MAXX ( _Cheapest, Listing[compound] )
+
+// The compound with the highest median price per m² in the latest run; same rules as Cheapest
+// Compound. Format: none (text)  Folder: Compounds
+Dearest Compound =
+VAR _Compounds =
+    FILTER (
+        VALUES ( Listing[compound] ),
+        NOT ISBLANK ( Listing[compound] ) && NOT ISBLANK ( [Median Price Per m²] )
+    )
+VAR _Dearest = TOPN ( 1, _Compounds, [Median Price Per m²], DESC )
+RETURN
+    MAXX ( _Dearest, Listing[compound] )
+
+
+// ---------- Page 3: Weekly changes (display folder: Weekly changes) ----------
+
+// Every asking price change; blank until the second weekly run. Format: #,0  Folder: Weekly changes
+Price Changes =
+COUNTROWS ( 'Price Change' )
+
+// Changes that lowered the price. Format: #,0  Folder: Weekly changes
+Price Cuts =
+CALCULATE ( [Price Changes], 'Price Change'[Direction] = "Cut" )
+
+// Changes that raised the price. Format: #,0  Folder: Weekly changes
+Price Rises =
+CALCULATE ( [Price Changes], 'Price Change'[Direction] = "Rise" )
+
+// Average size of a change, in percent of the old price. Format: 0.0%  Folder: Weekly changes
+Average Change =
+VAR _ChangeInPercent = AVERAGE ( 'Price Change'[change_pct] )
+RETURN
+    DIVIDE ( _ChangeInPercent, 100 )
+
+// Listings first seen in the latest run; in the first week every listing is new. Format: #,0  Folder: Weekly changes
+New Listings This Week =
+VAR _LatestWeek = CALCULATE ( MAX ( 'Price Observation'[run_week] ), REMOVEFILTERS () )
+RETURN
+    CALCULATE ( COUNTROWS ( Listing ), Listing[first_seen] >= _LatestWeek )
+
+// A listing's asking price per m² on a day, shown only when one listing is picked: averaging
+// different listings would mean nothing. One price per listing per day, so the average is that
+// price. Format: #,0  Folder: Weekly changes
+Competitor Price Per m² =
+VAR _OneListing = HASONEVALUE ( Listing[listing_id] )
+RETURN
+    IF ( _OneListing, AVERAGE ( 'Price Observation'[price_per_m2] ) )
+
+// Median price per m² of our units of the same type in the same area as the one listing picked;
+// blank when several listings are in the filter or we have no unit of that type there.
+// The listing's area decides, so the Area slicer is removed. Format: #,0  Folder: Weekly changes
+Our Same-Type Price Per m² =
+VAR _OneListing = HASONEVALUE ( Listing[listing_id] )
+VAR _Area = SELECTEDVALUE ( Listing[area_id] )
+VAR _Type = SELECTEDVALUE ( Listing[unit_type] )
+RETURN
+    IF (
+        _OneListing,
+        CALCULATE (
+            MEDIAN ( 'Our Unit'[price_per_m2] ),
+            REMOVEFILTERS ( Area ),
+            'Our Unit'[area_id] = _Area,
+            'Our Unit'[unit_type] = _Type
+        )
+    )

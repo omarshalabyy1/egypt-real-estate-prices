@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" role="img" aria-label="Price gap by area: one strip per area (New Cairo, New Capital, Sheikh Zayed, 6th of October, North Coast, Mostakbal City), each running from lower to higher price per square metre. Grey dots are competitor listings, a white tick is the area median and the amber marker is our unit, left of the median on some strips and right on others. On Sheikh Zayed a bracket marks the gap between our unit and the median, the widest gap. On New Capital one competitor dot moves left: cut this week.">
+  <!-- Positions are illustrative only: no prices, no scale and no data behind them. -->
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .step { font-size: 15px; font-weight: 700; fill: #FFFFFF; }
+    .desc { font-size: 12.5px; fill: #94A3B8; }
+    .hint { font-size: 12.5px; fill: #F59E0B; font-weight: 600; }
+    .axis { font-size: 12.5px; fill: #64748B; }
+  </style>
+
+  <rect width="1200" height="640" rx="22" fill="#0B1220"/>
+  <text x="40" y="52" class="title">Where our units sit against the market</text>
+  <text x="40" y="76" class="sub">One strip per area, from the cheapest to the dearest asking price per m² in that area.</text>
+
+  <!-- Legend -->
+  <circle cx="46" cy="108" r="5" fill="#64748B"/>
+  <text x="58" y="112" class="desc">competitor listing</text>
+  <line x1="190" y1="98" x2="190" y2="118" stroke="#CBD5E1" stroke-width="2.5"/>
+  <text x="200" y="112" class="desc">area median</text>
+  <circle cx="300" cy="108" r="7" fill="#F59E0B"/>
+  <text x="314" y="112" class="desc">our unit</text>
+
+  <!-- New Cairo -->
+  <text x="40" y="175" class="step">New Cairo</text>
+  <line x1="260" y1="170" x2="1060" y2="170" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="300" cy="170" r="5"/>
+    <circle cx="370" cy="170" r="5"/>
+    <circle cx="440" cy="170" r="5"/>
+    <circle cx="510" cy="170" r="5"/>
+    <circle cx="560" cy="170" r="5"/>
+    <circle cx="645" cy="170" r="5"/>
+    <circle cx="735" cy="170" r="5"/>
+    <circle cx="790" cy="170" r="5"/>
+    <circle cx="860" cy="170" r="5"/>
+    <circle cx="940" cy="170" r="5"/>
+    <circle cx="1010" cy="170" r="5"/>
+  </g>
+  <line x1="690" y1="156" x2="690" y2="184" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="600" cy="170" r="7" fill="#F59E0B"/>
+  <text x="600" y="150" class="hint" text-anchor="middle">our unit</text>
+  <text x="690" y="150" class="desc" text-anchor="middle">area median</text>
+
+  <!-- New Capital -->
+  <text x="40" y="247" class="step">New Capital</text>
+  <line x1="260" y1="242" x2="1060" y2="242" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="290" cy="242" r="5"/>
+    <circle cx="360" cy="242" r="5"/>
+    <circle cx="420" cy="242" r="5"/>
+    <circle cx="480" cy="242" r="5"/>
+    <circle cx="545" cy="242" r="5"/>
+    <circle cx="630" cy="242" r="5"/>
+    <circle cx="720" cy="242" r="5"/>
+    <circle cx="770" cy="242" r="5"/>
+    <circle cx="980" cy="242" r="5"/>
+    <circle cx="1040" cy="242" r="5"/>
+  </g>
+  <line x1="600" y1="228" x2="600" y2="256" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="680" cy="242" r="7" fill="#F59E0B"/>
+  <circle cx="910" cy="242" r="5" fill="none" stroke="#64748B" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <circle cx="860" cy="242" r="5" fill="#64748B"/>
+  <path d="M898 242 H872 M878 237 L871 242 L878 247" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="885" y="226" class="desc" text-anchor="middle">cut this week</text>
+
+  <!-- Sheikh Zayed -->
+  <text x="40" y="319" class="step">Sheikh Zayed</text>
+  <line x1="260" y1="314" x2="1060" y2="314" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="300" cy="314" r="5"/>
+    <circle cx="350" cy="314" r="5"/>
+    <circle cx="410" cy="314" r="5"/>
+    <circle cx="465" cy="314" r="5"/>
+    <circle cx="575" cy="314" r="5"/>
+    <circle cx="640" cy="314" r="5"/>
+    <circle cx="700" cy="314" r="5"/>
+    <circle cx="740" cy="314" r="5"/>
+    <circle cx="830" cy="314" r="5"/>
+    <circle cx="900" cy="314" r="5"/>
+    <circle cx="980" cy="314" r="5"/>
+    <circle cx="1040" cy="314" r="5"/>
+  </g>
+  <line x1="780" y1="300" x2="780" y2="328" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="520" cy="314" r="7" fill="#F59E0B"/>
+  <path d="M520 332 v8 H780 v-8" fill="none" stroke="#F59E0B" stroke-width="2"/>
+  <text x="650" y="357" class="hint" text-anchor="middle">gap</text>
+  <text x="1080" y="319" class="hint">widest gap</text>
+
+  <!-- 6th of October -->
+  <text x="40" y="391" class="step">6th of October</text>
+  <line x1="260" y1="386" x2="1060" y2="386" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="280" cy="386" r="5"/>
+    <circle cx="340" cy="386" r="5"/>
+    <circle cx="400" cy="386" r="5"/>
+    <circle cx="460" cy="386" r="5"/>
+    <circle cx="530" cy="386" r="5"/>
+    <circle cx="570" cy="386" r="5"/>
+    <circle cx="700" cy="386" r="5"/>
+    <circle cx="760" cy="386" r="5"/>
+    <circle cx="830" cy="386" r="5"/>
+    <circle cx="900" cy="386" r="5"/>
+    <circle cx="970" cy="386" r="5"/>
+    <circle cx="1040" cy="386" r="5"/>
+  </g>
+  <line x1="600" y1="372" x2="600" y2="400" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="650" cy="386" r="7" fill="#F59E0B"/>
+
+  <!-- North Coast -->
+  <text x="40" y="463" class="step">North Coast</text>
+  <line x1="260" y1="458" x2="1060" y2="458" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="320" cy="458" r="5"/>
+    <circle cx="400" cy="458" r="5"/>
+    <circle cx="470" cy="458" r="5"/>
+    <circle cx="540" cy="458" r="5"/>
+    <circle cx="610" cy="458" r="5"/>
+    <circle cx="660" cy="458" r="5"/>
+    <circle cx="730" cy="458" r="5"/>
+    <circle cx="820" cy="458" r="5"/>
+    <circle cx="880" cy="458" r="5"/>
+    <circle cx="950" cy="458" r="5"/>
+    <circle cx="1020" cy="458" r="5"/>
+  </g>
+  <line x1="700" y1="444" x2="700" y2="472" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="770" cy="458" r="7" fill="#F59E0B"/>
+
+  <!-- Mostakbal City -->
+  <text x="40" y="535" class="step">Mostakbal City</text>
+  <line x1="260" y1="530" x2="1060" y2="530" stroke="#334155" stroke-width="1.5"/>
+  <g fill="#64748B">
+    <circle cx="290" cy="530" r="5"/>
+    <circle cx="350" cy="530" r="5"/>
+    <circle cx="420" cy="530" r="5"/>
+    <circle cx="460" cy="530" r="5"/>
+    <circle cx="530" cy="530" r="5"/>
+    <circle cx="600" cy="530" r="5"/>
+    <circle cx="650" cy="530" r="5"/>
+    <circle cx="720" cy="530" r="5"/>
+    <circle cx="790" cy="530" r="5"/>
+    <circle cx="860" cy="530" r="5"/>
+    <circle cx="940" cy="530" r="5"/>
+    <circle cx="1010" cy="530" r="5"/>
+  </g>
+  <line x1="560" y1="516" x2="560" y2="544" stroke="#CBD5E1" stroke-width="2.5"/>
+  <circle cx="500" cy="530" r="7" fill="#F59E0B"/>
+
+  <text x="660" y="578" class="axis" text-anchor="middle">lower ← price per m² → higher</text>
+  <text x="40" y="616" class="desc">Every week: competitor listings as dots, the area median as a tick, our unit as the marker. The gap is the distance between them.</text>
+</svg>

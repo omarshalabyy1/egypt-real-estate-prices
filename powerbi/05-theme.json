@@ -1,0 +1,32 @@
+{
+  "name": "Egypt real estate prices",
+  "dataColors": ["#2563EB", "#0E1630", "#8DB0FF", "#4A5675", "#1D4FD7", "#C7D7FE"],
+  "background": "#FFFFFF",
+  "foreground": "#0E1630",
+  "tableAccent": "#2563EB",
+  "good": "#2563EB",
+  "neutral": "#4A5675",
+  "bad": "#C2410C",
+  "maximum": "#2563EB",
+  "center": "#8DB0FF",
+  "minimum": "#FFFFFF",
+  "textClasses": {
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 28, "color": "#0E1630" },
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 13, "color": "#0E1630" },
+    "header": { "fontFace": "Segoe UI Semibold", "fontSize": 12, "color": "#0E1630" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 10, "color": "#4A5675" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [{ "show": true, "color": { "solid": { "color": "#E2E7F1" } }, "radius": 8 }],
+        "dropShadow": [{ "show": false }]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#F4F6FB" } }, "transparency": 0 }]
+      }
+    }
+  }
+}

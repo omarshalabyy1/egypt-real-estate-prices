@@ -1,0 +1,75 @@
+# The warehouse (Postgres), Airflow's own metadata database and Airflow. All listen on 127.0.0.1 only.
+#
+#   docker compose up -d --build   # Airflow http://127.0.0.1:8101 (no login), warehouse localhost:5451
+#   docker compose down            # stops everything; the data volumes stay
+#
+# Settings come from .env (gitignored; copy .env.example). Airflow keeps its own records in
+# airflow-db and never touches the warehouse's Postgres.
+
+name: egypt-real-estate-prices
+
+services:
+  warehouse:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prices
+      POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD:?set in .env}
+      POSTGRES_DB: prices
+    ports:
+      - "127.0.0.1:5451:5432"
+    volumes:
+      - warehouse-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prices -d prices"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  airflow-db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD:?set in .env}  # same password; this database has no host port
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  airflow:
+    build: .
+    image: egypt-real-estate-prices:3.3.2
+    # Scheduler, DAG processor and API server in one container. If one of them stops,
+    # the container exits and Docker restarts it.
+    command: >-
+      bash -c "airflow db migrate && { airflow scheduler & airflow dag-processor & airflow api-server --port 8080 & wait -n; exit 1; }"
+    restart: unless-stopped
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${WAREHOUSE_PASSWORD}@airflow-db:5432/airflow
+      PYTHONPATH: /opt/project  # so the DAG can import tracker.py
+      WAREHOUSE_HOST: warehouse
+      WAREHOUSE_PORT: "5432"
+      WAREHOUSE_PASSWORD: ${WAREHOUSE_PASSWORD}
+    ports:
+      - "127.0.0.1:8101:8080"
+    volumes:
+      - airflow-home:/opt/airflow
+      - ./dags:/opt/airflow/dags
+      - .:/opt/project
+    depends_on:
+      warehouse:
+        condition: service_healthy
+      airflow-db:
+        condition: service_healthy
+
+volumes:
+  warehouse-data:
+  airflow-db-data:
+  airflow-home:
