@@ -218,12 +218,14 @@ def test_rejected_row_goes_to_quarantine_once():
     try:
         conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
         conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
-        part = {"pages": 1, "stated_total": None}
+        part = {"pages": ["test.json.gz"], "stated_total": None}
         for _ in range(2):
             tracker.save(conn, date(2099, 1, 4), "nawy", "test-area", part, Counter(parsed=1, quarantined=1), [],
                          [("price missing or <= 0", row("q-1", price=None))])
         assert conn.execute("SELECT reason, payload->>'size_m2', payload ? 'asking_price' FROM silver.quarantine"
                             " WHERE url = 'uq-1'").fetchall() == [("price missing or <= 0", "100", True)]
+        assert conn.execute("SELECT pages_read, pages_used FROM silver.run_log WHERE area_id = 'test-area'").fetchone() == (
+            1, ["test.json.gz"])
     finally:
         conn.rollback()
         conn.close()

@@ -269,14 +269,14 @@ def realestate_parts(out):
     Each card is one row; project cards get the label "Project" so they are skipped."""
     reads, units, parts = last_read(out, "index.csv"), {}, {}
     for search in (s for s in sites.SEARCHES if s["source"] == "realestate"):
-        part = parts[search["area_id"]] = {"pages": 0, "stated_total": None, "rows": [], "problems": {}}
+        part = parts[search["area_id"]] = {"pages": [], "stated_total": None, "rows": [], "problems": {}}
         for page in range(1, search["max_pages"] + 1):
             url = search["url_template"].format(page=page)
             path = out / f"{page_name(url)}.html.gz"
             if not path.exists():
                 break
             html = gunzip(path)
-            part["pages"] += 1
+            part["pages"].append(path.name)
             if page == 1:
                 total = re.search(rb"of\s*<strong>([\d,]+)</strong>\s*results", html)
                 part["stated_total"] = int(total.group(1).replace(b",", b"")) if total else None
@@ -291,7 +291,7 @@ def realestate_parts(out):
                 elif not unit_path.exists():
                     part["problems"][key] = "unit page not read"
                 else:
-                    part["pages"] += 1
+                    part["pages"].append(unit_path.name)
                     read = reads.get(card["url"], {})
                     fetched_at = read.get("fetched_at", fetched_at)
                     if listing_id not in units:
@@ -316,14 +316,14 @@ def json_site_parts(source, out):
     reads, parts = last_read(out, "index.csv"), {}
     extract_block, parse = sites.SITES[source]
     for search in (s for s in sites.SEARCHES if s["source"] == source):
-        part = parts.setdefault(search["area_id"], {"pages": 0, "stated_total": None, "rows": [], "problems": {}})
+        part = parts.setdefault(search["area_id"], {"pages": [], "stated_total": None, "rows": [], "problems": {}})
         for page in range(1, search["max_pages"] + 1):
             url = search["url_template"].format(page=page)
             path = out / f"{search['area_id']}-{search['search']}-page-{page}.json.gz"
             if not path.exists():
                 break
             block = json.loads(gunzip(path))
-            part["pages"] += 1
+            part["pages"].append(path.name)
             if page == 1 and sites.stated_total(source, block) is not None:
                 part["stated_total"] = (part["stated_total"] or 0) + sites.stated_total(source, block)
             part["rows"] += [{**r, "fetched_at": reads[url]["fetched_at"]} for r in parse(block, url)[0]]
@@ -337,12 +337,12 @@ def browser_parts(source, out):
     for page in read_csv(out / "summary.csv"):
         if not page["area_id"] or page["http_status"] != "200" or page["blocked"] == "True":
             continue
-        part = parts.setdefault(page["area_id"], {"pages": 0, "stated_total": None, "rows": [], "problems": {}})
+        part = parts.setdefault(page["area_id"], {"pages": [], "stated_total": None, "rows": [], "problems": {}})
         html = gunzip(out / page["path"]).decode("utf-8")
         title = re.search(r"<title>(.*?)</title>", html, re.S)
         total = re.search(r"(\d[\d,]*) [A-Za-z ]*?for sale", title.group(1) if title else "", re.I)
         total = int(total.group(1).replace(",", "")) if total else None
-        part["pages"] += 1
+        part["pages"].append(page["path"])
         if total is not None:
             part["stated_total"] = (part["stated_total"] or 0) + total
         if total == 0:
@@ -423,6 +423,7 @@ def load_fetch_log(conn, run_week):
 
 
 def save(conn, run_week, source, area_id, part, counts, saved, rejected):
+    pages = list(dict.fromkeys(part["pages"]))  # a unit page shared by two cards is one page
     cur = conn.cursor()
     cur.executemany(
         "INSERT INTO silver.listing (source, listing_id, url, area_id, compound, developer, unit_type, bedrooms,"
@@ -446,12 +447,12 @@ def save(conn, run_week, source, area_id, part, counts, saved, rejected):
         [(run_week, source, r["url"] or f"{source}:{r['source_listing_id']}", reason,
           Jsonb(r, dumps=lambda o: json.dumps(o, default=str))) for reason, r in rejected])
     cur.execute(
-        "INSERT INTO silver.run_log VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (source, area_id,"
-        " run_week) DO UPDATE SET pages_read = EXCLUDED.pages_read, stated_total = EXCLUDED.stated_total,"
+        "INSERT INTO silver.run_log VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (source, area_id,"
+        " run_week) DO UPDATE SET pages_read = EXCLUDED.pages_read, pages_used = EXCLUDED.pages_used, stated_total = EXCLUDED.stated_total,"
         " rows_parsed = EXCLUDED.rows_parsed, rows_skipped = EXCLUDED.rows_skipped,"
         " rows_duplicate = EXCLUDED.rows_duplicate, rows_saved = EXCLUDED.rows_saved,"
         " rows_quarantined = EXCLUDED.rows_quarantined",
-        (source, area_id, run_week, part["pages"], part["stated_total"], counts["parsed"], counts["skipped"],
+        (source, area_id, run_week, len(pages), pages, part["stated_total"], counts["parsed"], counts["skipped"],
          counts["duplicate"], counts["saved"], counts["quarantined"]))
 
 
@@ -463,6 +464,8 @@ def load_silver(run_week):
     with connect() as conn:
         load_reference(conn)
         load_fetch_log(conn, run_week)
+        # The week's quarantine is derived from its bronze: a reload replaces it. Prices are only ever added.
+        conn.execute("DELETE FROM silver.quarantine WHERE run_week = %s", (run_week,))
         seen, total = set(), Counter()
         for source in SOURCES:
             out = folder(source, run_week)
@@ -478,7 +481,7 @@ def load_silver(run_week):
                 reconcile(counts, f"{source} {area_id}")
                 save(conn, run_week, source, area_id, part, counts, saved, rejected)
                 total += counts
-                print(f"{source} {area_id}: {part['pages']} pages, {dict(counts)}")
+                print(f"{source} {area_id}: {len(set(part['pages']))} pages, {dict(counts)}")
         reconcile(total, "all sources")
         observations, quarantined = conn.execute(
             "SELECT (SELECT count(*) FROM silver.price_observation WHERE run_week = %(w)s),"

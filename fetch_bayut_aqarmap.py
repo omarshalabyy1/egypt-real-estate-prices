@@ -8,8 +8,14 @@ It reads 50 pages (Bayut: home and six areas; Aqarmap: home and seven unit types
 areas), about seven minutes. It opens a visible browser, waits 5 seconds between pages, saves every page gzipped under
 data/raw/<source>/<run_week>/ (gitignored; run_week is the Sunday on or before today in UTC), with a
 summary.csv line per page and a _done file when the site is finished, and prints what each page holds.
-Run it before the weekly Airflow run: load_silver reads these folders. If a site answers with an
-error, a challenge or a CAPTCHA, the script stops reading that site: nothing here solves one.
+Run it before the weekly Airflow run: load_silver reads these folders.
+
+The browser keeps its profile (cookies, accepted banners, logins) in .browser-profile/ (gitignored,
+never committed), so what you accept or log into stays for the next run. On the first run it waits
+on each site's home page so you can accept cookies or log in. If a page shows a check, a CAPTCHA, a
+login wall or a 401, 403 or 429, it waits for you to deal with it in the browser window and press
+Enter, then loads the page once more; if it is still blocked, it stops reading that site. The script
+never solves anything itself.
 
 The area addresses below were taken from the links on the home and region pages saved on
 2026-10-05; each site's home page is still saved first, so a moved address can be corrected again.
@@ -27,6 +33,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).parent
 DELAY = 5  # seconds between pages
+PROFILE = ROOT / ".browser-profile"  # cookies and logins kept between runs; gitignored
 
 PAGES = {  # source: [(page name, area_id, address)]; a home page has no area and is not parsed
     "bayut": [
@@ -78,32 +85,43 @@ def what_it_holds(html):
     return info
 
 
+def load(page, url):
+    """Open one address -> (status, html, title, blocked)."""
+    response = page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+    page.wait_for_timeout(3_000)  # let the page finish drawing its listings
+    html, title, text = page.content(), page.title(), page.inner_text("body")
+    status = response.status if response else None
+    # 401, 403 and 429 are the site refusing; a 404 only means the guessed address is wrong.
+    blocked = (status in (None, 401, 403, 429) or bool(BLOCKED.search(title))
+               or (len(text) < 3_000 and bool(BLOCKED.search(text))))
+    return status, html, title, blocked
+
+
 def main():
     today = datetime.now(timezone.utc).date()
     run_week = today - timedelta(days=(today.weekday() + 1) % 7)  # the Sunday on or before today
+    first_run = not PROFILE.exists()
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
-        page = browser.new_page()
+        browser = p.chromium.launch_persistent_context(str(PROFILE), headless=False)
+        page = browser.pages[0] if browser.pages else browser.new_page()
         for source, pages in PAGES.items():
             out = ROOT / "data" / "raw" / source / run_week.isoformat()
             out.mkdir(parents=True, exist_ok=True)
             rows = []
             for name, area_id, url in pages:
                 try:
-                    response = page.goto(url, wait_until="domcontentloaded", timeout=60_000)
-                    page.wait_for_timeout(3_000)  # let the page finish drawing its listings
-                    html, title, text = page.content(), page.title(), page.inner_text("body")
+                    status, html, title, blocked = load(page, url)
+                    if blocked or (first_run and name == "home"):
+                        input(f"{source}: {title[:60]!r} (status {status}). In the browser window, deal with any "
+                              "check, cookie banner or login, then press Enter here to go on... ")
+                        status, html, title, blocked = load(page, url)
                 except Exception as error:  # one page failing must not lose the others
                     row = {"page": name, "area_id": area_id, "url": url, "error": repr(error)[:300]}
                     rows.append(row)
                     print(source, row)
                     time.sleep(DELAY)
                     continue
-                status = response.status if response else None
                 (out / f"{name}.html.gz").write_bytes(gzip.compress(html.encode("utf-8")))
-                # 401, 403 and 429 are the site refusing; a 404 only means the guessed address is wrong.
-                blocked = (status in (None, 401, 403, 429) or bool(BLOCKED.search(title))
-                           or (len(text) < 3_000 and bool(BLOCKED.search(text))))
                 row = {"page": name, "area_id": area_id, "url": url, "final_url": page.url,
                        "fetched_at": datetime.now(timezone.utc).isoformat(), "http_status": status,
                        "bytes": len(html), "path": f"{name}.html.gz", "title": title[:80], "blocked": blocked,
@@ -111,7 +129,7 @@ def main():
                 rows.append(row)
                 print(source, row)
                 time.sleep(DELAY)
-                if blocked:
+                if blocked:  # still blocked after you had your turn in the window
                     print(f"{source}: stopped at {url} (status {status}, title {title[:60]!r})")
                     break
             with open(out / "summary.csv", "w", newline="", encoding="utf-8") as f:

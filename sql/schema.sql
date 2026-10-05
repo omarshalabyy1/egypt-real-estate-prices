@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS silver.run_log (
     area_id          text NOT NULL,           -- the area asked for (a row's own area may differ)
     run_week         date NOT NULL,
     pages_read       integer NOT NULL,
+    pages_used       text[] NOT NULL,         -- the saved files the counts come from, in data/raw/<source>/<run_week>/
     stated_total     bigint,                  -- what the site says its searches hold
     rows_parsed      integer NOT NULL,
     rows_skipped     integer NOT NULL,        -- not residential, or outside our six areas

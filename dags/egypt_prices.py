@@ -24,8 +24,8 @@ from airflow.timetables.interval import DeltaDataIntervalTimetable
 import tracker
 
 
-def run_week(ds):
-    return tracker.run_week_of(date.fromisoformat(ds))
+def run_week(day):
+    return tracker.run_week_of(date.fromisoformat(day))
 
 
 @dag(
@@ -38,25 +38,25 @@ def run_week(ds):
 )
 def egypt_real_estate_prices():
     @task
-    def extract(source, ds):
-        tracker.extract(source, run_week(ds))
+    def extract(source, day):
+        tracker.extract(source, run_week(day))
 
     @task
-    def load_silver(ds):
-        tracker.load_silver(run_week(ds))
+    def load_silver(day):
+        tracker.load_silver(run_week(day))
 
     @task
-    def build_gold(ds):
-        tracker.build_gold(run_week(ds))
+    def build_gold(day):
+        tracker.build_gold(run_week(day))
 
     @task
-    def report(ds):
-        tracker.report(run_week(ds))
+    def report(day):
+        tracker.report(run_week(day))
 
-    ds = "{{ ds }}"  # the run's logical date; rendering fails loudly when a run has none
-    extracts = [extract.override(task_id=f"extract_{source}")(source, ds)
+    day = "{{ ds }}"  # the run's logical date; rendering fails loudly when a run has none
+    extracts = [extract.override(task_id=f"extract_{source}")(source, day)
                 for source in ("realestate", "propertyfinder", "dubizzle", "nawy")]
-    extracts >> load_silver(ds) >> build_gold(ds) >> report(ds)
+    extracts >> load_silver(day) >> build_gold(day) >> report(day)
 
 
 egypt_real_estate_prices()

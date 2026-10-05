@@ -28,7 +28,7 @@ with open(ROOT / "data" / "site_areas.csv", newline="", encoding="utf-8") as f:
     SEARCHES = [{**r, "max_pages": int(r["max_pages"])} for r in csv.DictReader(f)]
 # The unit types we compare, keyed by the site's label in lower case without spaces or punctuation.
 # Any other label (Office, Hotel Apartment, iVilla...) is kept as the site wrote it.
-UNIT_TYPES = {"apartment": "Apartment", "apartmentwithgarden": "Apartment", "villa": "Villa",
+UNIT_TYPES = {"apartment": "Apartment", "apartmentwithgarden": "Apartment", "villa": "Villa", "standalonevilla": "Villa",
               "townhouse": "Town House", "twinhouse": "Twin House", "duplex": "Duplex",
               "penthouse": "Penthouse", "chalet": "Chalet", "chaletwithgarden": "Chalet", "studio": "Studio"}
 RESIDENTIAL = set(UNIT_TYPES.values())

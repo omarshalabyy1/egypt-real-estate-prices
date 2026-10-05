@@ -56,7 +56,7 @@ for area_id, (prefix, types) in UNITS.items():
         numbers[unit_type] += 1
         # A compound with 3 listings of this type in the area, else with 3 listings of any type there.
         choices = ([c[2:4] for c in compounds if c[:2] == (area_id, unit_type)]
-                   or sorted({c[2:4] for c in compounds if c[0] == area_id}))
+                   or sorted({c[2:4] for c in compounds if c[0] == area_id}, key=lambda c: (c[0], c[1] or "")))
         compound, developer = random.choice(choices)
         if (area_id, unit_type) in median:
             market = median[area_id, unit_type]

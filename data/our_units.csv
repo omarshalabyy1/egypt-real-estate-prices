@@ -1,61 +1,61 @@
-unit_code,area_id,compound,unit_type,bedrooms,size_m2,asking_price
-NC-APT-01,new-cairo,Jazura Compound New Cairo Samco Holding Developments,Apartment,3,115,5270000
-NC-APT-02,new-cairo,Mist New Cairo Compound M Squared Development,Apartment,3,180,9100000
-NC-APT-03,new-cairo,Yardin New Cairo Compound Mass Developments,Apartment,3,115,6210000
-NC-APT-04,new-cairo,RED G New Cairo Compound Jadeer Group Developments,Apartment,3,195,9790000
-NC-DUP-01,new-cairo,Jade and Blue New Cairo Compound Aspect Developments,Duplex,4,265,35620000
-NC-PH-01,new-cairo,The Red Residence Compound New Cairo Al Borouj Misr Development,Penthouse,3,235,12550000
-NC-TH-01,new-cairo,Zomra New Cairo Compound Nations Of Sky Development,Town House,4,255,22620000
-NC-TW-01,new-cairo,The Vill New Cairo Compound IL CAZAR Developments,Twin House,4,290,24060000
-NC-VIL-01,new-cairo,Zomra New Cairo Compound Nations Of Sky Development,Villa,5,305,27940000
-NC-VIL-02,new-cairo,Mist New Cairo Compound M Squared Development,Villa,5,310,31670000
-CAP-APT-01,new-administrative-capital,Mamsha Vista,Apartment,3,175,8930000
-CAP-APT-02,new-administrative-capital,Mamsha Vista,Apartment,3,130,6100000
-CAP-APT-03,new-administrative-capital,Euphoria Queen Land New Capital Compound Euphoria Group Developments,Apartment,3,155,8590000
-CAP-APT-04,new-administrative-capital,Euphoria Queen Land New Capital Compound Euphoria Group Developments,Apartment,3,155,8200000
-CAP-DUP-01,new-administrative-capital,Euphoria Queen Land New Capital Compound Euphoria Group Developments,Duplex,4,280,36120000
-CAP-PH-01,new-administrative-capital,Mamsha Vista,Penthouse,3,200,8490000
-CAP-TH-01,new-administrative-capital,Grand Valleys New Capital Compound Mountain View Developments,Town House,4,225,17380000
-CAP-TW-01,new-administrative-capital,Grand Valleys New Capital Compound Mountain View Developments,Twin House,4,240,24040000
-CAP-VIL-01,new-administrative-capital,Grand Valleys New Capital Compound Mountain View Developments,Villa,5,375,33350000
-CAP-VIL-02,new-administrative-capital,Grand Valleys New Capital Compound Mountain View Developments,Villa,5,395,39290000
-SZ-APT-01,sheikh-zayed,Summit Sheikh Zayed Compound Ritzy Developments,Apartment,3,165,7010000
-SZ-APT-02,sheikh-zayed,Valea Sheikh Zayed Compound Saudi Group Developments,Apartment,3,190,9350000
-SZ-APT-03,sheikh-zayed,Coy Sheikh Zayed Compound Voya Developments,Apartment,3,115,5450000
-SZ-DUP-01,sheikh-zayed,Calma Sheikh Zayed Compound Leaders Developments,Duplex,4,295,40670000
-SZ-TH-01,sheikh-zayed,Ons New Zayed Compound Mabany Edris Developments,Town House,4,240,22280000
-SZ-TH-02,sheikh-zayed,SVN Shades New Zayed Compound ZG Developments,Town House,4,220,20030000
-SZ-TW-01,sheikh-zayed,Clavel New Zayed Compound EDIC Developments,Twin House,4,295,26650000
-SZ-TW-02,sheikh-zayed,West Line New Zayed Compound Living Lines Developments,Twin House,4,220,20250000
-SZ-VIL-01,sheikh-zayed,Belami New Zayed Compound Pyramids Rocks Developments,Villa,5,320,36360000
-SZ-VIL-02,sheikh-zayed,Kinz New Zayed Compound Madaar Developments,Villa,5,445,51510000
-OCT-APT-01,sixth-october-city,Samaya October Gardens Compound Nilestone Developments,Apartment,3,115,5930000
-OCT-APT-02,sixth-october-city,Samaya October Gardens Compound Nilestone Developments,Apartment,3,165,7920000
-OCT-APT-03,sixth-october-city,Hyde Park West October Compound,Apartment,3,175,9450000
-OCT-APT-04,sixth-october-city,Elm Tree 6 October Compound,Apartment,3,115,5780000
-OCT-APT-05,sixth-october-city,Hyde Park West October Compound,Apartment,3,170,8660000
-OCT-PH-01,sixth-october-city,Westdays 6 October Compound IL CAZAR Development,Penthouse,3,235,10530000
-OCT-PH-02,sixth-october-city,Westdays 6 October Compound IL CAZAR Development,Penthouse,3,210,10690000
-OCT-DUP-01,sixth-october-city,Elm Tree 6 October Compound,Duplex,4,245,30790000
-OCT-TH-01,sixth-october-city,Hyde Park West October Compound,Town House,4,260,22730000
-OCT-VIL-01,sixth-october-city,Hyde Park West October Compound,Villa,5,405,41160000
-NCO-CH-01,north-coast,Siela North Coast Village Concept Developments,Chalet,2,125,6660000
-NCO-CH-02,north-coast,Vero North Coast Village Wadi Degla Developments,Chalet,2,80,3330000
-NCO-CH-03,north-coast,Ondixa North Coast Village AWJ Developments,Chalet,2,150,7930000
-NCO-CH-04,north-coast,Vista Marina North Coast Village El Tawfiqi Development,Chalet,2,155,7190000
-NCO-CH-05,north-coast,Al Alamein Lagoons North Coast Village Modon Developments,Chalet,2,110,4940000
-NCO-CH-06,north-coast,Retan North Coast Village Cairo Global Developments,Chalet,2,155,7430000
-NCO-CH-07,north-coast,The Island Marina 5 North Coast Village HDP Egypt,Chalet,2,155,8200000
-NCO-VIL-01,north-coast,Shores North Coast Village El Amar Group,Villa,5,290,33070000
-NCO-VIL-02,north-coast,Mouj North Coast Village Pledge Developments,Villa,5,380,38910000
-NCO-VIL-03,north-coast,Sky North Village North Coast Sky Ad Developments,Villa,5,310,31560000
-MC-APT-01,mostakbal-city,Mivida Gardens Mostakbal City Compound Emaar Misr Developments,Apartment,3,180,8090000
-MC-APT-02,mostakbal-city,Park Central Mostakbal City Compound Hassan Allam Properties,Apartment,3,125,6900000
-MC-APT-03,mostakbal-city,Kukun Mostakbal City Compound The Land Development,Apartment,3,175,9600000
-MC-DUP-01,mostakbal-city,Park Central Mostakbal City Compound Hassan Allam Properties,Duplex,4,300,34570000
-MC-PH-01,mostakbal-city,Park Central Mostakbal City Compound Hassan Allam Properties,Penthouse,3,225,10470000
-MC-TH-01,mostakbal-city,Mivida Gardens Mostakbal City Compound Emaar Misr Developments,Town House,4,210,18610000
-MC-TH-02,mostakbal-city,The Butter Fly Mostakbal City Compound Madinet Masr,Town House,4,245,18070000
-MC-TW-01,mostakbal-city,Scenes Mostakbal City Compound Tatweer Misr Development,Twin House,4,220,17380000
-MC-VIL-01,mostakbal-city,Mivida Gardens Mostakbal City Compound Emaar Misr Developments,Villa,5,420,44610000
-MC-VIL-02,mostakbal-city,Scenes Mostakbal City Compound Tatweer Misr Development,Villa,5,305,32680000
+unit_code,area_id,compound,developer,unit_type,bedrooms,size_m2,asking_price
+NC-APT-01,new-cairo,Eastown,,Apartment,3,150,9480000
+NC-APT-02,new-cairo,RED G New Cairo Compound Jadeer Group Developments,Jadeer Group,Apartment,3,200,14000000
+NC-APT-03,new-cairo,District 5 Compound,,Apartment,3,135,9540000
+NC-APT-04,new-cairo,Taj City Compound,,Apartment,3,185,11410000
+NC-DUP-01,new-cairo,Yardin New Cairo Compound Mass Developments,Mass Developments,Duplex,4,290,19630000
+NC-PH-01,new-cairo,Fifth Square Compound,,Penthouse,3,245,15120000
+NC-TH-01,new-cairo,El Patio Hills New Cairo Compound La vista Developments,La Vista Developments,Town House,4,195,16320000
+NC-TW-01,new-cairo,Palm Hills New Cairo Compound,,Twin House,4,270,21400000
+NC-VIL-01,new-cairo,Hyde Park New Cairo Compound,,Villa,5,390,40240000
+NC-VIL-02,new-cairo,Mist New Cairo Compound M Squared Development,M Squared,Villa,5,400,41490000
+CAP-APT-01,new-administrative-capital,New Garden City,City Edge Developments,Apartment,3,200,6620000
+CAP-APT-02,new-administrative-capital,Green Avenue,,Apartment,3,110,4240000
+CAP-APT-03,new-administrative-capital,EL Captain New Capital Compound,Captain Construction,Apartment,3,145,5430000
+CAP-APT-04,new-administrative-capital,Stau,,Apartment,3,190,6790000
+CAP-DUP-01,new-administrative-capital,Hava,,Duplex,4,255,8330000
+CAP-PH-01,new-administrative-capital,Armonia,,Penthouse,3,210,12160000
+CAP-TH-01,new-administrative-capital,Vinci,,Town House,4,255,22120000
+CAP-TW-01,new-administrative-capital,La Vista City,,Twin House,4,300,25710000
+CAP-VIL-01,new-administrative-capital,Noor City,,Villa,5,405,39120000
+CAP-VIL-02,new-administrative-capital,Granville,,Villa,5,410,35870000
+SZ-APT-01,sheikh-zayed,Ons New Zayed Compound Mabany Edris Developments,Mabany Edris Development,Apartment,3,180,9140000
+SZ-APT-02,sheikh-zayed,205 Arkan Palm,Arkan Palm Development,Apartment,3,190,8810000
+SZ-APT-03,sheikh-zayed,Beverly Hills Compound,,Apartment,3,105,6040000
+SZ-DUP-01,sheikh-zayed,Westown Residences,SODIC,Duplex,4,215,13360000
+SZ-TH-01,sheikh-zayed,Lake West Compound,,Town House,4,255,14800000
+SZ-TH-02,sheikh-zayed,Etapa Compound,,Town House,4,195,13160000
+SZ-TW-01,sheikh-zayed,Sukoon,,Twin House,4,295,18000000
+SZ-TW-02,sheikh-zayed,Telal Al Guezira,Al Guzeira Group,Twin House,4,260,15170000
+SZ-VIL-01,sheikh-zayed,The Estates Compound,,Villa,5,375,26630000
+SZ-VIL-02,sheikh-zayed,The Estates,,Villa,5,440,32630000
+OCT-APT-01,sixth-october-city,O West,,Apartment,3,165,8170000
+OCT-APT-02,sixth-october-city,Ixora 6 October Compound Jora Developments,Jora Developments,Apartment,3,100,4670000
+OCT-APT-03,sixth-october-city,West Somid,,Apartment,3,170,10080000
+OCT-APT-04,sixth-october-city,Samaya October Gardens Compound Nilestone Developments,Nilestone Developments,Apartment,3,155,9490000
+OCT-APT-05,sixth-october-city,Hyde Park West October Compound,hyde park developments,Apartment,3,175,9420000
+OCT-PH-01,sixth-october-city,Westdays 6 October Compound IL CAZAR Development,Il Cazar Development,Penthouse,3,225,12050000
+OCT-PH-02,sixth-october-city,Mountain View iCity Compound,,Penthouse,3,155,8360000
+OCT-DUP-01,sixth-october-city,West Clay 6 October Compound Remal Developments,Remal Developments,Duplex,4,270,18870000
+OCT-TH-01,sixth-october-city,EL Patio 6 Compound,,Town House,4,250,17080000
+OCT-VIL-01,sixth-october-city,West Dunes 6 October Compound Pledge Real Estate,Pledge Real Estate,Villa,5,360,23070000
+NCO-CH-01,north-coast,Haceinda Waters North Coast Village Palm Hills Developments,Palm Hills development,Chalet,2,145,15170000
+NCO-CH-02,north-coast,Shamasi Sidi Abd El Rahman Village Serac Development,Serac development,Chalet,2,90,8920000
+NCO-CH-03,north-coast,Sia Village North Coast Arab Developers Holding,Arab Developers Holding,Chalet,2,135,11260000
+NCO-CH-04,north-coast,Riv Sidi AbdelRahman North Coast Village Melee Development,Melee Developments,Chalet,2,100,9350000
+NCO-CH-05,north-coast,Amwaj,,Chalet,2,90,7260000
+NCO-CH-06,north-coast,Wanas North Coast Village Master Group,Master Group,Chalet,2,90,8820000
+NCO-CH-07,north-coast,Heaven Hills North Coast Village Al Borouj Misr Developments,Al Boroj,Chalet,2,115,9670000
+NCO-VIL-01,north-coast,Beit Al Bahr,Beit Al Bahr,Villa,5,450,73670000
+NCO-VIL-02,north-coast,Perla Resort,Stars,Villa,5,325,39850000
+NCO-VIL-03,north-coast,Stella Heights,,Villa,5,320,46710000
+MC-APT-01,mostakbal-city,Roofscape - At East,Al Ahly Sabbour Developments,Apartment,3,190,7600000
+MC-APT-02,mostakbal-city,The City of Odyssia,,Apartment,3,180,7590000
+MC-APT-03,mostakbal-city,Park Central,Hassan Allam Properties,Apartment,3,125,6360000
+MC-DUP-01,mostakbal-city,Lagoon Beach Park - Aliva,Mountain View,Duplex,4,280,17720000
+MC-PH-01,mostakbal-city,Neopolis Compound,Wadi Degla,Penthouse,3,230,15240000
+MC-TH-01,mostakbal-city,L’Avenir,,Town House,4,180,13510000
+MC-TH-02,mostakbal-city,L’Avenir,,Town House,4,190,10850000
+MC-TW-01,mostakbal-city,East Vale Compound,Sodic,Twin House,4,275,26420000
+MC-VIL-01,mostakbal-city,At East,,Villa,5,285,15000000
+MC-VIL-02,mostakbal-city,Rosail,Khaled Sabry Holding,Villa,5,375,19380000
