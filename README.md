@@ -137,9 +137,8 @@ in a visible browser window on my machine; before the first browser run, `pip in
 and `python -m playwright install chromium`. I handle any check, cookie banner or login myself, and
 the session is kept in `.browser-profile/` (gitignored, never committed). A fresh clone rebuilds
 its history by a live read of the sites, because the raw pages stay on the machine: they contain
-sellers' contact details. A live read takes about <!--nb:live_read_minutes_estimate-->40<!--/nb--> minutes, an estimate
-from this week's pages on the slowest site at one request
-every <!--nb:live_read_request_seconds-->2.5<!--/nb--> seconds (the automated sites are read in parallel).
+sellers' contact details. A live read takes at least <!--nb:live_read_minutes_estimate-->40<!--/nb--> minutes: the pauses alone, from this week's pages
+on the slowest site at one request every <!--nb:live_read_request_seconds-->2.5<!--/nb--> seconds, before the sites' own response time (the automated sites are read in parallel).
 
 | Where | What |
 |---|---|

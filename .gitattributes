@@ -1,0 +1,5 @@
+# Keep text files on LF line endings on every checkout: the notebook fills slots in the
+# README, the SVGs and the Power BI docs by matching their lines.
+* text=auto eol=lf
+*.png binary
+*.gz binary
