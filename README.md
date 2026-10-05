@@ -81,6 +81,26 @@ Under the picture are three layers, and each one only reads the layer to its lef
 The watermark is the run week. A week that is already extracted is skipped, so a rerun gives the
 same rows.
 
+## 📦 For developers and brokerages
+
+**What you get every week**
+
+- Your asking price per m² against the competing listings, by area, compound and developer.
+- The price-cut report: which listings asked less per m² than the week before, and where your gap is widest.
+- The Power BI report, refreshed from the gold layer after every run.
+- The full listing history: every asking price with its run week, from the first run on.
+
+**What I need from you**
+
+- Your units as one CSV: area, compound, type, size in m² and asking price.
+- The areas to watch.
+- An email address, if you want me to send you the weekly summary.
+
+**How it runs**
+
+- One Docker stack, run weekly by Airflow, on your machine or hosted by me.
+- Bayut Egypt and Aqarmap are read by a short browser script, once a week.
+
 ## 📈 The result
 
 **<!--nb:listings_compared-->…<!--/nb--> competing listings compared with our units across six
