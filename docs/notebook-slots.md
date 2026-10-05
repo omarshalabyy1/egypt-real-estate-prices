@@ -6,12 +6,12 @@ The notebook fills each slot below after a full run. This list moved here unchan
 Notebook slots. Every nb:KEY marker pair in README.md and powerbi/06-checks.md (and its copies in
 powerbi/08-build-checklist.md, and every
 <tspan id="nb-KEY"> in docs/*.svg) holds the single character "…" until the notebook writes the
-measured value in its place. Each slot holds the bare value only: no unit, no "%" sign and no "EGP"
+measured value in its place. Each slot holds the bare value only: no unit, no "%" sign and no currency
 (those are written outside the slot). A text slot is the exception: an area name, a phrase built in
 the notebook (run_weeks_phrase) or a list of rows for a Power BI check is written as it is, and a
 value the warehouse has not got yet is written "(Blank)", as Power BI shows it.
 Counts are whole numbers with thousands separators; percentages have one decimal; prices per m² are
-whole EGP with thousands separators; dates are written like 4 October 2026. A slot marker never
+whole units of client.currency with thousands separators; dates are written like 4 October 2026. A slot marker never
 starts a line (GitHub would end the paragraph there), so keep a word before it when reflowing. Unless a line says
 otherwise, "latest run week" is the newest week in gold.dim_week.
 
@@ -41,10 +41,11 @@ share_listings_cheaper_than_ours  percent of those listings whose price per m² 
 price_cuts                        count of listings in gold.price_change whose price per m² fell between the run week before the latest and the latest
 quarantined_rows                  count of rows in silver.quarantine, all run weeks
 quarantine_share_pct              quarantined rows as a percent of all rows read (silver.price_observation plus silver.quarantine)
-live_read_minutes_estimate        an estimate, not a measured time: the most pages one automated site (realestate, propertyfinder,
-                                  dubizzle, nawy) read in the latest run week (silver.run_log pages_read, summed over its areas),
-                                  times live_read_request_seconds, over 60; the sites are read in parallel, so the slowest decides
-live_read_request_seconds         seconds between two requests, DELAY in tracker.py and sites.py
+live_read_minutes_estimate        an estimate, not a measured time: for each automated site (realestate, propertyfinder,
+                                  dubizzle, nawy) the pages it read in the latest run week (silver.run_log pages_read, summed
+                                  over its areas) times its pace_seconds, over 60; the sites are read in parallel, so the
+                                  slowest decides
+live_read_request_seconds         seconds between two requests to that site, its pace_seconds in config/client.yaml
 
 README.md, from the notebook's Insights (each slot i<n>_<key> is insights.<n>.<key> in numbers.json; latest run week,
 pooled over sites in gold.pooled_listing_price; a group needs 10 or more listings)
@@ -74,12 +75,14 @@ median_m2_<area>                  area median price per m² of competing listing
 gap_pct_<area>                    gold.area_gap.median_gap_pct: the median of our units' gaps in that area, each unit against the
                                   median of the same type in the same area, percent, signed
 share_cheaper_<area>              percent of that area's competing listings asking less per m² than our median unit
-  where <area> is one of: new_cairo, new_capital, sheikh_zayed, sixth_october, north_coast, mostakbal_city
+  where <area> is an area id in config/client.yaml with _ for -: new_cairo, new_administrative_capital, sheikh_zayed,
+  sixth_october_city, north_coast, mostakbal_city for the demo. The notebook redraws the file only when its strips are
+  the config's areas; another client's areas need their strips drawn once (docs/new-client.md)
 
 powerbi/06-checks.md (each value is what the SQL under its check returns, run by the notebook as printed;
 where a key above holds the same number, the notebook asserts that the two agree)
 latest_run_week, run_weeks_phrase, our_units, widest_gap_area, units_without_comparison, listings_in_our_types,
-share_listings_cheaper_than_ours, share_cheaper_new_cairo
+share_listings_cheaper_than_ours
                                   as above
 pooled_listings                   count of gold.pooled_listing_price rows in the latest run week (the table the report loads as
                                   Listing Price: without the Bayut Egypt rows that copy a Dubizzle ad)
@@ -91,8 +94,11 @@ units_below_market_pct            C3: the same, at or below 0
 area_bar_labels                   C4: each area's median_gap_pct, highest first, as text
 map_bubbles, map_biggest_area     C5: areas with listings in the latest run week and coordinates; the area with the most listings
 units_top_by_gap                  C6: the five units with the highest gap_pct, as text
-new_cairo_our_units, new_cairo_units_above_pct, new_cairo_units_below_pct, new_cairo_listings
-                                  C7: the C3 values for New Cairo (listings: its competing listings, latest run week)
+check_area_name                   the name of report.check_area in config/client.yaml (the demo: New Cairo); the pipeline
+                                  sets it on the database as client.check_area, which the SQL of C7, C13 and C18 reads
+check_area_our_units, check_area_units_above_pct, check_area_units_below_pct, check_area_listings,
+check_area_share_cheaper_pct      C7: the C3 values for the check area (listings: its competing listings, latest run week;
+                                  the share is share_cheaper_<area> of that area)
 dubizzle_units_above_pct, dubizzle_units_below_pct, dubizzle_share_cheaper_pct, dubizzle_widest_gap_area, dubizzle_listings
                                   C8: the C3 values with every unit compared with Dubizzle Egypt's listings only
 compounds_latest_week, developers_latest_week, cheapest_compound, dearest_compound
@@ -101,8 +107,8 @@ compounds_latest_week, developers_latest_week, cheapest_compound, dearest_compou
 matrix_first_compounds            C10: the compounds of the first ten compound and type rows, sorted by compound
 dearest_developers                C11: the three developers with the highest median price per m², latest run week
 band_table_top_rows               C12: the five area and type rows of gold.area_benchmark with the most listings
-new_cairo_compounds, new_cairo_developers, new_cairo_cheapest_compound, new_cairo_dearest_compound
-                                  C13: the C9 values for New Cairo
+check_area_compounds, check_area_developers, check_area_cheapest_compound, check_area_dearest_compound
+                                  C13: the C9 values for the check area
 cuts_all_weeks, rises_all_weeks, average_change_pct
                                   C14: cuts, rises and the average change_pct in gold.price_change, all run weeks
                                   (price_cuts above counts the latest run week only)
@@ -110,6 +116,6 @@ weeks_with_changes                C15: run weeks with at least one row in gold.p
 deepest_cut_old_m2, deepest_cut_new_m2, deepest_cut_ours_m2
                                   C16: the deepest cut's price per m² before and after, and our units' median of its type and area
 deepest_cuts                      C17: the five rows of gold.price_change with the lowest change_pct, as text
-new_cairo_price_changes, new_cairo_cuts, new_cairo_rises
-                                  C18: the C14 counts for New Cairo
+check_area_price_changes, check_area_cuts, check_area_rises
+                                  C18: the C14 counts for the check area
 ```

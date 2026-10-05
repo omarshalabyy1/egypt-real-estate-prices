@@ -30,8 +30,9 @@ The model: five dimensions (`Site`, `Area`, `Compound`, `Property Type`, `Week`)
 the five gold views. Every measure reads the facts, so the Site slicer on each page reaches every
 number; the views are pooled over sites and serve as the cross-check.
 
-The theme is the one every portfolio project report shares (navy `#0E1630`, blue `#2563EB`, soft
-grey page `#F4F6FB`), so the reports look like one family. The pages name colours by theme slot
+The theme is `05-theme.json`, written by `python theme.py` from `report.title` and `report.colours` in
+`config/client.yaml`; the demo's colours are the ones every portfolio project report shares, so the
+reports look like one family. The pages name colours by theme slot
 (Theme colour 1 is the blue), never by hex code. The site's font, Geist, is not in Power BI's font
 list, so the theme uses Segoe UI.
 

@@ -126,16 +126,16 @@ ORDER BY g.gap_pct DESC NULLS LAST LIMIT 5;
 SELECT count(*) AS units, count(*) FILTER (WHERE gap_pct IS NULL) AS no_comparison FROM gold.unit_gap;
 ```
 
-**C7.** Area slicer (#3) on **New Cairo**: Our units <!--nb:new_cairo_our_units-->10<!--/nb--> · Above
-market <!--nb:new_cairo_units_above_pct-->50.0<!--/nb-->% · At or below market <!--nb:new_cairo_units_below_pct-->50.0<!--/nb-->% · Listings cheaper
-than ours <!--nb:share_cheaper_new_cairo-->51.9<!--/nb-->% · Competitor listings this week <!--nb:new_cairo_listings-->916<!--/nb-->. Clear the
+**C7.** Area slicer (#3) on **<!--nb:check_area_name-->New Cairo<!--/nb-->**: Our units <!--nb:check_area_our_units-->10<!--/nb--> · Above
+market <!--nb:check_area_units_above_pct-->50.0<!--/nb-->% · At or below market <!--nb:check_area_units_below_pct-->50.0<!--/nb-->% · Listings cheaper
+than ours <!--nb:check_area_share_cheaper_pct-->51.9<!--/nb-->% · Competitor listings this week <!--nb:check_area_listings-->916<!--/nb-->. Clear the
 slicer.
 
 ```sql
 WITH ours AS (
     SELECT u.area_key, u.type_key, percentile_cont(0.5) WITHIN GROUP (ORDER BY u.price_per_m2) AS our_median
     FROM gold.fact_our_unit u JOIN gold.dim_area a USING (area_key)
-    WHERE a.area_id = 'new-cairo' GROUP BY u.area_key, u.type_key
+    WHERE a.area_id = current_setting('client.check_area') GROUP BY u.area_key, u.type_key
 )
 SELECT count(*) AS our_units,
        round(count(*) FILTER (WHERE g.gap_pct > 0) * 100.0 / nullif(count(g.gap_pct), 0), 1) AS share_above_pct,
@@ -144,10 +144,10 @@ SELECT count(*) AS our_units,
         FROM gold.pooled_listing_price f JOIN ours o USING (area_key, type_key)
         WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS share_cheaper_pct,
        (SELECT count(*) FROM gold.pooled_listing_price f JOIN gold.dim_area fa USING (area_key)
-        WHERE fa.area_id = 'new-cairo'
+        WHERE fa.area_id = current_setting('client.check_area')
           AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.unit_gap g JOIN gold.dim_area a USING (area_key)
-WHERE a.area_id = 'new-cairo';
+WHERE a.area_id = current_setting('client.check_area');
 ```
 
 **C8.** Site slicer (#2) on **Dubizzle Egypt**: Our units <!--nb:our_units-->60<!--/nb--> (unchanged: our units
@@ -242,9 +242,9 @@ JOIN gold.dim_property_type t USING (type_key)
 ORDER BY b.listings DESC, a.name, t.unit_type LIMIT 5;
 ```
 
-**C13.** Area slicer (#3) on **New Cairo**: Listings this week <!--nb:new_cairo_listings-->916<!--/nb--> ·
-Compounds <!--nb:new_cairo_compounds-->295<!--/nb--> · Developers <!--nb:new_cairo_developers-->81<!--/nb--> · Cheapest compound per
-m² <!--nb:new_cairo_cheapest_compound-->Shalya Taj City<!--/nb--> · Dearest compound per m² <!--nb:new_cairo_dearest_compound-->WBR1<!--/nb-->. Clear the slicer.
+**C13.** Area slicer (#3) on **<!--nb:check_area_name-->New Cairo<!--/nb-->**: Listings this week <!--nb:check_area_listings-->916<!--/nb--> ·
+Compounds <!--nb:check_area_compounds-->295<!--/nb--> · Developers <!--nb:check_area_developers-->81<!--/nb--> · Cheapest compound per
+m² <!--nb:check_area_cheapest_compound-->Shalya Taj City<!--/nb--> · Dearest compound per m² <!--nb:check_area_dearest_compound-->WBR1<!--/nb-->. Clear the slicer.
 
 ```sql
 WITH latest AS (
@@ -252,7 +252,7 @@ WITH latest AS (
     FROM gold.pooled_listing_price f
     JOIN gold.dim_compound c USING (compound_key)
     JOIN gold.dim_area a USING (area_key)
-    WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price) AND a.area_id = 'new-cairo'
+    WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price) AND a.area_id = current_setting('client.check_area')
 ), by_compound AS (
     SELECT compound, percentile_cont(0.5) WITHIN GROUP (ORDER BY price_per_m2) AS median_per_m2
     FROM latest WHERE compound <> 'Unknown' GROUP BY compound
@@ -319,16 +319,16 @@ JOIN gold.dim_property_type t USING (type_key)
 ORDER BY c.change_pct LIMIT 5;
 ```
 
-**C18.** Area slicer (#3) on **New Cairo**: Price changes <!--nb:new_cairo_price_changes-->0<!--/nb--> ·
-Cuts <!--nb:new_cairo_cuts-->0<!--/nb--> · Rises <!--nb:new_cairo_rises-->0<!--/nb--> · Listings seen this week <!--nb:new_cairo_listings-->916<!--/nb-->.
+**C18.** Area slicer (#3) on **<!--nb:check_area_name-->New Cairo<!--/nb-->**: Price changes <!--nb:check_area_price_changes-->0<!--/nb--> ·
+Cuts <!--nb:check_area_cuts-->0<!--/nb--> · Rises <!--nb:check_area_rises-->0<!--/nb--> · Listings seen this week <!--nb:check_area_listings-->916<!--/nb-->.
 Clear the slicer.
 
 ```sql
 SELECT count(*) AS price_changes, count(*) FILTER (WHERE c.is_cut) AS cuts,
        count(*) FILTER (WHERE NOT c.is_cut) AS rises,
        (SELECT count(*) FROM gold.pooled_listing_price f JOIN gold.dim_area fa USING (area_key)
-        WHERE fa.area_id = 'new-cairo'
+        WHERE fa.area_id = current_setting('client.check_area')
           AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.price_change c JOIN gold.dim_area a USING (area_key)
-WHERE a.area_id = 'new-cairo';
+WHERE a.area_id = current_setting('client.check_area');
 ```

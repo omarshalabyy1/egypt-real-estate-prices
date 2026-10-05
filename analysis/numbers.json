@@ -22,58 +22,58 @@
   },
   "listings_by_area": {
     "new_cairo": 939,
-    "new_capital": 874,
+    "new_administrative_capital": 874,
     "sheikh_zayed": 965,
-    "sixth_october": 977,
+    "sixth_october_city": 977,
     "north_coast": 1019,
     "mostakbal_city": 983
   },
   "listings_by_site_and_area": {
     "realestate": {
       "new_cairo": 151,
-      "new_capital": 101,
+      "new_administrative_capital": 101,
       "sheikh_zayed": 168,
-      "sixth_october": 154,
+      "sixth_october_city": 154,
       "north_coast": 183,
       "mostakbal_city": 178
     },
     "propertyfinder": {
       "new_cairo": 178,
-      "new_capital": 158,
+      "new_administrative_capital": 158,
       "sheikh_zayed": 155,
-      "sixth_october": 155,
+      "sixth_october_city": 155,
       "north_coast": 153,
       "mostakbal_city": 159
     },
     "dubizzle": {
       "new_cairo": 359,
-      "new_capital": 360,
+      "new_administrative_capital": 360,
       "sheikh_zayed": 354,
-      "sixth_october": 359,
+      "sixth_october_city": 359,
       "north_coast": 358,
       "mostakbal_city": 360
     },
     "nawy": {
       "new_cairo": 126,
-      "new_capital": 116,
+      "new_administrative_capital": 116,
       "sheikh_zayed": 141,
-      "sixth_october": 157,
+      "sixth_october_city": 157,
       "north_coast": 158,
       "mostakbal_city": 152
     },
     "bayut": {
       "new_cairo": 24,
-      "new_capital": 24,
+      "new_administrative_capital": 24,
       "sheikh_zayed": 24,
-      "sixth_october": 24,
+      "sixth_october_city": 24,
       "north_coast": 23,
       "mostakbal_city": 24
     },
     "aqarmap": {
       "new_cairo": 101,
-      "new_capital": 115,
+      "new_administrative_capital": 115,
       "sheikh_zayed": 123,
-      "sixth_october": 128,
+      "sixth_october_city": 128,
       "north_coast": 144,
       "mostakbal_city": 110
     }
@@ -125,20 +125,20 @@
   "median_m2_sheikh_zayed": 62068.97,
   "p25_m2_sheikh_zayed": 42211.06,
   "p75_m2_sheikh_zayed": 93333.33,
-  "median_m2_sixth_october": 58148.89,
-  "p25_m2_sixth_october": 40586.47,
-  "p75_m2_sixth_october": 87083.33,
+  "median_m2_sixth_october_city": 58148.89,
+  "p25_m2_sixth_october_city": 40586.47,
+  "p75_m2_sixth_october_city": 87083.33,
   "median_m2_mostakbal_city": 56311.21,
   "p25_m2_mostakbal_city": 40896.86,
   "p75_m2_mostakbal_city": 75460.64,
-  "median_m2_new_capital": 53000.0,
-  "p25_m2_new_capital": 35008.07,
-  "p75_m2_new_capital": 82189.32,
+  "median_m2_new_administrative_capital": 53000.0,
+  "p25_m2_new_administrative_capital": 35008.07,
+  "p75_m2_new_administrative_capital": 82189.32,
   "our_units": 60,
   "units_without_comparison": 0,
   "units_above_market": 35,
-  "gap_pct_sixth_october": 7.38,
-  "our_units_m2_sixth_october": [
+  "gap_pct_sixth_october_city": 7.38,
+  "our_units_m2_sixth_october_city": [
     46400.0,
     49151.52,
     53371.43,
@@ -163,8 +163,8 @@
     71013.33,
     74159.09
   ],
-  "gap_pct_new_capital": 1.87,
-  "our_units_m2_new_capital": [
+  "gap_pct_new_administrative_capital": 1.87,
+  "our_units_m2_new_administrative_capital": [
     33300.0,
     35921.57,
     35947.37,
@@ -221,11 +221,11 @@
   "listings_cheaper_than_ours": 2485,
   "share_listings_cheaper_than_ours": 50.41590586325827,
   "share_cheaper_mostakbal_city": 46.90553745928339,
-  "share_cheaper_new_capital": 52.89052890528906,
+  "share_cheaper_new_administrative_capital": 52.89052890528906,
   "share_cheaper_new_cairo": 51.87793427230047,
   "share_cheaper_north_coast": 49.494949494949495,
   "share_cheaper_sheikh_zayed": 50.64177362893816,
-  "share_cheaper_sixth_october": 50.945775535939475,
+  "share_cheaper_sixth_october_city": 50.945775535939475,
   "share_cheaper_by_type": {
     "Apartment": 48.12103465104929,
     "Chalet": 48.90829694323144,
@@ -236,9 +236,9 @@
     "Villa": 53.344208809135395
   },
   "gold_area_gap_pct_listings_cheaper": {
-    "sixth_october": 50.96,
+    "sixth_october_city": 50.96,
     "sheikh_zayed": 49.95,
-    "new_capital": 48.68,
+    "new_administrative_capital": 48.68,
     "new_cairo": 53.32,
     "mostakbal_city": 47.71,
     "north_coast": 48.07
@@ -2703,10 +2703,10 @@
   "pooled_listings_by_area": {
     "north_coast": 1000,
     "mostakbal_city": 959,
-    "sixth_october": 953,
+    "sixth_october_city": 953,
     "sheikh_zayed": 941,
     "new_cairo": 916,
-    "new_capital": 850
+    "new_administrative_capital": 850
   },
   "table_rows_site": 6,
   "table_rows_area": 6,
@@ -2726,10 +2726,12 @@
   "map_bubbles": 6,
   "map_biggest_area": "North Coast",
   "units_top_by_gap": "NC-VIL-02 (15.0%), NC-VIL-01 (14.4%), SZ-APT-03 (13.9%), MC-TH-01 (13.8%), NCO-VIL-01 (13.7%)",
-  "new_cairo_our_units": 10,
-  "new_cairo_units_above_pct": 50.0,
-  "new_cairo_units_below_pct": 50.0,
-  "new_cairo_listings": 916,
+  "check_area_name": "New Cairo",
+  "check_area_our_units": 10,
+  "check_area_units_above_pct": 50.0,
+  "check_area_units_below_pct": 50.0,
+  "check_area_listings": 916,
+  "check_area_share_cheaper_pct": 51.87793427230047,
   "dubizzle_units_above_pct": 91.5,
   "dubizzle_units_below_pct": 8.5,
   "dubizzle_share_cheaper_pct": 63.7,
@@ -2742,10 +2744,10 @@
   "matrix_first_compounds": "11th District, 13th District, 16th District, 1st District, 205 Arkan Palm, 205 Towers, 2nd District, 31 West",
   "dearest_developers": "Mercon Developments, Melee Development, Mercon",
   "band_table_top_rows": "North Coast Chalet (458 listings), Mostakbal City Apartment (448 listings), New Capital Apartment (423 listings), New Cairo Apartment (398 listings), 6th of October Apartment (395 listings)",
-  "new_cairo_compounds": 295,
-  "new_cairo_developers": 81,
-  "new_cairo_cheapest_compound": "Shalya Taj City",
-  "new_cairo_dearest_compound": "WBR1",
+  "check_area_compounds": 295,
+  "check_area_developers": 81,
+  "check_area_cheapest_compound": "Shalya Taj City",
+  "check_area_dearest_compound": "WBR1",
   "cuts_all_weeks": 0,
   "rises_all_weeks": 0,
   "average_change_pct": null,
@@ -2754,9 +2756,9 @@
   "deepest_cut_old_m2": null,
   "deepest_cut_new_m2": null,
   "deepest_cut_ours_m2": null,
-  "new_cairo_price_changes": 0,
-  "new_cairo_cuts": 0,
-  "new_cairo_rises": 0,
+  "check_area_price_changes": 0,
+  "check_area_cuts": 0,
+  "check_area_rises": 0,
   "card_title": "Our asking price per m² against 5,619 competing listings, every week",
   "card_result": "5,619 competing listings from 6 sites in 6 areas read and checked, 1,152 compound names and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 41 rows (0.7%) were set aside with their reason."
 }

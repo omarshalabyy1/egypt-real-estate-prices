@@ -52,7 +52,7 @@
   <text x="960" y="181" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_cairo">51.9</tspan>%</text>
   <!-- New Capital -->
   <text x="40" y="226" class="area">New Capital</text>
-  <text x="40" y="244" class="cap">median <tspan id="nb-median_m2_new_capital">53,000</tspan></text>
+  <text x="40" y="244" class="cap">median <tspan id="nb-median_m2_new_administrative_capital">53,000</tspan></text>
   <line x1="230" y1="228" x2="690" y2="228" class="track"/>
   <rect x="246.5" y="219" width="155" height="18" rx="4" class="band"/>
   <line x1="305.6" y1="214" x2="305.6" y2="242" class="median"/>
@@ -66,8 +66,8 @@
   <circle cx="417.9" cy="228" r="7" class="ours"/>
   <circle cx="418.1" cy="228" r="7" class="ours"/>
   <circle cx="447.8" cy="228" r="7" class="ours"/>
-  <text x="760" y="233" class="val" text-anchor="middle"><tspan id="nb-gap_pct_new_capital">+1.9</tspan>%</text>
-  <text x="960" y="233" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_capital">52.9</tspan>%</text>
+  <text x="760" y="233" class="val" text-anchor="middle"><tspan id="nb-gap_pct_new_administrative_capital">+1.9</tspan>%</text>
+  <text x="960" y="233" class="val" text-anchor="end"><tspan id="nb-share_cheaper_new_administrative_capital">52.9</tspan>%</text>
   <!-- Sheikh Zayed -->
   <text x="40" y="278" class="area">Sheikh Zayed</text>
   <text x="40" y="296" class="cap">median <tspan id="nb-median_m2_sheikh_zayed">62,069</tspan></text>
@@ -88,7 +88,7 @@
   <text x="960" y="285" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sheikh_zayed">50.6</tspan>%</text>
   <!-- 6th of October -->
   <text x="40" y="330" class="area">6th of October</text>
-  <text x="40" y="348" class="cap">median <tspan id="nb-median_m2_sixth_october">58,149</tspan></text>
+  <text x="40" y="348" class="cap">median <tspan id="nb-median_m2_sixth_october_city">58,149</tspan></text>
   <line x1="230" y1="332" x2="690" y2="332" class="track"/>
   <rect x="264.8" y="323" width="152.8" height="18" rx="4" class="band"/>
   <line x1="322.5" y1="318" x2="322.5" y2="346" class="median"/>
@@ -102,8 +102,8 @@
   <circle cx="347.9" cy="332" r="7" class="ours"/>
   <circle cx="349.7" cy="332" r="7" class="ours"/>
   <circle cx="356.6" cy="332" r="7" class="ours"/>
-  <text x="760" y="337" class="val" text-anchor="middle"><tspan id="nb-gap_pct_sixth_october">+7.4</tspan>%</text>
-  <text x="960" y="337" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sixth_october">50.9</tspan>%</text>
+  <text x="760" y="337" class="val" text-anchor="middle"><tspan id="nb-gap_pct_sixth_october_city">+7.4</tspan>%</text>
+  <text x="960" y="337" class="val" text-anchor="end"><tspan id="nb-share_cheaper_sixth_october_city">50.9</tspan>%</text>
   <!-- North Coast -->
   <text x="40" y="382" class="area">North Coast</text>
   <text x="40" y="400" class="cap">median <tspan id="nb-median_m2_north_coast">113,511</tspan></text>

@@ -97,13 +97,13 @@ it is off, fix that step first.
 33. **View > Sync slicers**: set each slicer as in the table under "Sync the slicers" in
     `04-pages.md`.
 34. Set every interaction as in `07-interactions.md`, page by page.
-35. **Check C7:** on page 1, the Area slicer on New Cairo. Then clear it and click New Cairo in the
+35. **Check C7:** on page 1, the Area slicer on <!--nb:check_area_name-->New Cairo<!--/nb-->. Then clear it and click it in the
     bar chart: the cards show the same numbers. Click it again to clear.
 36. **Check C8:** on page 1, the Site slicer on Dubizzle Egypt: the share cards and Widest gap move,
     Our units does not. Clear it.
-37. **Check C13:** on page 2, the Area slicer on New Cairo (it is synced, so pages 1 and 3 show New
-    Cairo too). Clear it.
-38. **Check C18:** on page 3, the Area slicer on New Cairo. Clear it.
+37. **Check C13:** on page 2, the Area slicer on <!--nb:check_area_name-->New Cairo<!--/nb--> (it is synced, so pages 1 and 3 show
+    it too). Clear it.
+38. **Check C18:** on page 3, the Area slicer on <!--nb:check_area_name-->New Cairo<!--/nb-->. Clear it.
 39. **Check C16:** pick the site and listing named in C16 in the Site and Listing slicers: its line
     and the dashed line for our units, cards unchanged. Clear both slicers.
 40. **Check C17:** the table's top rows, sorted by Change % ascending, and its row count.

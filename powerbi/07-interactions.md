@@ -35,7 +35,7 @@ What a click changes:
 - **A site in #2:** every card and chart recomputes against that site's listings only; Our units
   (#4) does not move, because our units are not on a site.
 - **A bubble in #10 or a bar in #11:** the cards, the other chart and the units table show that
-  area only, the same numbers as the Area slicer on that area (check C7 for New Cairo).
+  area only, the same numbers as the Area slicer on that area (check C7 for `report.check_area`).
 - **A row in #12:** nothing. The table is for reading.
 
 ## Page 2: Compounds and developers

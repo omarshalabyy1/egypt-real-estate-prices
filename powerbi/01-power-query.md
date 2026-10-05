@@ -270,5 +270,6 @@ in
 
 **Home > Close & apply.** Then go to [`02-model.md`](02-model.md).
 
-Every amount is in Egyptian pounds (EGP). The report compares units by price per m², never by
+Every amount is in the client's currency (`client.currency` in `config/client.yaml`; the demo: Egyptian
+pounds, EGP). The report compares units by price per m², never by
 summing asking prices: a sum of flat prices across areas and types would mean nothing.
