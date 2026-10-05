@@ -25,6 +25,28 @@ Before step 1, read `~/.scraping-profiles/<site>/notes.md` if it exists: which r
 | CAPTCHA, login wall or cookie wall | Force ladder, rung 4 (Omar) |
 | 200 but zero items, or a count that is small and round | Wrong page or a soft block: compare with the visible page before parsing more |
 
+## Choose the skill: argue it, then test it
+
+Each skill's edge, so the choice is argued, not habitual:
+
+| Skill | When | Why it wins there | How to start | Not when |
+|---|---|---|---|---|
+| `scraping` | Every job: plan, probe, diagnose, check | Thinks in claims, coverage and silent wrong data; has `probe.py` and the 170-tool encyclopedia in `tools/` | Load the skill; run `scripts/probe.py` | Never skip it; it does not fetch at scale itself |
+| `web-scraping` | Data loads by XHR, or a sitemap / API may exist | Traffic interception and API / sitemap discovery playbooks | Read `strategies/api-discovery.md`, `sitemap-discovery.md` | Production code: its Apify / TypeScript path is not used |
+| `scrapling-fetcher` | Any HTML page, first try | Ready templates; one switch from plain HTTP to stealth browser | Copy from `templates/` | Logic beyond one fetch-and-parse |
+| `scrapling` | Changing a template: sessions, parallel pages, adaptive selectors, spiders | Only stealth browser verified past Cloudflare here; selectors that survive layout changes | Load the skill, `references/patterns.md` | Pages that need many clicks |
+| `crawl4ai` | Many JS pages, sitemap crawls, schema extraction, clean markdown | Batch crawling and `generate_schema.py` / `extract_with_schema.py` | Load the skill, `scripts/` | Cloudflare-challenged sites: its stealth was blocked on Jumia, 2026-10-05 |
+| `playwright-skill` | Clicks, filters, forms, scroll with no API behind | Full browser control step by step | Load the skill | Anything an API, sitemap or plain fetch already gives |
+
+How to decide, every job:
+
+1. **Shortlist two** candidates from the signals table and this table. If only one fits, say why the other was ruled out.
+2. **Argue each in one line**: what it should win on for this site (speed, stealth, scale, upkeep) and what could break it.
+3. **Test both on the same single page**, the smallest test that can tell them apart. Record status, items found against what the page shows, fields filled, and seconds.
+4. **Pick on the measurement**, not the label. A tool that says "anti-detection" but returns 0 items has lost. On a tie, take the lighter one (fewer moving parts, no browser if possible).
+5. **Write the verdict** in the site notes: the two candidates, the numbers, the winner and why. Example, Jumia 2026-10-05, page 7: Scrapling stealth 200, 40/40 prices, 11 s; crawl4ai stealth blocked by the Cloudflare JS challenge, 0 items, 9 s. Winner Scrapling.
+6. **Re-test when it breaks.** A refusal, a falling item count or empty fields mean the verdict is stale: go back to step 1.
+
 ## Route
 
 | Step | Load / read | Use it for |
@@ -48,7 +70,7 @@ Read the saved refusal body first (`probe_out/`): `cf-mitigated: challenge` or "
 
 1. `curl_cffi` with `impersonate="chrome"` (what `probe.py` already tried).
 2. Scrapling `StealthyFetcher.fetch(url, headless=True, network_idle=True, solve_cloudflare=False)`. A real stealth browser runs the JavaScript check like any visitor. Verified on Jumia Egypt behind Cloudflare, 2026-10-05: 403 for `curl_cffi`, 200 here.
-3. Same fetcher with `real_chrome=True`, or crawl4ai with `crawl4ai/references/anti-detection.md`.
+3. Same fetcher with `real_chrome=True`, or crawl4ai with `crawl4ai/references/anti-detection.md` (test it first: its stealth lost to Cloudflare on Jumia).
 4. CAPTCHA, login or cookie wall: Omar runs `python ~/.claude/skills/scraping-orchestrator/unlock.py <url> <site>` in his own terminal (or Claude starts it with `mcp__terminal__run_in_terminal`; the Bash tool has no stdin, so it cannot wait for his Enter). He solves it, logs in and accepts cookies once in the visible window; the session is saved to `~/.scraping-profiles/<site>`. Every local scraper then passes `user_data_dir=` that path, headless. For Airflow, export `page.cookies` to `data/cookies/<site>.json` (gitignored, mounted read-only), pass `cookies=` to the fetcher, and fail the task loudly when they expire. Re-run `unlock.py` to refresh.
 
 Keep `solve_cloudflare=False` everywhere, including in a copied `stealth_cloudflare.py` (the template ships with `True`): it clicks the Turnstile CAPTCHA, which is Omar's job.
