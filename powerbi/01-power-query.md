@@ -1,8 +1,9 @@
 # 1. Power Query
 
-The report reads the local warehouse: PostgreSQL on `localhost:5451`, database `prices`, after
-`docker compose up -d --build` and at least one run of the `egypt_real_estate_prices` DAG (steps 1
-to 4 of [`08-build-checklist.md`](08-build-checklist.md)). Nothing is read from files.
+The report reads the gold layer of the local warehouse, and nothing else: PostgreSQL on
+`127.0.0.1:5451`, database `prices`, schema `gold`, after `docker compose up -d --build` and at least
+one run of the `egypt_real_estate_prices` DAG (steps 1 to 4 of
+[`08-build-checklist.md`](08-build-checklist.md)). Nothing is read from bronze, silver or files.
 
 Open Power BI Desktop, then **Home > Transform data** to open the Power Query editor. For each query
 below: **Home > New source > Blank query**, rename it (right-click > Rename) to the name in the
@@ -11,33 +12,39 @@ heading, open **Home > Advanced editor**, delete what is there and paste the cod
 | Query | Source | Columns | Renames | Load |
 |---|---|---|---|---|
 | `WarehouseServer` | parameter (text) | none | none | no (parameter) |
-| `Area` | the `area` table | 3 (2 + `Map Name`) | none | yes |
-| `Our Unit` | the `our_unit` table | 8 | none | yes |
-| `Listing` | the `listing` table | 10 | none | yes |
-| `Price Observation` | the `price_observation` table | 5 | none | yes |
-| `Area Benchmark` | the `area_benchmark` view | 6 | none | yes |
-| `Compound Benchmark` | the `compound_benchmark` view | 5 | none | yes |
-| `Unit Gap` | the `unit_gap` view | 12 (11 + `Position`) | none | yes |
-| `Price Change` | the `price_change` view | 8 (7 + `Direction`) | none | yes |
-| `Date` | generated from `Price Observation[observed_on]` | 5 | none | yes |
+| `Site` | the `gold.dim_site` table | 3 | none | yes |
+| `Area` | the `gold.dim_area` table | 6 | none | yes |
+| `Compound` | the `gold.dim_compound` table | 4 | none | yes |
+| `Property Type` | the `gold.dim_property_type` table | 2 | none | yes |
+| `Week` | the `gold.dim_week` table | 4 | none | yes |
+| `Listing Price` | the `gold.fact_listing_price` table | 10 | none | yes |
+| `Our Unit` | the `gold.fact_our_unit` table | 7 | none | yes |
+| `Price Change` | the `gold.price_change` view | 12 (11 + `Direction`) | none | yes |
+| `Area Benchmark` | the `gold.area_benchmark` view | 7 | none | yes |
+| `Area Site Benchmark` | the `gold.area_site_benchmark` view | 8 | none | yes |
+| `Unit Gap` | the `gold.unit_gap` view | 10 | none | yes |
+| `Area Gap` | the `gold.area_gap` view | 6 | none | yes |
+
+Why gold only: the star is built for reading. Its dimensions carry surrogate keys that stay stable
+from week to week, its facts carry those keys, and every name a slicer shows is already clean
+(`Unknown` where a site names no compound or developer). The report needs no joins of its own.
 
 Why no renames: the column names match [`sql/schema.sql`](../sql/schema.sql) and the SQL in
 `06-checks.md`, so a number on a card can be checked against the warehouse word for word. Visuals
 show friendly names, set on the visual (`04-pages.md`).
 
-Why the views for the benchmarks, the gaps and the changes: the median per m², our units' gap and
-each price change are written once in SQL and read the same way by the weekly report, the notebook
-and this report. `area_benchmark`, `compound_benchmark` and `unit_gap` count only the listings seen
-in the latest weekly run (`run_week = (SELECT max(run_week) FROM price_observation)`), so a unit
-that left the site weeks ago does not hold the median up or down.
+Why the five views load too: they are the warehouse's own answers, pooled over every site. The
+measures in `03-measures.dax` recompute the same numbers on the star so the Site slicer can reach
+them; with no slicer selected the two must agree, and the view tables are where you look to check.
 
 Why every column gets a type: Power BI then never guesses, so a refresh after a new weekly run
-cannot turn a price into text.
+cannot turn a price into text. Surrogate keys are whole numbers, `week_key` is a date, prices per m²
+are numbers.
 
 ## The first connection
 
 The first query you create asks for credentials: choose **Database**, user `prices`, password =
-`WAREHOUSE_PASSWORD` from the repo's `.env`, and apply them to `localhost:5451`. If Power BI says it
+`WAREHOUSE_PASSWORD` from the repo's `.env`, and apply them to `127.0.0.1:5451`. If Power BI says it
 cannot connect with encryption, choose **OK** to connect without it: the warehouse listens on your
 laptop only.
 
@@ -47,28 +54,111 @@ laptop only.
 
 - Name: `WarehouseServer`
 - Type: Text
-- Current value: `localhost:5451`
+- Current value: `127.0.0.1:5451`
 
 Why a parameter: if the port ever changes, it changes in one place.
 
-## Area (loads)
+## Site (loads)
 
-The six areas we read: one row per area.
+The listing sites: one row per site.
 
 ```m
 let
     Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    area = Source{[Schema = "public", Item = "area"]}[Data],
-    Kept = Table.SelectColumns(area, {"area_id", "name"}),
-    Typed = Table.TransformColumnTypes(Kept, {{"area_id", type text}, {"name", type text}}),
-    MapName = Table.AddColumn(Typed, "Map Name", each [name] & ", Egypt", type text)
+    dim_site = Source{[Schema = "gold", Item = "dim_site"]}[Data],
+    Kept = Table.SelectColumns(dim_site, {"site_key", "source", "name"}),
+    Typed = Table.TransformColumnTypes(Kept, {
+        {"site_key", Int64.Type}, {"source", type text}, {"name", type text}})
 in
-    MapName
+    Typed
 ```
 
-`Map Name` is the place name the map visual geocodes ("New Cairo, Egypt"): the area name alone
-could match a place in another country. `location_id` is dropped: it is the site's id, used only by
-the tracker to build the page address.
+`base_url` and `read_by` are dropped: the report never links out, and who read a site does not
+change a price.
+
+## Area (loads)
+
+The six areas we read: one row per area, with its coordinates for the map.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    dim_area = Source{[Schema = "gold", Item = "dim_area"]}[Data],
+    Typed = Table.TransformColumnTypes(dim_area, {
+        {"area_key", Int64.Type}, {"area_id", type text}, {"name", type text},
+        {"map_name", type text}, {"lat", type number}, {"lon", type number}})
+in
+    Typed
+```
+
+`lat` and `lon` place each area on the map directly, so nothing is geocoded.
+
+## Compound (loads)
+
+One row per area, compound and developer as the sites write them; `Unknown` where a site names none.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    dim_compound = Source{[Schema = "gold", Item = "dim_compound"]}[Data],
+    Typed = Table.TransformColumnTypes(dim_compound, {
+        {"compound_key", Int64.Type}, {"area_id", type text}, {"compound", type text},
+        {"developer", type text}})
+in
+    Typed
+```
+
+## Property Type (loads)
+
+One row per residential unit type.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    dim_property_type = Source{[Schema = "gold", Item = "dim_property_type"]}[Data],
+    Typed = Table.TransformColumnTypes(dim_property_type, {
+        {"type_key", Int64.Type}, {"unit_type", type text}})
+in
+    Typed
+```
+
+## Week (loads)
+
+One row per run week, keyed by the Sunday the week starts.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    dim_week = Source{[Schema = "gold", Item = "dim_week"]}[Data],
+    Typed = Table.TransformColumnTypes(dim_week, {
+        {"week_key", type date}, {"year", Int64.Type}, {"month", Int64.Type},
+        {"week_of_year", Int64.Type}})
+in
+    Typed
+```
+
+Why weeks and not days: the warehouse prices each listing once per run week, so a day table would
+hold six empty days for every day with data.
+
+## Listing Price (loads)
+
+The fact: one row per site, listing and run week, with the asking price, size and price per m².
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    fact_listing_price = Source{[Schema = "gold", Item = "fact_listing_price"]}[Data],
+    Typed = Table.TransformColumnTypes(fact_listing_price, {
+        {"site_key", Int64.Type}, {"area_key", Int64.Type}, {"compound_key", Int64.Type},
+        {"type_key", Int64.Type}, {"week_key", type date}, {"listing_id", type text},
+        {"asking_price", Currency.Type}, {"size_m2", type number},
+        {"price_per_m2", Currency.Type}, {"bedrooms", Int64.Type}})
+in
+    Typed
+```
+
+`listing_id` is text: it is the site's own id, and the same id can belong to different listings on
+two sites, so a listing is named by its site and its id together.
 
 ## Our Unit (loads)
 
@@ -77,125 +167,29 @@ The client's own units for sale: one row per unit.
 ```m
 let
     Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    our_unit = Source{[Schema = "public", Item = "our_unit"]}[Data],
-    Typed = Table.TransformColumnTypes(our_unit, {
-        {"unit_code", type text}, {"area_id", type text}, {"compound", type text},
-        {"unit_type", type text}, {"bedrooms", Int64.Type}, {"size_m2", type number},
+    fact_our_unit = Source{[Schema = "gold", Item = "fact_our_unit"]}[Data],
+    Typed = Table.TransformColumnTypes(fact_our_unit, {
+        {"unit_code", type text}, {"area_key", Int64.Type}, {"type_key", Int64.Type},
+        {"compound_key", Int64.Type}, {"size_m2", type number},
         {"asking_price", Currency.Type}, {"price_per_m2", Currency.Type}})
 in
     Typed
 ```
 
-## Listing (loads)
-
-Every competitor unit seen on the site: one row per listing, with its latest description.
-
-```m
-let
-    Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    listing = Source{[Schema = "public", Item = "listing"]}[Data],
-    Kept = Table.SelectColumns(listing, {
-        "listing_id", "area_id", "compound", "developer", "unit_type", "bedrooms", "bathrooms",
-        "size_m2", "first_seen", "last_seen"}),
-    Typed = Table.TransformColumnTypes(Kept, {
-        {"listing_id", Int64.Type}, {"area_id", type text}, {"compound", type text},
-        {"developer", type text}, {"unit_type", type text}, {"bedrooms", Int64.Type},
-        {"bathrooms", Int64.Type}, {"size_m2", type number}, {"first_seen", type date},
-        {"last_seen", type date}})
-in
-    Typed
-```
-
-`url` is dropped: the report never links out, and the listing id already names the unit.
-
-## Price Observation (loads)
-
-Every asking price seen: one row per listing per day it was read.
-
-```m
-let
-    Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    price_observation = Source{[Schema = "public", Item = "price_observation"]}[Data],
-    Kept = Table.SelectColumns(price_observation, {
-        "listing_id", "observed_on", "asking_price", "price_per_m2", "run_week"}),
-    Typed = Table.TransformColumnTypes(Kept, {
-        {"listing_id", Int64.Type}, {"observed_on", type date}, {"asking_price", Currency.Type},
-        {"price_per_m2", Currency.Type}, {"run_week", type date}})
-in
-    Typed
-```
-
-`fetched_at` is dropped: `observed_on` and `run_week` already date each price.
-
-## Area Benchmark (loads)
-
-The market in the latest run: one row per area and unit type.
-
-```m
-let
-    Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    area_benchmark = Source{[Schema = "public", Item = "area_benchmark"]}[Data],
-    Typed = Table.TransformColumnTypes(area_benchmark, {
-        {"area_id", type text}, {"unit_type", type text}, {"listings", Int64.Type},
-        {"median_price_per_m2", type number}, {"min_price_per_m2", Currency.Type},
-        {"max_price_per_m2", Currency.Type}})
-in
-    Typed
-```
-
-## Compound Benchmark (loads)
-
-The market in the latest run: one row per area, compound and developer.
-
-```m
-let
-    Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    compound_benchmark = Source{[Schema = "public", Item = "compound_benchmark"]}[Data],
-    Typed = Table.TransformColumnTypes(compound_benchmark, {
-        {"area_id", type text}, {"compound", type text}, {"developer", type text},
-        {"listings", Int64.Type}, {"median_price_per_m2", type number}})
-in
-    Typed
-```
-
-## Unit Gap (loads)
-
-Each of our units against the latest run's median of the same type in its area: one row per unit.
-
-```m
-let
-    Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    unit_gap = Source{[Schema = "public", Item = "unit_gap"]}[Data],
-    Typed = Table.TransformColumnTypes(unit_gap, {
-        {"unit_code", type text}, {"area_id", type text}, {"compound", type text},
-        {"unit_type", type text}, {"size_m2", type number}, {"asking_price", Currency.Type},
-        {"price_per_m2", Currency.Type}, {"median_price_per_m2", type number},
-        {"gap_pct", type number}, {"listings_compared", Int64.Type},
-        {"pct_listings_cheaper", type number}}),
-    Position = Table.AddColumn(Typed, "Position", each
-        if [gap_pct] = null then "No comparison" else if [gap_pct] > 0 then "Above market" else "Below market", type text)
-in
-    Position
-```
-
-`Position` is the readable label for each unit: "No comparison" when no listing of the same type was
-seen in its area in the latest run (`gap_pct` is null), "Above market" when our price per m² is over
-the median, otherwise "Below market". A gap of exactly 0.0 counts as below: the
-`Units Above Market` measure uses the same `gap_pct > 0` test.
-
 ## Price Change (loads)
 
-Every asking price change: one row per listing per day its price differed from the price before.
+Every change of price per m²: one row per site and listing whose price per m² differs from its
+previous run week.
 
 ```m
 let
     Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    price_change = Source{[Schema = "public", Item = "price_change"]}[Data],
-    Kept = Table.SelectColumns(price_change, {
-        "listing_id", "observed_on", "old_price", "new_price", "change_pct", "caught_week", "is_cut"}),
-    Typed = Table.TransformColumnTypes(Kept, {
-        {"listing_id", Int64.Type}, {"observed_on", type date}, {"old_price", Currency.Type},
-        {"new_price", Currency.Type}, {"change_pct", type number}, {"caught_week", type date},
+    price_change = Source{[Schema = "gold", Item = "price_change"]}[Data],
+    Typed = Table.TransformColumnTypes(price_change, {
+        {"site_key", Int64.Type}, {"listing_id", type text}, {"area_key", Int64.Type},
+        {"compound_key", Int64.Type}, {"type_key", Int64.Type}, {"old_week_key", type date},
+        {"week_key", type date}, {"old_price_per_m2", Currency.Type},
+        {"new_price_per_m2", Currency.Type}, {"change_pct", type number},
         {"is_cut", type logical}}),
     Direction = Table.AddColumn(Typed, "Direction", each if [is_cut] then "Cut" else "Rise", type text)
 in
@@ -203,34 +197,74 @@ in
 ```
 
 `Direction` says whether the change lowered or raised the price, for the Cuts and Rises measures.
-The view's `area_id`, `compound`, `developer` and `unit_type` are dropped: `Listing` carries them,
-so every slicer reaches the changes through one table. Until the second weekly run this query
-returns no rows: one run has no previous price to compare with.
+Until the second weekly run this query returns no rows: one run has no previous price to compare
+with.
 
-## Date (loads)
+## Area Benchmark (loads)
 
-One row per day from the first to the last asking price, with no gaps.
+The market in the latest run week, pooled over sites: one row per area and unit type.
 
 ```m
 let
-    FirstDay = List.Min(#"Price Observation"[observed_on]),
-    LastDay = List.Max(#"Price Observation"[observed_on]),
-    Days = List.Dates(FirstDay, Duration.Days(LastDay - FirstDay) + 1, #duration(1, 0, 0, 0)),
-    AsTable = Table.FromList(Days, Splitter.SplitByNothing(), {"Date"}),
-    Typed = Table.TransformColumnTypes(AsTable, {{"Date", type date}}),
-    Year = Table.AddColumn(Typed, "Year", each Date.Year([Date]), Int64.Type),
-    Month = Table.AddColumn(Year, "Month", each Date.ToText([Date], "MMM yyyy", "en-US"), type text),
-    MonthNumber = Table.AddColumn(Month, "Month Number", each Date.Year([Date]) * 100 + Date.Month([Date]), Int64.Type),
-    WeekStart = Table.AddColumn(MonthNumber, "Week Start", each Date.StartOfWeek([Date], Day.Sunday), type date)
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    area_benchmark = Source{[Schema = "gold", Item = "area_benchmark"]}[Data],
+    Typed = Table.TransformColumnTypes(area_benchmark, {
+        {"area_key", Int64.Type}, {"type_key", Int64.Type}, {"week_key", type date},
+        {"listings", Int64.Type}, {"median_price_per_m2", type number},
+        {"p25_price_per_m2", type number}, {"p75_price_per_m2", type number}})
 in
-    WeekStart
+    Typed
 ```
 
-Why the weeks start on Sunday: the tracker dates each run by the Sunday its week starts
-(`run_week`), so a week here is the same week as a run.
+## Area Site Benchmark (loads)
 
-Why from `Price Observation` only: every price change is also an observation, so the days of
-`Price Change[observed_on]` are always inside this range.
+The market in the latest run week, site by site: one row per site, area and unit type.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    area_site_benchmark = Source{[Schema = "gold", Item = "area_site_benchmark"]}[Data],
+    Typed = Table.TransformColumnTypes(area_site_benchmark, {
+        {"site_key", Int64.Type}, {"area_key", Int64.Type}, {"type_key", Int64.Type},
+        {"week_key", type date}, {"listings", Int64.Type}, {"median_price_per_m2", type number},
+        {"p25_price_per_m2", type number}, {"p75_price_per_m2", type number}})
+in
+    Typed
+```
+
+## Unit Gap (loads)
+
+Each of our units against the latest week's pooled median of its area and type: one row per unit.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    unit_gap = Source{[Schema = "gold", Item = "unit_gap"]}[Data],
+    Typed = Table.TransformColumnTypes(unit_gap, {
+        {"unit_code", type text}, {"area_key", Int64.Type}, {"type_key", Int64.Type},
+        {"compound_key", Int64.Type}, {"price_per_m2", type number},
+        {"median_price_per_m2", type number}, {"gap_pct", type number},
+        {"listings_compared", Int64.Type}, {"listings_cheaper", Int64.Type},
+        {"pct_listings_cheaper", type number}})
+in
+    Typed
+```
+
+## Area Gap (loads)
+
+Our units' gap, area by area, pooled over sites: one row per area; `gap_rank` 1 is the widest gap.
+
+```m
+let
+    Source = PostgreSQL.Database(WarehouseServer, "prices"),
+    area_gap = Source{[Schema = "gold", Item = "area_gap"]}[Data],
+    Typed = Table.TransformColumnTypes(area_gap, {
+        {"area_key", Int64.Type}, {"units", Int64.Type}, {"units_compared", Int64.Type},
+        {"median_gap_pct", type number}, {"pct_listings_cheaper", type number},
+        {"gap_rank", Int64.Type}})
+in
+    Typed
+```
 
 **Home > Close & apply.** Then go to [`02-model.md`](02-model.md).
 
