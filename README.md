@@ -15,7 +15,7 @@
 ## The problem
 
 An Egyptian developer or brokerage sells units in New Cairo, the New Capital, Sheikh Zayed and
-the other growth areas, against hundreds of competing listings on half a dozen sites. Someone checks
+the other growth areas, against competing listings on half a dozen sites. Someone checks
 a few of those sites by hand, now and then. Nobody can say, week by week, how our asking price per
 square metre compares with the units around it, which competitors cut their prices, or in which
 area and compound the gap is widest. The old prices were never written down, so a cut can only be
@@ -84,16 +84,16 @@ same rows.
 ## 📈 The result
 
 **<!--nb:listings_compared-->…<!--/nb--> competing listings compared with our units across six
-areas and <!--nb:sites_read-->…<!--/nb--> sites: the widest gap is in
-<!--nb:widest_gap_area-->…<!--/nb-->, at <!--nb:widest_gap_pct-->…<!--/nb-->% against the area
-median.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
+areas and <!--nb:sites_read-->…<!--/nb--> sites: the widest gap is
+in <!--nb:widest_gap_area-->…<!--/nb-->, at <!--nb:widest_gap_pct-->…<!--/nb-->% against the
+area median.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
 
-- **History:** <!--nb:price_observations-->…<!--/nb--> asking prices kept over
-  <!--nb:run_weeks-->…<!--/nb--> weekly runs (<!--nb:first_run_week-->…<!--/nb--> to
-  <!--nb:latest_run_week-->…<!--/nb-->).
-- **Coverage:** <!--nb:compounds_covered-->…<!--/nb--> compounds from
-  <!--nb:developers_covered-->…<!--/nb--> developers, against <!--nb:our_units-->…<!--/nb--> units
-  of ours.
+- **History:** <!--nb:price_observations-->…<!--/nb--> asking prices kept
+  over <!--nb:run_weeks-->…<!--/nb--> weekly runs
+  (<!--nb:first_run_week-->…<!--/nb--> to <!--nb:latest_run_week-->…<!--/nb-->).
+- **Coverage:** <!--nb:compounds_covered-->…<!--/nb--> compounds
+  from <!--nb:developers_covered-->…<!--/nb--> developers, against
+  our <!--nb:our_units-->…<!--/nb--> units.
 - **Where we stand:** <!--nb:share_listings_cheaper_than_ours-->…<!--/nb-->% of competing listings
   ask less per m² than our unit of the same type in the same area.
 - **Who cut prices:** <!--nb:price_cuts-->…<!--/nb--> listings asked less per m² in the latest run
@@ -188,7 +188,8 @@ Notebook slots. Every nb:KEY marker pair in this file (and every <tspan id="nb-K
 holds the single character "…" until the notebook writes the measured value in its place. Each slot
 holds the bare value only: no unit, no "%" sign and no "EGP" (those are written outside the slot).
 Counts are whole numbers with thousands separators; percentages have one decimal; prices per m² are
-whole EGP with thousands separators; dates are written like 4 October 2026. Unless a line says
+whole EGP with thousands separators; dates are written like 4 October 2026. A slot marker never
+starts a line (GitHub would end the paragraph there), so keep a word before it when reflowing. Unless a line says
 otherwise, "latest run week" is the newest week in gold.dim_week.
 
 README.md
