@@ -59,7 +59,7 @@ How to decide, every job:
 | 4b. JS pages, many URLs | Skill `crawl4ai`, scripts in `crawl4ai/scripts/` | Pages that only render in a browser, batch or sitemap crawls, CSS-schema extraction (`generate_schema.py`, `extract_with_schema.py`). |
 | 4c. Clicks and forms | Skill `playwright-skill` | Multi-step clicks, filters, infinite scroll that no API backs. |
 | 5. Blocked (403 / 429 / challenge) | Force ladder below; theory in `scraping/reference/transport.md`, `web-scraping/strategies/anti-blocking.md` | Never stop at the first refusal. Climb the ladder until the data comes back. |
-| 6. Run it | `AsyncStealthySession(max_pages=N)` + `asyncio.gather` for browser pages, async `curl_cffi` for APIs; `scraping/scripts/runner_template.py` for resumable JSONL state | Concurrency with backoff on 429, not fixed delays. Verified: 3 Jumia pages in parallel, 19 s. Resumable state only for a few hundred pages or more. |
+| 6. Run it | `AsyncStealthySession(max_pages=N)` + `asyncio.gather` for browser pages, async `curl_cffi` for APIs; `scraping/scripts/runner_template.py` for resumable JSONL state | Concurrency with backoff on 429, not fixed delays. Keep one session open for the whole run; reopening it per batch halved throughput. Start at `max_pages=8`: more tabs only slowed this laptop. Verified on Jumia: 102 pages in 131 s, 47 pages/min, zero refusals. Resumable state only for a few hundred pages or more. |
 | 7. Check | `scraping/reference/validation.md` | Counts at every stage, coverage against the source's own totals, silent wrong data. Before anything is reported. |
 
 Order of preference: API, then sitemap or list, then page scraping. Within page scraping go 4a, then 4b, then 4c, and only move down when the lighter tool fails on a measurement.
