@@ -4,9 +4,10 @@ Both sites refuse plain HTTP readers, so this script is run by hand, not by Airf
 
     python fetch_bayut_aqarmap.py
 
-It reads 50 pages (Bayut: home and six areas; Aqarmap: home and seven unit types in each of six
-areas), about seven minutes. It opens a visible browser, waits 5 seconds between pages, saves every page gzipped under
-data/raw/<source>/<run_week>/ (gitignored; run_week is the Sunday on or before today in UTC), with a
+It reads each site's home page, then Bayut's page and Aqarmap's seven unit types for every area in
+config/client.yaml (the demo's six areas: 50 pages, about seven minutes). It opens a visible browser, waits each
+site's pace_seconds between pages, saves every page gzipped under
+data/raw/<source>/<run_week>/ (gitignored; run_week is the Sunday on or before today in schedule.timezone), with a
 summary.csv line per page and a _done file when the site is finished, and prints what each page holds.
 Run it before the weekly Airflow run: load_silver reads these folders.
 
@@ -17,8 +18,9 @@ login wall or a 401, 403 or 429, it waits for you to deal with it in the browser
 Enter, then loads the page once more; if it is still blocked, it stops reading that site. The script
 never solves anything itself.
 
-The area addresses below were taken from the links on the home and region pages saved on
-2026-10-05; each site's home page is still saved first, so a moved address can be corrected again.
+The area addresses are in config/client.yaml (each area's bayut page and aqarmap path); the demo's were
+taken from the links on the home and region pages saved on 2026-10-05. Each site's home page is still saved
+first, so a moved address can be corrected again.
 """
 
 import csv
@@ -27,41 +29,27 @@ import json
 import re
 import time
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from playwright.sync_api import sync_playwright
 
-ROOT = Path(__file__).parent
-DELAY = 5  # seconds between pages
+from config import ROOT, load_config
+
+CFG = load_config()
+PACE = {s["id"]: s["pace_seconds"] for s in CFG["sites"]}  # seconds between pages, per site
 PROFILE = ROOT / ".browser-profile"  # cookies and logins kept between runs; gitignored
 
-PAGES = {  # source: [(page name, area_id, address)]; a home page has no area and is not parsed
-    "bayut": [
-        ("home", "", "https://www.bayut.eg/en/"),
-        ("new-cairo", "new-cairo", "https://www.bayut.eg/en/cairo/properties-for-sale-in-new-cairo/"),
-        ("new-administrative-capital", "new-administrative-capital",
-         "https://www.bayut.eg/en/cairo/properties-for-sale-in-new-capital-city/"),
-        ("sheikh-zayed", "sheikh-zayed", "https://www.bayut.eg/en/giza/properties-for-sale-in-sheikh-zayed/"),
-        ("sixth-october-city", "sixth-october-city", "https://www.bayut.eg/en/giza/properties-for-sale-in-6th-of-october/"),
-        ("north-coast", "north-coast", "https://www.bayut.eg/en/matruh/properties-for-sale-in-north-coast/"),
-        ("mostakbal-city", "mostakbal-city", "https://www.bayut.eg/en/cairo/properties-for-sale-in-mostakbal-city/"),
-    ],
-    "aqarmap": [("home", "", "https://aqarmap.com.eg/en/")],
-}
-
 # Aqarmap's listings carry no unit type, so its pages are read one type at a time and the parser takes
-# the type from the address. The type names are the ones the saved North Coast page links to.
-AQARMAP_AREAS = {
-    "new-cairo": "cairo/new-cairo",
-    "new-administrative-capital": "cairo/new-administrative-capital",
-    "sheikh-zayed": "cairo/el-sheikh-zayed-city",
-    "sixth-october-city": "cairo/6th-of-october",
-    "north-coast": "north-coast",
-    "mostakbal-city": "cairo/new-cairo/lmstqbl-syty",
-}
+# the type from the address. The type names are the ones the site's saved search pages link to.
 AQARMAP_TYPES = ["apartment", "villa", "townhouse", "twinhouse", "penthouse", "chalet", "studio"]
-PAGES["aqarmap"] += [(f"{area}-{kind}", area, f"https://aqarmap.com.eg/en/for-sale/{kind}/{path}/")
-                     for area, path in AQARMAP_AREAS.items() for kind in AQARMAP_TYPES]
+PAGES = {  # source: [(page name, area_id, address)]; a home page has no area and is not parsed
+    "bayut": [("home", "", "https://www.bayut.eg/en/")]
+             + [(a["id"], a["id"], a["sites"]["bayut"]["page"]) for a in CFG["areas"] if "bayut" in a["sites"]],
+    "aqarmap": [("home", "", "https://aqarmap.com.eg/en/")]
+               + [(f"{a['id']}-{kind}", a["id"], f"https://aqarmap.com.eg/en/for-sale/{kind}/{a['sites']['aqarmap']['path']}/")
+                  for a in CFG["areas"] if "aqarmap" in a["sites"] for kind in AQARMAP_TYPES],
+}
+PAGES = {source: pages for source, pages in PAGES.items() if source in PACE}  # only the sites in the config
 
 # Words a challenge or block page puts in its title or its (short) text. Normal listing pages can
 # mention "captcha" in their scripts, so only the title and short pages are searched.
@@ -98,7 +86,7 @@ def load(page, url):
 
 
 def main():
-    today = datetime.now(timezone.utc).date()
+    today = datetime.now(ZoneInfo(CFG["schedule"]["timezone"])).date()  # the DAG's run week is in this zone too
     run_week = today - timedelta(days=(today.weekday() + 1) % 7)  # the Sunday on or before today
     first_run = not PROFILE.exists()
     with sync_playwright() as p:
@@ -119,7 +107,7 @@ def main():
                     row = {"page": name, "area_id": area_id, "url": url, "error": repr(error)[:300]}
                     rows.append(row)
                     print(source, row)
-                    time.sleep(DELAY)
+                    time.sleep(PACE[source])
                     continue
                 (out / f"{name}.html.gz").write_bytes(gzip.compress(html.encode("utf-8")))
                 row = {"page": name, "area_id": area_id, "url": url, "final_url": page.url,
@@ -128,7 +116,7 @@ def main():
                        **what_it_holds(html)}
                 rows.append(row)
                 print(source, row)
-                time.sleep(DELAY)
+                time.sleep(PACE[source])
                 if blocked:  # still blocked after you had your turn in the window
                     print(f"{source}: stopped at {url} (status {status}, title {title[:60]!r})")
                     break

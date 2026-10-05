@@ -1,7 +1,0 @@
-area_id,name,lat,lon,coordinate_source
-new-cairo,New Cairo,30.01321,31.48737,"Dubizzle city location 'new-cairo' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-cairo/?page=1"
-new-administrative-capital,New Capital,30.02834,31.83725,"Dubizzle city location 'new-capital-city' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-capital-city/?page=1"
-sheikh-zayed,Sheikh Zayed,30.0537,30.99104,"Dubizzle city location 'sheikh-zayed' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/sheikh-zayed/?page=1; Dubizzle gives lat 30.99104 and lng 30.0537, swapped, stored here the right way round"
-sixth-october-city,6th of October,29.94522,30.99012,"Dubizzle city location '6th-of-october' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/6th-of-october/?page=1"
-north-coast,North Coast,30.8627527,29.27810085,"Dubizzle city location 'north-coast' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/vacation-homes-for-sale/north-coast/?page=1"
-mostakbal-city,Mostakbal City,30.16484,31.55426,"Dubizzle city location 'mostakbal-city' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/mostakbal-city/?page=1"

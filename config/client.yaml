@@ -1,0 +1,187 @@
+# Everything a client changes, except secrets and ports (those go in .env).
+# Read only through config.py (load_config). A key exists here only if something reads it.
+
+client:
+  name: Demo developer                # the weekly report's first line and the notebook's
+  currency: EGP                       # a listing priced in another currency gets no price; the label on every price
+
+inputs:                               # file names in data/input/ (columns: data/input/README.md)
+  units: our_units.csv                # the client's units for sale, compared with the market
+
+sites:                                # the listing sites, read in this order: a listing two areas both read is kept for the first
+  # id: the site and its parser (tracker.py for realestate, sites.py for the JSON sites, browser_sites.py for the two
+  # read by hand in a browser by fetch_bayut_aqarmap.py). pace_seconds: the wait between two requests to the site.
+  - {id: realestate, pace_seconds: 2.5}
+  - {id: propertyfinder, pace_seconds: 2.5}
+  - {id: dubizzle, pace_seconds: 2.5}
+  - {id: nawy, pace_seconds: 2.5}
+  - {id: bayut, pace_seconds: 5}
+  - {id: aqarmap, pace_seconds: 5}
+
+areas:                                # the areas to watch, in this order: a listing two areas both read is kept for the first
+  # Per site: `searches`, the search pages read ({page} is the page number) up to max_pages each, and `locations`, how
+  # the site names the area in a listing's own location (a listing elsewhere is skipped). Bayut gives one `page` read by
+  # hand; Aqarmap one `path`, read for each unit type and matched as the start of a listing's location.
+  - id: new-cairo
+    name: New Cairo
+    lat: 30.01321
+    lon: 31.48737
+    coordinate_source: "Dubizzle city location 'new-cairo' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-cairo/?page=1"
+    sites:
+      realestate:
+        locations: [new-cairo]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/new-cairo?location=8&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [new-cairo-city]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/cairo/properties-for-sale-new-cairo-city.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [new-cairo]
+        searches:
+          - {search: apartments-duplex, url: "https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-cairo/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/new-cairo/?page={page}", max_pages: 4}
+      nawy:
+        locations: [2]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=2&page_number={page}", max_pages: 17}]
+      bayut: {locations: [New Cairo], page: "https://www.bayut.eg/en/cairo/properties-for-sale-in-new-cairo/"}
+      aqarmap: {path: cairo/new-cairo}
+  - id: new-administrative-capital
+    name: New Capital
+    lat: 30.02834
+    lon: 31.83725
+    coordinate_source: "Dubizzle city location 'new-capital-city' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-capital-city/?page=1"
+    sites:
+      realestate:
+        locations: [new-administrative-capital]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/new-administrative-capital?location=6&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [new-capital-city]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/cairo/properties-for-sale-new-capital-city.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [new-capital-city]
+        searches:
+          - {search: apartments-duplex, url: "https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/new-capital-city/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/new-capital-city/?page={page}", max_pages: 4}
+      nawy:
+        locations: [9]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=9&page_number={page}", max_pages: 17}]
+      bayut: {locations: [New Capital City], page: "https://www.bayut.eg/en/cairo/properties-for-sale-in-new-capital-city/"}
+      aqarmap: {path: cairo/new-administrative-capital}
+  - id: sheikh-zayed
+    name: Sheikh Zayed
+    lat: 30.0537
+    lon: 30.99104
+    coordinate_source: "Dubizzle city location 'sheikh-zayed' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/sheikh-zayed/?page=1; Dubizzle gives lat 30.99104 and lng 30.0537, swapped, stored here the right way round"
+    sites:
+      realestate:
+        locations: [sheikh-zayed]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/sheikh-zayed?location=16&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [sheikh-zayed-city]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/giza/properties-for-sale-sheikh-zayed-city.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [sheikh-zayed]
+        searches:
+          - {search: apartments-duplex, url: "https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/sheikh-zayed/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/sheikh-zayed/?page={page}", max_pages: 4}
+      nawy:
+        locations: [26]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=26&page_number={page}", max_pages: 17}]
+      bayut: {locations: [Sheikh Zayed], page: "https://www.bayut.eg/en/giza/properties-for-sale-in-sheikh-zayed/"}
+      aqarmap: {path: cairo/el-sheikh-zayed-city}
+  - id: sixth-october-city
+    name: 6th of October
+    lat: 29.94522
+    lon: 30.99012
+    coordinate_source: "Dubizzle city location '6th-of-october' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/6th-of-october/?page=1"
+    sites:
+      realestate:
+        locations: [sixth-october-city]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/sixth-october-city?location=15&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [6-october-city]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/giza/properties-for-sale-6-october-city.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [6th-of-october]
+        searches:
+          - {search: apartments-duplex, url: "https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/6th-of-october/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/6th-of-october/?page={page}", max_pages: 4}
+      nawy:
+        locations: [1]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=1&page_number={page}", max_pages: 17}]
+      bayut: {locations: [6th of October], page: "https://www.bayut.eg/en/giza/properties-for-sale-in-6th-of-october/"}
+      aqarmap: {path: cairo/6th-of-october}
+  - id: north-coast
+    name: North Coast
+    lat: 30.8627527
+    lon: 29.27810085
+    coordinate_source: "Dubizzle city location 'north-coast' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/vacation-homes-for-sale/north-coast/?page=1"
+    sites:
+      realestate:
+        locations: [north-coast]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/north-coast?location=4&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [north-coast]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/north-coast/properties-for-sale.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [north-coast]
+        searches:
+          - {search: vacation-homes, url: "https://www.dubizzle.com.eg/en/properties/vacation-homes-for-sale/north-coast/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/north-coast/?page={page}", max_pages: 4}
+      nawy:
+        locations: [3]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=3&page_number={page}", max_pages: 17}]
+      bayut: {locations: [North Coast], page: "https://www.bayut.eg/en/matruh/properties-for-sale-in-north-coast/"}
+      aqarmap: {path: north-coast}
+  - id: mostakbal-city
+    name: Mostakbal City
+    lat: 30.16484
+    lon: 31.55426
+    coordinate_source: "Dubizzle city location 'mostakbal-city' (level 2) geography, in the search page read 2026-10-05: https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/mostakbal-city/?page=1"
+    sites:
+      realestate:
+        locations: [mostakbal-city]
+        searches: [{search: all, url: "https://realestate.eg/en/listings/mostakbal-city?location=9&page={page}", max_pages: 8}]
+      propertyfinder:
+        locations: [mostakbal-city-future-city, mostakbal-city---future-city]
+        searches: [{search: all, url: "https://www.propertyfinder.eg/en/buy/cairo/properties-for-sale-mostakbal-city-future-city.html?page={page}", max_pages: 9}]
+      dubizzle:
+        locations: [mostakbal-city]
+        searches:
+          - {search: apartments-duplex, url: "https://www.dubizzle.com.eg/en/properties/apartments-duplex-for-sale/mostakbal-city/?page={page}", max_pages: 4}
+          - {search: villas, url: "https://www.dubizzle.com.eg/en/properties/villas-for-sale/mostakbal-city/?page={page}", max_pages: 4}
+      nawy:
+        locations: [10]
+        searches: [{search: all, url: "https://www.nawy.com/search?category=property&areas=10&page_number={page}", max_pages: 17}]
+      bayut: {locations: [Mostakbal City], page: "https://www.bayut.eg/en/cairo/properties-for-sale-in-mostakbal-city/"}
+      aqarmap: {path: cairo/new-cairo/lmstqbl-syty}   # Aqarmap files Mostakbal City under New Cairo
+
+rules:
+  # The unit types compared, as the sites' labels are named in sites.py (UNIT_TYPES). A listing of another known home
+  # type is skipped and counted; a label sites.py does not know is quarantined as "unknown type".
+  unit_types: [Apartment, Villa, Town House, Twin House, Duplex, Penthouse, Chalet, Studio, iVilla, Cabin, Loft]
+  price_per_m2_min: 10000             # a row priced per m2 outside min to max is quarantined
+  price_per_m2_max: 400000
+  min_group_size: 10                  # the notebook's insights leave out a group of fewer listings, and say how many
+
+schedule:                             # when Airflow runs the week (read when Airflow parses the DAG)
+  cron: "0 0 * * 0"                   # weekly; the run reads the week (Sunday to Saturday) its interval ends in
+  timezone: UTC
+
+report:
+  title: Egypt real estate prices     # the Power BI theme name
+  check_area: new-cairo               # the area the Power BI checks C7, C13 and C18 slice on (an id under areas)
+  colours:                            # the Power BI theme (python theme.py)
+    data: ["#2563EB", "#0E1630", "#8DB0FF", "#4A5675", "#1D4FD7", "#C7D7FE"]   # 1st = main series
+    text: "#0E1630"
+    muted: "#4A5675"
+    page: "#F4F6FB"
+    line: "#E2E7F1"
+    danger: "#C2410C"
+  chart_colours:                      # the notebook's charts, dark to sit beside the dark diagrams
+    surface: "#0B1220"
+    text: "#E2E8F0"
+    muted: "#94A3B8"
+    grid: "#334155"
+    ours: "#F59E0B"                   # our units only
+    sites: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"]   # one per site, in gold.dim_site order
+    scale: ["#15253d", "#3987e5"]     # the heatmaps, low to high

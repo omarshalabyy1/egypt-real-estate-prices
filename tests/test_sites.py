@@ -178,19 +178,43 @@ def test_get_retries_429_and_5xx_and_a_404_once_then_fails_loudly(monkeypatch):
 
     monkeypatch.setattr(sites.time, "sleep", lambda seconds: None)
     calls = answers(503, 429, 200)
-    assert sites.get("u").content == b"ok" and len(calls) == 3
+    assert sites.get("u", 2.5).content == b"ok" and len(calls) == 3
     calls = answers(503, 503, 503)
     with pytest.raises(requests.HTTPError):
-        sites.get("u")
+        sites.get("u", 2.5)
     assert len(calls) == 3
     calls = answers(404, 200)
-    assert sites.get("u").content == b"ok" and len(calls) == 2  # a 404 is tried once more
+    assert sites.get("u", 2.5).content == b"ok" and len(calls) == 2  # a 404 is tried once more
     calls = answers(404, 404, 200)
     with pytest.raises(requests.HTTPError):
-        sites.get("u")
+        sites.get("u", 2.5)
     assert len(calls) == 2  # ...and only once
 
 
 def test_zero_price_and_word_rooms_are_none():
     assert sites.decimal(0) is None and sites.decimal("") is None and sites.decimal("abc") is None
     assert sites.integer("studio") is None and sites.integer("3") == 3 and sites.integer(0) == 0
+
+
+def test_each_request_waits_the_sites_pace(monkeypatch):
+    def fake_get(url, timeout):
+        response = requests.Response()
+        response.status_code, response._content, response.url = 200, b"ok", url
+        return response
+    waits = []
+    monkeypatch.setattr(sites.http, "get", fake_get)
+    monkeypatch.setattr(sites.time, "sleep", waits.append)
+    sites.get("u", sites.PACE["nawy"])
+    assert waits == [2.5]  # nawy's pace_seconds in config/client.yaml
+
+
+def test_the_searches_and_locations_come_from_the_config():
+    assert len(sites.SEARCHES) == 30  # 6 areas: realestate, Property Finder and Nawy one search each, Dubizzle two
+    assert [s["area_id"] for s in sites.SEARCHES if s["source"] == "dubizzle"][:4] == ["new-cairo", "new-cairo",
+                                                                                       "new-administrative-capital",
+                                                                                       "new-administrative-capital"]
+    assert sites.NAWY_AREAS[10] == "mostakbal-city" and sites.PROPERTYFINDER_AREAS["mostakbal-city---future-city"] == "mostakbal-city"
+
+
+def test_the_demo_compares_every_home_type_the_sites_know():
+    assert sites.RESIDENTIAL == set(sites.UNIT_TYPES.values()) and not sites.NOT_COMPARED

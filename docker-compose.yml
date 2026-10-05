@@ -3,7 +3,8 @@
 #   docker compose up -d --build   # Airflow http://127.0.0.1:8101 (no login), warehouse localhost:5451
 #   docker compose down            # stops everything; the data volumes stay
 #
-# Settings come from .env (gitignored; copy .env.example). Airflow keeps its own records in
+# Settings come from .env (gitignored; copy .env.example): the password, and the two host ports
+# (WAREHOUSE_PORT, AIRFLOW_PORT) when 5451 or 8101 is taken. Airflow keeps its own records in
 # airflow-db and never touches the warehouse's Postgres.
 
 name: egypt-real-estate-prices
@@ -17,7 +18,7 @@ services:
       POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD:?set in .env}
       POSTGRES_DB: prices
     ports:
-      - "127.0.0.1:5451:5432"
+      - "127.0.0.1:${WAREHOUSE_PORT:-5451}:5432"
     volumes:
       - warehouse-data:/var/lib/postgresql/data
     healthcheck:
@@ -58,7 +59,7 @@ services:
       WAREHOUSE_PORT: "5432"
       WAREHOUSE_PASSWORD: ${WAREHOUSE_PASSWORD}
     ports:
-      - "127.0.0.1:8101:8080"
+      - "127.0.0.1:${AIRFLOW_PORT:-8101}:8080"
     volumes:
       - airflow-home:/opt/airflow
       - ./dags:/opt/airflow/dags

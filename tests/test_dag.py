@@ -41,3 +41,11 @@ def test_a_manual_run_with_no_data_interval_reads_the_week_of_its_run_after():
     # An API trigger with "logical_date": null gives no data_interval_end in the context.
     dag_run = SimpleNamespace(run_after=datetime(2026, 10, 7, 9, 0, tzinfo=timezone.utc))
     assert run_week(dag_run=dag_run) == date(2026, 10, 4)
+
+
+def test_a_run_reads_the_sunday_of_the_schedules_time_zone(monkeypatch):
+    # Sunday 2026-10-11 at midnight in Cairo (UTC+3 then) is Saturday 21:00 UTC: that run reads week 2026-10-11.
+    end = datetime(2026, 10, 10, 21, 0, tzinfo=timezone.utc)
+    assert run_week(data_interval_end=end) == date(2026, 10, 4)  # the demo's schedule is in UTC
+    monkeypatch.setattr(egypt_prices, "TZ", "Africa/Cairo")
+    assert run_week(data_interval_end=end) == date(2026, 10, 11)

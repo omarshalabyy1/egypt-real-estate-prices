@@ -91,6 +91,12 @@ def test_every_row_is_counted_once_and_reconciles():
     tracker.reconcile(counts, "test")
 
 
+def test_a_type_the_client_does_not_compare_is_skipped_not_quarantined(monkeypatch):
+    monkeypatch.setattr(sites, "NOT_COMPARED", {"Villa"})
+    counts, saved, rejected = tracker.check([row(1, unit_type="Villa"), row(2)], set(), {})
+    assert counts == Counter(parsed=2, skipped=1, saved=1) and not rejected
+
+
 def test_ivilla_cabin_and_loft_are_saved_and_a_building_is_skipped():
     rows = [row(1, unit_type=sites.unit_type("iVilla")), row(2, unit_type=sites.unit_type("Cabin")),
             row(3, unit_type=sites.unit_type("Loft")), row(4, unit_type=sites.unit_type("Building"))]
@@ -155,7 +161,7 @@ def fake_site(monkeypatch, priced=True, has_next=True, residential=45):
     """A JSON site whose every page holds 45 rows, `residential` of them apartments in New Cairo."""
     calls = []
 
-    def get(url):
+    def get(url, pace):
         calls.append(url)
         response = requests.Response()
         response.status_code, response._content, response.url = 200, b"page", url
@@ -351,3 +357,72 @@ def test_a_reload_that_saves_a_different_set_passes_the_saved_check():
     finally:
         conn.rollback()
         conn.close()
+
+
+def units_file(monkeypatch, tmp_path, text):
+    monkeypatch.setitem(tracker.CFG, "input_dir", tmp_path)
+    monkeypatch.setattr(tracker, "ROOT", tmp_path.parent)
+    (tmp_path / tracker.CFG["inputs"]["units"]).write_text(text, encoding="utf-8")
+
+
+HEADER = "unit_code,area_id,compound,developer,unit_type,bedrooms,size_m2,asking_price,floor\n"
+
+
+def test_the_demo_units_file_passes_its_checks():
+    units = tracker.read_units()
+    assert len(units) == 60 and list(units[0]) == tracker.UNIT_COLUMNS  # the extra columns are not loaded
+
+
+@pytest.mark.parametrize("body, message", [
+    (HEADER.replace(",size_m2", "") + "U1,new-cairo,C,,Apartment,3,9000000,4\n",
+     "our_units.csv is missing column(s): size_m2"),
+    (HEADER + "U1,alexandria,C,,Apartment,3,100,9000000,4\n",
+     "our_units.csv line 2 (U1): area alexandria is not an id under areas in config/client.yaml"),
+    (HEADER + "U1,new-cairo,C,,Igloo,3,100,9000000,4\n",
+     "our_units.csv line 2 (U1): unit type Igloo is not in rules.unit_types in config/client.yaml"),
+    (HEADER + "U1,new-cairo,C,,Apartment,3,100,9000000,4\nU2,new-cairo,C,,Apartment,3,0,9000000,4\n",
+     "our_units.csv line 3 (U2): size_m2 and asking_price must be numbers above 0"),
+    (HEADER + "U1,new-cairo,C,,Apartment,3,100,-5,4\n",
+     "our_units.csv line 2 (U1): size_m2 and asking_price must be numbers above 0"),
+    (HEADER, "our_units.csv has no units"),
+])
+def test_a_bad_units_file_stops_with_one_line(monkeypatch, tmp_path, body, message):
+    units_file(monkeypatch, tmp_path, body)
+    with pytest.raises(SystemExit) as stop:
+        tracker.read_units()
+    assert str(stop.value).endswith(message) and "\n" not in str(stop.value)
+
+
+def test_a_missing_units_file_names_its_config_key(monkeypatch, tmp_path):
+    monkeypatch.setitem(tracker.CFG, "input_dir", tmp_path)
+    monkeypatch.setattr(tracker, "ROOT", tmp_path.parent)
+    with pytest.raises(SystemExit, match=r"missing input file .*our_units.csv \(inputs.units in config/client.yaml\)"):
+        tracker.read_units()
+
+
+def test_load_silver_checks_the_units_before_touching_the_warehouse(monkeypatch, tmp_path):
+    units_file(monkeypatch, tmp_path, HEADER + "U1,alexandria,C,,Apartment,3,100,9000000,4\n")
+    monkeypatch.setattr(tracker, "connect", lambda: pytest.fail("the warehouse was touched"))
+    with pytest.raises(SystemExit, match="area alexandria"):
+        tracker.load_silver(date(2026, 10, 4))
+
+
+def test_an_empty_week_fails_loudly(monkeypatch, tmp_path):
+    """A week whose automated sites have no finished folder, and a week whose folders hold no page."""
+    class Warehouse:
+        """Stands in for the warehouse: takes every statement, holds nothing."""
+        info = SimpleNamespace(dbname="prices")
+        __enter__, __exit__ = (lambda self: self), (lambda self, *a: None)
+        execute = lambda self, *a: self  # noqa: E731
+        cursor = lambda self: self  # noqa: E731
+        executemany = lambda self, *a: None  # noqa: E731
+        fetchone = lambda self: (0,)  # noqa: E731
+    monkeypatch.setattr(tracker, "connect", Warehouse)
+    monkeypatch.setattr(tracker, "RAW", tmp_path)
+    with pytest.raises(RuntimeError, match="has no _done: its extract did not finish"):
+        tracker.load_silver(date(2026, 10, 4))
+    for source in tracker.AUTOMATED:
+        (tmp_path / source / "2026-10-04").mkdir(parents=True)
+        (tmp_path / source / "2026-10-04" / "_done").write_text("")
+    with pytest.raises(RuntimeError, match="No asking price saved for 2026-10-04"):
+        tracker.load_silver(date(2026, 10, 4))

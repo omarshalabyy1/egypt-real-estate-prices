@@ -3,24 +3,21 @@ pages are opened by hand in a real browser (fetch_bayut_aqarmap.py) and parsed h
 copy. parse_<site>(html, url) turns one saved search page into (rows, whether there is a next page),
 each row in the shape of sites.row(). The parsers read only the data the page embeds for its listings
 and never read agent, broker, owner, agency or contact fields. A row's area_id comes from the
-listing's own location, not from the page asked for: a listing outside our six areas gets None."""
+listing's own location, not from the page asked for: a listing outside our areas gets None."""
 
 import json
 import re
 
 from bs4 import BeautifulSoup
 
-from sites import row
+from sites import CFG, CURRENCY, locations, row
 
-# Bayut's own city for our six areas (addressLocality in the page's JSON-LD).
-BAYUT_AREAS = {"New Cairo": "new-cairo", "New Capital City": "new-administrative-capital",
-               "Sheikh Zayed": "sheikh-zayed", "6th of October": "sixth-october-city",
-               "North Coast": "north-coast", "Mostakbal City": "mostakbal-city"}
-# Aqarmap's location slug for our six areas, deepest first: Aqarmap files Mostakbal City under New Cairo.
-AQARMAP_AREAS = {"cairo/new-cairo/lmstqbl-syty": "mostakbal-city", "cairo/new-cairo": "new-cairo",
-                 "cairo/new-administrative-capital": "new-administrative-capital",
-                 "cairo/el-sheikh-zayed-city": "sheikh-zayed", "cairo/6th-of-october": "sixth-october-city",
-                 "north-coast": "north-coast"}
+# Bayut's own city for our areas (addressLocality in the page's JSON-LD).
+BAYUT_AREAS = locations("bayut")
+# Aqarmap's location slug for our areas (each area's aqarmap path), longest first, so a path inside another
+# area's path wins (Aqarmap files some cities under others: see config/client.yaml).
+AQARMAP_AREAS = dict(sorted(((a["sites"]["aqarmap"]["path"], a["id"]) for a in CFG["areas"] if "aqarmap" in a["sites"]),
+                            key=lambda item: -len(item[0])))
 
 
 def json_ld(html):
@@ -38,7 +35,7 @@ def has_next(html):
 
 def parse_bayut(html, url):
     """One search page -> its listings, from the JSON-LD ItemList. The compound is only on the
-    listing card ("Hava, R8, New Capital City, Cairo"): it is the card's deepest place below the city
+    listing card ("<compound>, <district>, <city>, <governorate>"): it is the card's deepest place below the city
     (a compound or a district, the site does not tell them apart), else None. The page gives no
     developer name and no listing date."""
     items = [element["item"] for block in json_ld(html) for node in block.get("@graph", [])
@@ -62,7 +59,7 @@ def parse_bayut(html, url):
             path[0] if len(path) >= 3 else None, None, home.get("accommodationCategory"),
             home.get("numberOfBedrooms"), home.get("numberOfBathroomsTotal"),
             size.get("value") if size.get("unitText") == "SQM" else None,
-            home.get("price") if home.get("priceCurrency") == "EGP" else None, None,
+            home.get("price") if home.get("priceCurrency") == CURRENCY else None, None,
         ))
     return rows, has_next(html)
 
@@ -109,7 +106,7 @@ def parse_aqarmap(html, url):
             "aqarmap", listing["id"], f"https://aqarmap.com.eg/en/listing/{listing['id']}-{listing['slug']}",
             next((area for prefix, area in AQARMAP_AREAS.items() if slug == prefix or slug.startswith(prefix + "/")), None),
             compound, developer, label, attributes.get("rooms"), attributes.get("baths"), listing.get("area"),
-            listing.get("price") if currencies.get(listing["id"]) == "EGP" else None, None,
+            listing.get("price") if currencies.get(listing["id"]) == CURRENCY else None, None,
         ))
     return rows, has_next(html)
 

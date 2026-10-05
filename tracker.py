@@ -1,13 +1,16 @@
 """The weekly steps Airflow runs, one function each, all for one run week (the Sunday its week starts):
 
-- extract(source, run_week): bronze. Read one site's search pages for our six areas and keep every page
+- extract(source, run_week): bronze. Read one site's search pages for our areas and keep every page
   under data/raw/<source>/<run_week>/ with an index.csv line per page read; realestate.eg also reads
   each residential unit's page. A folder with a _done file is a finished week and is skipped (the
   watermark is the run week). A page already on disk is not read again, so a retried task resumes.
 - load_silver(run_week): silver. Parse every source's bronze for the week, check each row, save the
   good rows, quarantine the rest and log the counts per site and area, in one transaction.
 - build_gold(run_week): gold. Rebuild the star for the week.
-- report(run_week): print the week's price cuts and the widest gaps."""
+- report(run_week): print the week's price cuts and the widest gaps.
+
+Every client value (areas, sites, rules, the units file) comes from config/client.yaml through config.py;
+`python tracker.py` checks the units file and stops with one line if it is wrong."""
 
 import csv
 import gzip
@@ -18,31 +21,37 @@ import time
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
-from pathlib import Path
 from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
 import psycopg
 import requests
 from bs4 import BeautifulSoup
+from psycopg import sql
 from psycopg.types.json import Jsonb
 
 import browser_sites
 import sites
+from config import ROOT
 
-ROOT = Path(__file__).parent
+CFG = sites.CFG
 RAW = ROOT / "data" / "raw"
 SITE = "https://realestate.eg"
 USER_AGENT = sites.USER_AGENT
-DELAY = 2.5  # seconds between any two requests
-ROWS_PER_SEARCH = 150  # a search's pages are read until this many residential rows in our areas...
-# ...or the search's max_pages in data/site_areas.csv, or its last page, whichever comes first.
-SOURCES = ["realestate", "propertyfinder", "dubizzle", "nawy", "bayut", "aqarmap"]
-BROWSER = {"bayut", "aqarmap"}  # read by Omar's browser run (fetch_bayut_aqarmap.py), not by Airflow
-PRICE_PER_M2_MIN, PRICE_PER_M2_MAX = 10_000, 400_000  # EGP: a row priced per m² outside this band is quarantined
+DELAY = sites.PACE.get("realestate")  # seconds between any two requests to realestate.eg
+ROWS_PER_SEARCH = 150  # a search's pages are read until this many compared rows in our areas...
+# ...or the search's max_pages in config/client.yaml, or its last page, whichever comes first.
+SOURCES = list(sites.PACE)  # the sites in config/client.yaml, in their order
+BROWSER = set(browser_sites.BROWSER_SITES)  # read by Omar's browser run (fetch_bayut_aqarmap.py), not by Airflow
+AUTOMATED = [s for s in SOURCES if s not in BROWSER]  # read by Airflow
+if unknown := set(SOURCES) - {"realestate", *sites.SITES, *BROWSER}:
+    raise SystemExit(f"config/client.yaml sites: no parser for {', '.join(sorted(unknown))}")
+# A row priced per m² outside this band is quarantined.
+PRICE_PER_M2_MIN, PRICE_PER_M2_MAX = CFG["rules"]["price_per_m2_min"], CFG["rules"]["price_per_m2_max"]
 OUTSIDE_BAND = f"price per m² outside {PRICE_PER_M2_MIN:,} to {PRICE_PER_M2_MAX:,}"
-with open(ROOT / "data" / "areas.csv", newline="", encoding="utf-8") as f:
-    AREAS = [r["area_id"] for r in csv.DictReader(f)]
+AREAS = [a["id"] for a in CFG["areas"]]
+REALESTATE_AREAS = sites.locations("realestate")  # realestate.eg's location slug -> our area
+UNIT_COLUMNS = ["unit_code", "area_id", "compound", "developer", "unit_type", "bedrooms", "size_m2", "asking_price"]
 
 http = requests.Session()
 http.headers["User-Agent"] = USER_AGENT
@@ -106,7 +115,7 @@ def parse_index(html, url):
         cards.append({
             "listing_id": int(listing_id.group(1)) if listing_id else None,
             "url": href,
-            "area_id": urlparse(location["href"]).path.rstrip("/").split("/")[-1] if location else None,
+            "area_id": REALESTATE_AREAS.get(urlparse(location["href"]).path.rstrip("/").split("/")[-1]) if location else None,
             "unit_type": clean(badge.get_text()) if badge else None,
             "compound": clean(subtitle.get_text(" ")) if subtitle else None,
             "bedrooms": next((number(s) for s in specs if "Bed" in s), None),
@@ -142,7 +151,7 @@ def parse_unit(html, url):
         "price_per_m2": round(price / size, 2) if price and size and size > 0 else None,
         "bedrooms": number(facts.get("Bedrooms") or home.get("numberOfRooms")),
         "bathrooms": number(facts.get("Bathrooms") or home.get("numberOfBathroomsTotal")),
-        # The site's compound name as shown, e.g. "The Square New Cairo Compound Al Ahly Sabbour
+        # The site's compound name as shown, e.g. "The Square <area> Compound Al Ahly Sabbour
         # Developments": it holds the area and the developer in words that differ from brand.name.
         "compound": clean((home.get("containedInPlace") or {}).get("name")),
         "developer": clean((product.get("brand") or home.get("seller") or {}).get("name")),
@@ -219,7 +228,7 @@ def read_realestate(robots, search, out):
 
 
 def read_search(source, search, out):
-    """A search's pages until ROWS_PER_SEARCH residential rows in our areas. Only the page's JSON block
+    """A search's pages until ROWS_PER_SEARCH compared rows in our areas. Only the page's JSON block
     is kept, with its contact fields already removed. Canary: page 1 must give a priced row."""
     extract_block, parse = sites.SITES[source]
     kept = 0
@@ -229,7 +238,7 @@ def read_search(source, search, out):
         if path.exists():
             block = json.loads(gunzip(path))
         else:
-            response = sites.get(url)
+            response = sites.get(url, sites.PACE[source])
             fetched_at = datetime.now(timezone.utc)
             block = extract_block(response.content.decode("utf-8"), url)
             keep(path, json.dumps(block, ensure_ascii=False).encode("utf-8"))
@@ -361,14 +370,14 @@ def reconcile(counts, where):
 
 
 def check(rows, seen, problems, typed=frozenset()):
-    """One area's rows -> (counts, rows to save, (reason, row) to quarantine). A row outside our six
-    areas or of a non-residential type is skipped; a listing already read this run (seen), or a row
-    without a unit type whose listing the run also read with one (typed), is a duplicate; then a page
-    problem, an unknown type, a missing price or size, or a price per m² outside the band quarantines it."""
+    """One area's rows -> (counts, rows to save, (reason, row) to quarantine). A row outside our areas,
+    of a non-residential type or of a type the client does not compare is skipped; a listing already
+    read this run (seen), or a row without a unit type whose listing the run also read with one
+    (typed), is a duplicate; then a page problem, an unknown type, a missing price or size, or a price per m² outside the band quarantines it."""
     counts, saved, rejected = Counter(parsed=len(rows)), [], []
     for r in rows:
         key = (r["source"], r["source_listing_id"])
-        if r["area_id"] not in AREAS or r["unit_type"] in sites.NON_RESIDENTIAL:
+        if r["area_id"] not in AREAS or r["unit_type"] in sites.NON_RESIDENTIAL | sites.NOT_COMPARED:
             counts["skipped"] += 1
             continue
         if key in seen or (r["unit_type"] is None and key in typed):
@@ -389,15 +398,40 @@ def check(rows, seen, problems, typed=frozenset()):
     return counts, saved, rejected
 
 
-def load_reference(conn):
-    """The areas (upserted) and our units (replaced) from data/."""
-    areas = read_csv(ROOT / "data" / "areas.csv")
+def read_units():
+    """The client's units (inputs.units in config/client.yaml), checked before the warehouse is touched. A
+    missing file or column, an area not in the config, a type not compared, or a size or price that is not a
+    number above 0 stops the run with one line. Extra columns are ignored."""
+    path = CFG["input_dir"] / CFG["inputs"]["units"]
+    name = path.relative_to(ROOT).as_posix()
+    if not path.exists():
+        raise SystemExit(f"missing input file {name} (inputs.units in config/client.yaml)")
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        if missing := [c for c in UNIT_COLUMNS if c not in (reader.fieldnames or [])]:
+            raise SystemExit(f"{name} is missing column(s): {', '.join(missing)}")
+        units = [{c: u[c] for c in UNIT_COLUMNS} for u in reader]
+    if not units:
+        raise SystemExit(f"{name} has no units")
+    for line, u in enumerate(units, start=2):
+        where = f"{name} line {line} ({u['unit_code']})"
+        if u["area_id"] not in AREAS:
+            raise SystemExit(f"{where}: area {u['area_id']} is not an id under areas in config/client.yaml")
+        if u["unit_type"] not in sites.RESIDENTIAL:
+            raise SystemExit(f"{where}: unit type {u['unit_type']} is not in rules.unit_types in config/client.yaml")
+        if not (sites.decimal(u["size_m2"]) and sites.decimal(u["asking_price"])):
+            raise SystemExit(f"{where}: size_m2 and asking_price must be numbers above 0")
+    return units
+
+
+def load_reference(conn, units):
+    """The areas from config/client.yaml (upserted) and our units from read_units() (replaced)."""
+    areas = [{"area_id": a["id"], "name": a["name"], "lat": a.get("lat"), "lon": a.get("lon"),
+              "coordinate_source": a.get("coordinate_source")} for a in CFG["areas"]]
     conn.cursor().executemany(
         "INSERT INTO silver.area (area_id, name, lat, lon, coordinate_source) VALUES (%(area_id)s, %(name)s,"
         " %(lat)s, %(lon)s, %(coordinate_source)s) ON CONFLICT (area_id) DO UPDATE SET name = EXCLUDED.name,"
-        " lat = EXCLUDED.lat, lon = EXCLUDED.lon, coordinate_source = EXCLUDED.coordinate_source",
-        [{k: v or None for k, v in a.items()} for a in areas])
-    units = read_csv(ROOT / "data" / "our_units.csv")
+        " lat = EXCLUDED.lat, lon = EXCLUDED.lon, coordinate_source = EXCLUDED.coordinate_source", areas)
     conn.execute("DELETE FROM silver.our_unit")
     conn.cursor().executemany(
         "INSERT INTO silver.our_unit (unit_code, area_id, compound, developer, unit_type, bedrooms, size_m2,"
@@ -472,11 +506,16 @@ def check_saved(conn, run_week, keys):
 
 def load_silver(run_week):
     """Parse every source's bronze for the week and load silver in one transaction. A site Airflow reads
-    without _done fails the run; a browser site's folder is used when Omar's run has finished it."""
+    without _done fails the run; a browser site's folder is used when Omar's run has finished it. The
+    units file is checked first; the Power BI checks' area is set on the database, so the notebook and
+    Power BI see it from their own connections."""
+    units = read_units()
     with connect() as conn:
         conn.execute((ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute(sql.SQL("ALTER DATABASE {} SET client.check_area = {}").format(
+            sql.Identifier(conn.info.dbname), sql.Literal(CFG["report"]["check_area"])))
     with connect() as conn:
-        load_reference(conn)
+        load_reference(conn, units)
         load_fetch_log(conn, run_week)
         # The week's quarantine is derived from its bronze: a reload replaces it. Prices are only ever added.
         conn.execute("DELETE FROM silver.quarantine WHERE run_week = %s", (run_week,))
@@ -545,11 +584,16 @@ def report(run_week):
             " JOIN gold.dim_area a USING (area_key) JOIN gold.dim_compound d USING (compound_key)"
             " JOIN gold.dim_property_type t USING (type_key) WHERE c.week_key = %s AND c.is_cut"
             " ORDER BY c.change_pct", (run_week,)).fetchall()
-        print(f"Week of {run_week}: {len(cuts)} competitor price cuts per m2")
+        print(f"{CFG['client']['name']}, week of {run_week}: {len(cuts)} competitor price cuts per m2")
         for source, listing_id, area, compound, unit_type, old, new, pct in cuts:
-            print(f"- {source} {listing_id} {unit_type} in {compound} ({area}): {old} -> {new} EGP/m2 ({pct}%)")
+            print(f"- {source} {listing_id} {unit_type} in {compound} ({area}): {old} -> {new}"
+                  f" {CFG['client']['currency']}/m2 ({pct}%)")
         print("Areas by the median gap of our units to the market, widest first:")
         for rank, area, median, cheaper, compared in conn.execute(
             "SELECT g.gap_rank, a.name, g.median_gap_pct, g.pct_listings_cheaper, g.units_compared"
             " FROM gold.area_gap g JOIN gold.dim_area a USING (area_key) ORDER BY g.gap_rank").fetchall():
             print(f"{rank}. {area}: {median}% median gap over {compared} units; {cheaper}% of listings ask less per m2")
+
+
+if __name__ == "__main__":
+    print(f"{CFG['inputs']['units']}: {len(read_units())} units, every check passed")

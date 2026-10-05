@@ -1,4 +1,5 @@
-"""Run after a weekly run: writes data/our_units.csv, the client's own units. The client is unnamed, so
+"""Demo tooling, not part of a client's run. Run after a weekly run: writes the demo's units
+(data/input/our_units.csv, inputs.units in config/client.yaml). The demo client is unnamed, so
 its units are generated: ten resale units per area, 60 in all, each inside a real compound that has at
 least 3 listings in silver for the latest run week (named and with the developer as a site writes them),
 each priced per m² at a seeded random -15% to +15% around the market median for its area and type in
@@ -8,13 +9,12 @@ A pair of area and type with no listing that week uses the same type's median po
 a type with no listing anywhere uses the area's Apartment median. Then reload and rebuild gold:
 
     python make_units.py
-    python -c "import tracker, datetime; c = tracker.connect(); tracker.load_reference(c); c.commit(); tracker.build_gold(datetime.date(2026, 10, 4))"
+    python -c "import tracker, datetime; c = tracker.connect(); tracker.load_reference(c, tracker.read_units()); c.commit(); tracker.build_gold(datetime.date(2026, 10, 4))"
 """
 
 import csv
 import random
 from collections import Counter
-from pathlib import Path
 
 import tracker
 
@@ -76,8 +76,9 @@ for area_id, (prefix, types) in UNITS.items():
             "asking_price": int(round(price_per_m2 * size, -4)),  # asking prices are round numbers
         })
 
-with open(Path(__file__).parent / "data" / "our_units.csv", "w", newline="", encoding="utf-8") as f:
+path = tracker.CFG["input_dir"] / tracker.CFG["inputs"]["units"]
+with open(path, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
-print(f"{len(rows)} units written to data/our_units.csv; fallback medians used: {dict(fallbacks) or 'none'}")
+print(f"{len(rows)} units written to {path.name}; fallback medians used: {dict(fallbacks) or 'none'}")

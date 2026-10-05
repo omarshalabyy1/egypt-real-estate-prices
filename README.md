@@ -128,7 +128,7 @@ pip install -r analysis/requirements.txt
 jupyter lab analysis/analysis.ipynb  # or headless:
 python -m jupyter nbconvert --to notebook --execute --inplace analysis/analysis.ipynb
 pip install -r requirements.txt pytest
-export $(grep '^WAREHOUSE_PASSWORD=' .env)  # else the warehouse tests skip
+export $(grep -E '^(WAREHOUSE_PASSWORD|WAREHOUSE_PORT)=' .env)  # else the warehouse tests skip
 pytest
 ```
 
@@ -149,7 +149,8 @@ on the slowest site at one request every <!--nb:live_read_request_seconds-->2.5<
 | [dags/egypt_prices.py](dags/egypt_prices.py) | The weekly Airflow DAG `egypt_real_estate_prices` |
 | [sql/schema.sql](sql/schema.sql) | The bronze, silver and gold tables and the gold views |
 | [docs/layers.svg](docs/layers.svg) | The bronze, silver and gold layers |
-| [data/](data/) | The areas, each site's search address per area, and our units |
+| [config/client.yaml](config/client.yaml) | Every client value: the areas and each site's search address for them, the sites and their pace, the rules, the schedule, the colours |
+| [data/input/](data/input/) | Our units ([columns](data/input/README.md)), checked before the warehouse is touched |
 | [make_units.py](make_units.py) | How our units were made (run once) |
 | [analysis/](analysis/) | The notebook behind every number |
 | [powerbi/](powerbi/) | The report, step by step |
@@ -169,7 +170,7 @@ on the slowest site at one request every <!--nb:live_read_request_seconds-->2.5<
     [Bayut Egypt](https://www.bayut.eg) and [Aqarmap](https://aqarmap.com.eg).
 - **No contact data:** contact details are kept neither in the warehouse nor in the repo; the raw
   pages stay on the machine that read them.
-- **Our units** ([data/our_units.csv](data/our_units.csv)) are made up by
+- **Our units** ([data/input/our_units.csv](data/input/our_units.csv)) are made up by
   [make_units.py](make_units.py): units inside real compounds seen on the sites, each priced near
   the market for its type and area, some above and some below. The client is not named; the
   competing listings are real.

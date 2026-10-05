@@ -101,3 +101,11 @@ def test_bayut_page_without_item_list_fails_loudly():
     cards_removed = page("bayut").split("<ul>")[0]
     with pytest.raises(RuntimeError):
         browser_sites.parse_bayut(cards_removed, "u")
+
+
+def test_aqarmap_matches_the_deepest_path_first():
+    """Aqarmap files Mostakbal City under New Cairo: its listings must not become New Cairo rows."""
+    paths = list(browser_sites.AQARMAP_AREAS)
+    assert paths.index("cairo/new-cairo/lmstqbl-syty") < paths.index("cairo/new-cairo")
+    slug = "cairo/new-cairo/lmstqbl-syty/compounds/some-compound"
+    assert next(a for p, a in browser_sites.AQARMAP_AREAS.items() if slug == p or slug.startswith(p + "/")) == "mostakbal-city"
