@@ -27,14 +27,14 @@
   <circle cx="830" cy="150" r="190" fill="url(#glow)"/>
 
   <text x="50" y="100" class="title">Egypt real estate prices</text>
-  <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">…</tspan> competing listings compared with ours every week;</text>
-  <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">…</tspan>% in <tspan id="nb-widest_gap_area">…</tspan></tspan>, against the area median.</text>
+  <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">5,782</tspan> competing listings compared with ours every week;</text>
+  <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">+7.4</tspan>% in <tspan id="nb-widest_gap_area">6th of October</tspan></tspan>, against the area median.</text>
 
   <g>
     <rect x="50" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
-    <text x="96" y="218" class="pill" text-anchor="middle">6 sites</text>
+    <text x="96" y="218" class="pill" text-anchor="middle"><tspan id="nb-sites_read">6</tspan> sites</text>
     <rect x="152" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
-    <text x="198" y="218" class="pill" text-anchor="middle">6 areas</text>
+    <text x="198" y="218" class="pill" text-anchor="middle"><tspan id="nb-areas_read">6</tspan> areas</text>
     <rect x="254" y="196" width="196" height="34" rx="17" fill="none" stroke="#F59E0B"/>
     <text x="352" y="218" class="pill" text-anchor="middle" style="fill:#F59E0B">every asking price kept</text>
   </g>

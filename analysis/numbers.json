@@ -1,0 +1,266 @@
+{
+  "latest_run_week": "2026-10-04",
+  "first_run_week": "2026-10-04",
+  "run_weeks": 1,
+  "price_observations": 5782,
+  "listings_compared": 5782,
+  "sites_read": 6,
+  "areas_read": 6,
+  "rows_parsed": 6988,
+  "rows_skipped": 960,
+  "rows_duplicate": 220,
+  "rows_saved": 5782,
+  "listings_by_site": {
+    "realestate": 936,
+    "propertyfinder": 974,
+    "dubizzle": 2152,
+    "nawy": 858,
+    "bayut": 143,
+    "aqarmap": 719
+  },
+  "listings_by_area": {
+    "new_cairo": 941,
+    "new_capital": 877,
+    "sheikh_zayed": 969,
+    "sixth_october": 982,
+    "north_coast": 1030,
+    "mostakbal_city": 983
+  },
+  "listings_by_site_and_area": {
+    "realestate": {
+      "new_cairo": 151,
+      "new_capital": 101,
+      "sheikh_zayed": 168,
+      "sixth_october": 154,
+      "north_coast": 184,
+      "mostakbal_city": 178
+    },
+    "propertyfinder": {
+      "new_cairo": 179,
+      "new_capital": 159,
+      "sheikh_zayed": 160,
+      "sixth_october": 161,
+      "north_coast": 156,
+      "mostakbal_city": 159
+    },
+    "dubizzle": {
+      "new_cairo": 359,
+      "new_capital": 360,
+      "sheikh_zayed": 354,
+      "sixth_october": 360,
+      "north_coast": 359,
+      "mostakbal_city": 360
+    },
+    "nawy": {
+      "new_cairo": 127,
+      "new_capital": 118,
+      "sheikh_zayed": 141,
+      "sixth_october": 157,
+      "north_coast": 163,
+      "mostakbal_city": 152
+    },
+    "bayut": {
+      "new_cairo": 24,
+      "new_capital": 24,
+      "sheikh_zayed": 24,
+      "sixth_october": 24,
+      "north_coast": 23,
+      "mostakbal_city": 24
+    },
+    "aqarmap": {
+      "new_cairo": 101,
+      "new_capital": 115,
+      "sheikh_zayed": 122,
+      "sixth_october": 126,
+      "north_coast": 145,
+      "mostakbal_city": 110
+    }
+  },
+  "coverage_by_site": {
+    "realestate": {
+      "stated_total": 13242,
+      "rows_parsed": 1650,
+      "rows_saved": 936,
+      "read_pct": 12.46
+    },
+    "propertyfinder": {
+      "stated_total": 124083,
+      "rows_parsed": 983,
+      "rows_saved": 974,
+      "read_pct": 0.79
+    },
+    "dubizzle": {
+      "stated_total": 120186,
+      "rows_parsed": 2160,
+      "rows_saved": 2152,
+      "read_pct": 1.8
+    },
+    "nawy": {
+      "stated_total": 18636,
+      "rows_parsed": 1104,
+      "rows_saved": 858,
+      "read_pct": 5.92
+    },
+    "bayut": {
+      "stated_total": 123108,
+      "rows_parsed": 144,
+      "rows_saved": 143,
+      "read_pct": 0.12
+    },
+    "aqarmap": {
+      "stated_total": 748210,
+      "rows_parsed": 947,
+      "rows_saved": 719,
+      "read_pct": 0.13
+    }
+  },
+  "median_m2_north_coast": 114285.71,
+  "p25_m2_north_coast": 70000.0,
+  "p75_m2_north_coast": 158232.05,
+  "median_m2_new_cairo": 75842.7,
+  "p25_m2_new_cairo": 54385.96,
+  "p75_m2_new_cairo": 104597.7,
+  "median_m2_sheikh_zayed": 61926.61,
+  "p25_m2_sheikh_zayed": 41420.45,
+  "p75_m2_sheikh_zayed": 92658.16,
+  "median_m2_sixth_october": 57849.11,
+  "p25_m2_sixth_october": 40199.88,
+  "p75_m2_sixth_october": 85714.29,
+  "median_m2_mostakbal_city": 55859.38,
+  "p25_m2_mostakbal_city": 40038.46,
+  "p75_m2_mostakbal_city": 74165.16,
+  "median_m2_new_capital": 53000.0,
+  "p25_m2_new_capital": 34841.1,
+  "p75_m2_new_capital": 82157.26,
+  "our_units": 60,
+  "units_without_comparison": 0,
+  "units_above_market": 35,
+  "gap_pct_sixth_october": 7.39,
+  "our_units_m2_sixth_october": [
+    46700.0,
+    49515.15,
+    53555.56,
+    53828.57,
+    53935.48,
+    59294.12,
+    61225.81,
+    64083.33,
+    68320.0,
+    69888.89
+  ],
+  "gap_pct_sheikh_zayed": 2.81,
+  "our_units_m2_sheikh_zayed": [
+    46368.42,
+    50777.78,
+    57523.81,
+    58039.22,
+    58346.15,
+    61016.95,
+    62139.53,
+    67487.18,
+    71013.33,
+    74159.09
+  ],
+  "gap_pct_new_capital": 1.8,
+  "our_units_m2_new_capital": [
+    32666.67,
+    33100.0,
+    35736.84,
+    37448.28,
+    38545.45,
+    57904.76,
+    85700.0,
+    86745.1,
+    87487.8,
+    96592.59
+  ],
+  "gap_pct_new_cairo": -0.74,
+  "our_units_m2_new_cairo": [
+    61675.68,
+    61714.29,
+    63200.0,
+    67689.66,
+    70000.0,
+    70666.67,
+    79259.26,
+    83692.31,
+    103179.49,
+    103725.0
+  ],
+  "gap_pct_mostakbal_city": -0.62,
+  "our_units_m2_mostakbal_city": [
+    40000.0,
+    42166.67,
+    50880.0,
+    51680.0,
+    52631.58,
+    57105.26,
+    63285.71,
+    66260.87,
+    75055.56,
+    96072.73
+  ],
+  "gap_pct_north_coast": -0.05,
+  "our_units_m2_north_coast": [
+    80666.67,
+    83407.41,
+    84086.96,
+    93500.0,
+    98000.0,
+    99111.11,
+    104620.69,
+    122615.38,
+    145968.75,
+    163711.11
+  ],
+  "scale_min_m2": 30000,
+  "scale_max_m2": 170000,
+  "listings_in_our_types": 5087,
+  "listings_cheaper_than_ours": 2580,
+  "share_listings_cheaper_than_ours": 50.717515234912526,
+  "share_cheaper_mostakbal_city": 47.51322751322751,
+  "share_cheaper_new_capital": 53.10262529832935,
+  "share_cheaper_new_cairo": 51.995438996579246,
+  "share_cheaper_north_coast": 49.930651872399444,
+  "share_cheaper_sheikh_zayed": 50.62146892655367,
+  "share_cheaper_sixth_october": 51.40073081607795,
+  "share_cheaper_by_type": {
+    "Apartment": 48.67298578199052,
+    "Chalet": 48.940677966101696,
+    "Duplex": 50.0,
+    "Penthouse": 58.139534883720934,
+    "Town House": 51.699463327370296,
+    "Twin House": 50.171821305841924,
+    "Villa": 53.535353535353536
+  },
+  "gold_area_gap_pct_listings_cheaper": {
+    "sixth_october": 51.35,
+    "sheikh_zayed": 49.86,
+    "new_capital": 48.85,
+    "new_cairo": 53.52,
+    "mostakbal_city": 48.36,
+    "north_coast": 48.16
+  },
+  "compounds_covered": 1157,
+  "developers_covered": 307,
+  "area_compounds_covered": 1176,
+  "listings_without_compound": 658,
+  "listings_without_developer": 3588,
+  "price_cuts": 0,
+  "price_rises": 0,
+  "price_changes": 0,
+  "widest_gap_area": "6th of October",
+  "widest_gap_pct": 7.39,
+  "quarantined_rows": 26,
+  "quarantine_share_pct": 0.4476584022038568,
+  "quarantine_by_reason": {
+    "price missing or <= 0": 11,
+    "unit page not read": 1,
+    "unknown type": 14
+  },
+  "run_id": "manual__run_week_2026-10-04",
+  "run_seconds": 1944.942728,
+  "run_minutes": 32.41571213333334,
+  "card_title": "Our asking price per m² against 5,782 competing listings, every week",
+  "card_result": "5,782 competing listings from 6 sites in 6 areas read and checked, 1,157 compounds and 307 developers covered; our units' widest gap is +7.4% in 6th of October, and 26 rows (0.4%) were set aside with their reason."
+}

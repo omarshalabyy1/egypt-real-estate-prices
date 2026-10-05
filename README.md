@@ -47,22 +47,22 @@ any earlier week, and a cut is a listing asking less per m² than it did the wee
 
 ## 📈 The result
 
-**<!--nb:listings_compared-->…<!--/nb--> competing listings compared with our units across six
-areas and <!--nb:sites_read-->…<!--/nb--> sites: the widest gap is
-in <!--nb:widest_gap_area-->…<!--/nb-->, at <!--nb:widest_gap_pct-->…<!--/nb-->% against the
+**<!--nb:listings_compared-->5,782<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
+areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
+in <!--nb:widest_gap_area-->6th of October<!--/nb-->, at <!--nb:widest_gap_pct-->+7.4<!--/nb-->% against the
 area median.** The checks behind every number are in [the notebook](analysis/analysis.ipynb).
 
-- **<!--nb:price_observations-->…<!--/nb--> asking prices** kept
-  over <!--nb:run_weeks-->…<!--/nb--> weekly runs
-  (<!--nb:first_run_week-->…<!--/nb--> to <!--nb:latest_run_week-->…<!--/nb-->).
-- **<!--nb:compounds_covered-->…<!--/nb--> compounds** from <!--nb:developers_covered-->…<!--/nb--> developers
-  covered, against our <!--nb:our_units-->…<!--/nb--> units.
-- **<!--nb:share_listings_cheaper_than_ours-->…<!--/nb-->% of competing listings** ask less per m²
+- **<!--nb:price_observations-->5,782<!--/nb--> asking prices** kept
+  over <!--nb:run_weeks-->1<!--/nb--> weekly runs
+  (<!--nb:first_run_week-->4 October 2026<!--/nb--> to <!--nb:latest_run_week-->4 October 2026<!--/nb-->).
+- **<!--nb:compounds_covered-->1,157<!--/nb--> compounds** from <!--nb:developers_covered-->307<!--/nb--> developers
+  covered, against our <!--nb:our_units-->60<!--/nb--> units.
+- **<!--nb:share_listings_cheaper_than_ours-->50.7<!--/nb-->% of competing listings** ask less per m²
   than our unit of the same type in the same area.
-- **<!--nb:price_cuts-->…<!--/nb--> price cuts** in the latest run week: listings that asked less
+- **<!--nb:price_cuts-->0<!--/nb--> price cuts** in the latest run week: listings that asked less
   per m² than the week before.
-- **<!--nb:quarantined_rows-->…<!--/nb--> rows set aside** with their reason
-  (<!--nb:quarantine_share_pct-->…<!--/nb-->% of all rows read); every run's counts reconcile site
+- **<!--nb:quarantined_rows-->26<!--/nb--> rows set aside** with their reason
+  (<!--nb:quarantine_share_pct-->0.4<!--/nb-->% of all rows read); every run's counts reconcile site
   by site and area by area.
 
 <p align="center">
@@ -111,9 +111,10 @@ pip install -r requirements.txt pytest && pytest
 ```
 
 Bayut Egypt and Aqarmap are read once a week, before the run, by `python fetch_bayut_aqarmap.py`
-in a visible browser window on my machine. I handle any check, cookie banner or login myself, and
+in a visible browser window on my machine; before the first browser run, `pip install playwright`
+and `python -m playwright install chromium`. I handle any check, cookie banner or login myself, and
 the session is kept in `.browser-profile/` (gitignored, never committed). A fresh clone rebuilds
-its history by a live read of the sites (a weekly run takes <!--nb:run_minutes-->…<!--/nb--> minutes),
+its history by a live read of the sites (a weekly run takes <!--nb:run_minutes-->32<!--/nb--> minutes),
 because the raw pages stay on the machine: they contain sellers' contact details.
 
 | Where | What |
@@ -143,7 +144,8 @@ because the raw pages stay on the machine: they contain sellers' contact details
     [Nawy](https://www.nawy.com).
   - Read once a week by a visible browser on one machine, one page every 5 seconds:
     [Bayut Egypt](https://www.bayut.eg) and [Aqarmap](https://aqarmap.com.eg).
-- **No contact data:** no agent, broker or owner names, phone numbers or emails are stored.
+- **No contact data:** contact details are kept neither in the warehouse nor in the repo; the raw
+  pages stay on the machine that read them.
 - **Our units** ([data/our_units.csv](data/our_units.csv)) are made up by
   [make_units.py](make_units.py): units inside real compounds seen on the sites, each priced near
   the market for its type and area, some above and some below. The client is not named; the

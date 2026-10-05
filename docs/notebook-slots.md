@@ -14,6 +14,7 @@ otherwise, "latest run week" is the newest week in gold.dim_week.
 README.md
 listings_compared                 count of competing listings (gold.fact_listing_price rows) in the latest run week in the six areas
 sites_read                        count of sites with at least one row in gold.fact_listing_price in the latest run week
+areas_read                        count of areas with at least one row in gold.fact_listing_price in the latest run week
 widest_gap_area                   area name (as in silver.area) where our units' median price per m² is furthest from the area median, latest run week
 widest_gap_pct                    that gap in percent, signed (+ means we ask more than the area median)
 price_observations                count of rows in silver.price_observation, all run weeks
@@ -30,7 +31,7 @@ quarantine_share_pct              quarantined rows as a percent of all rows read
 run_minutes                       minutes of the latest successful DAG run, start to end
 
 docs/header.svg
-listings_compared, widest_gap_pct, widest_gap_area   as above
+listings_compared, widest_gap_pct, widest_gap_area, sites_read, areas_read   as above
 
 docs/price-gap-by-area.svg (the notebook redraws this file, positions included)
 scale_min_m2                      left end of the shared price-per-m² scale, EGP
