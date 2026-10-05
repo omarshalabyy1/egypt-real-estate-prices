@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="1000" height="500" role="img" aria-label="The layers, left to right. Bronze: raw pages gzipped and never changed, filed by site and run week, with bronze.fetch_log. Silver: silver.listing, silver.price_observation, silver.quarantine, silver.run_log, silver.our_unit, silver.area. Gold: a star with gold.fact_listing_price in the middle and dim_site, dim_area, dim_compound, dim_property_type and dim_week around it, plus fact_our_unit and the views price_change, unit_gap and area_gap. Then Power BI. Airflow runs it weekly: extract, transform, load, build gold, report. The watermark is the run week.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#2563EB"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #0E1630; }
+    .sub { font-size: 13.5px; fill: #475569; }
+    .layer { font-size: 16px; font-weight: 700; fill: #0E1630; }
+    .note { font-size: 12.5px; fill: #475569; }
+    .tbl { font-size: 12.5px; fill: #0E1630; font-family: Consolas, "Cascadia Code", monospace; }
+    .chip { font-size: 12px; fill: #0E1630; }
+    .chipw { font-size: 12px; font-weight: 700; fill: #FFFFFF; }
+    .run { font-size: 13px; font-weight: 600; fill: #2563EB; }
+    .col { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; }
+    .dim { fill: #FFFFFF; stroke: #94A3B8; stroke-width: 1.2; }
+    .flow { stroke: #2563EB; stroke-width: 2; stroke-dasharray: 4 6; animation: flow 1.6s linear infinite; }
+    @keyframes flow { to { stroke-dashoffset: -20; } }
+  </style>
+
+  <rect width="1000" height="500" rx="22" fill="#F4F6FB"/>
+  <rect x="0.75" y="0.75" width="998.5" height="498.5" rx="21.5" fill="none" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="40" y="50" class="title">Bronze, silver, gold, Power BI</text>
+  <text x="40" y="74" class="sub">Each layer only reads the one to its left, so any number in the report can be traced back to the page it came from.</text>
+
+  <!-- the weekly Airflow run across the top -->
+  <line x1="40" y1="108" x2="954" y2="108" class="flow" marker-end="url(#arrow)"/>
+  <rect x="190" y="95" width="474" height="26" rx="13" fill="#F4F6FB"/>
+  <text x="427" y="113" class="run" text-anchor="middle">Airflow, weekly: extract, transform, load, build gold, report</text>
+  <rect x="704" y="94" width="196" height="28" rx="14" fill="#2563EB"/>
+  <text x="802" y="113" class="chipw" text-anchor="middle">watermark: run week</text>
+
+  <!-- Bronze -->
+  <rect class="col" x="40" y="140" width="200" height="320" rx="14"/>
+  <text x="58" y="170" class="layer">Bronze</text>
+  <text x="58" y="192" class="note">raw pages, gzipped,</text>
+  <text x="58" y="210" class="note">never changed</text>
+  <text x="58" y="240" class="tbl">data/raw/&lt;source&gt;/</text>
+  <text x="58" y="258" class="tbl">  &lt;run_week&gt;/</text>
+  <text x="58" y="290" class="tbl">bronze.fetch_log</text>
+  <text x="58" y="326" class="note">Embedded JSON kept</text>
+  <text x="58" y="344" class="note">with agent and broker</text>
+  <text x="58" y="362" class="note">contact fields removed</text>
+
+  <!-- Silver -->
+  <rect class="col" x="256" y="140" width="226" height="320" rx="14"/>
+  <text x="274" y="170" class="layer">Silver</text>
+  <text x="274" y="192" class="note">checked, one table per thing</text>
+  <text x="274" y="226" class="tbl">silver.listing</text>
+  <text x="274" y="243" class="note">key: source + listing id</text>
+  <text x="274" y="270" class="tbl">silver.price_observation</text>
+  <text x="274" y="287" class="note">append-only, per run week</text>
+  <text x="274" y="314" class="tbl">silver.quarantine</text>
+  <text x="274" y="331" class="note">failed rows, with the reason</text>
+  <text x="274" y="358" class="tbl">silver.run_log</text>
+  <text x="274" y="375" class="note">counts per site and area</text>
+  <text x="274" y="402" class="tbl">silver.our_unit</text>
+  <text x="274" y="430" class="tbl">silver.area</text>
+
+  <!-- Gold star -->
+  <rect class="col" x="498" y="140" width="318" height="320" rx="14"/>
+  <text x="516" y="170" class="layer">Gold star</text>
+  <text x="516" y="192" class="note">one row per site, listing, run week</text>
+  <g stroke="#94A3B8" stroke-width="1.5">
+    <line x1="657" y1="282" x2="573" y2="226"/>
+    <line x1="657" y1="282" x2="741" y2="226"/>
+    <line x1="657" y1="282" x2="573" y2="338"/>
+    <line x1="657" y1="282" x2="741" y2="338"/>
+    <line x1="657" y1="282" x2="657" y2="364"/>
+  </g>
+  <rect x="514" y="212" width="118" height="28" rx="6" class="dim"/><text x="573" y="231" class="chip" text-anchor="middle">dim_site</text>
+  <rect x="682" y="212" width="118" height="28" rx="6" class="dim"/><text x="741" y="231" class="chip" text-anchor="middle">dim_area</text>
+  <rect x="514" y="324" width="118" height="28" rx="6" class="dim"/><text x="573" y="343" class="chip" text-anchor="middle">dim_compound</text>
+  <rect x="682" y="324" width="118" height="28" rx="6" class="dim"/><text x="741" y="343" class="chip" text-anchor="middle">dim_week</text>
+  <rect x="588" y="364" width="138" height="28" rx="6" class="dim"/><text x="657" y="383" class="chip" text-anchor="middle">dim_property_type</text>
+  <rect x="572" y="262" width="170" height="40" rx="8" fill="#2563EB"/>
+  <text x="657" y="287" class="chipw" text-anchor="middle">fact_listing_price</text>
+  <text x="516" y="420" class="tbl">fact_our_unit</text>
+  <text x="516" y="442" class="note">views: price_change, unit_gap, area_gap</text>
+
+  <!-- Power BI -->
+  <rect x="832" y="140" width="128" height="320" rx="14" fill="#2563EB" fill-opacity="0.08" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="850" y="170" class="layer">Power BI</text>
+  <text x="850" y="192" class="note">reads gold only</text>
+  <text x="850" y="232" class="note">Market position</text>
+  <text x="850" y="262" class="note">Compounds and</text>
+  <text x="850" y="280" class="note">developers</text>
+  <text x="850" y="310" class="note">Weekly changes</text>
+
+  <!-- left to right -->
+  <g stroke="#2563EB" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="241" y1="300" x2="253" y2="300"/>
+    <line x1="483" y1="300" x2="495" y2="300"/>
+    <line x1="817" y1="300" x2="829" y2="300"/>
+  </g>
+</svg>
