@@ -11,6 +11,22 @@ Route each step of a scraping job to the one skill or file it needs. Skills live
 
 Before step 1, read `~/.scraping-profiles/<site>/notes.md` if it exists: which rung worked, the measured rate limit, the selectors, how many items the site itself reports, each with its date. Start at that rung and re-check with one request; treat old notes as a hypothesis. After every job, update the file in a few lines (create it if missing). That is how the skill gets faster on each site.
 
+## Plan the scrape before building
+
+After the probe (step 2) and the two-candidate test, write the plan in about ten lines, show it to Omar, save it in the site notes (or the project's `docs/`), then build. Omar does not need to approve it; he can redirect it.
+
+1. **Goal**: what the data is for and what "complete" means (the site's own count to match).
+2. **Pages and fields**: which page types, which fields, the selectors or JSON keys.
+3. **URL list**: where it comes from (API, sitemap, category pagination, embedded JSON) and how many URLs.
+4. **Tool**: the route step, the force-ladder rung and the skill, with the test numbers that picked it.
+5. **Speed**: concurrency and pages per minute from the site notes or a short ramp; time = pages / pages-per-minute.
+6. **Run**: one-off script, or an Airflow task with its schedule; resumable state if a few hundred pages or more.
+7. **Storage**: raw pages or JSON kept, then the clean table (Postgres or files).
+8. **Checks**: counts at each stage against the site's total, empty-field rates, duplicates.
+9. **Risks and fallback**: what is likely to break (block, layout change, expired session) and the next rung or tool.
+
+Example, Jumia mobile phones, 2026-10-05: goal all phones with price; listing cards `article.prd` (name, price, link); URLs `/mobile-phones/?page=1..54` (title says 2,149+ products); route 4a, rung 2, Scrapling stealth (40/40 vs crawl4ai 0); one session at 8 tabs, 47 pages/min, about 1 minute 10 seconds; check about 2,149 unique links after removing promoted repeats; fallback: real Chrome, then `unlock.py`.
+
 ## Read the signals, jump to the step
 
 | Signal (from `probe.py`, the response or the browser) | Go to |
