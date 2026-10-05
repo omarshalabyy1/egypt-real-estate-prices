@@ -12,8 +12,9 @@ Bayut and Aqarmap refuse plain HTTP readers, so they are a manual step BEFORE th
 runs fetch_bayut_aqarmap.py in a visible browser, which saves their pages under
 data/raw/bayut/<run_week>/ and data/raw/aqarmap/<run_week>/; load_silver includes them when there.
 
-Every task works on the run week of the run's logical date (the Sunday on or before it), never on
-today's date, so a rerun of a week stays that week. A manual run must be given a logical date.
+Every task works on the run week of the end of the run's data interval (the Sunday on or before it),
+never on today's date, so a rerun of a week stays that week. A scheduled run firing on Sunday
+2026-10-11 reads week 2026-10-11; a manual run triggered inside a week reads that week.
 """
 
 from datetime import date, datetime, timedelta, timezone
@@ -22,6 +23,8 @@ from airflow.sdk import dag, task
 from airflow.timetables.interval import DeltaDataIntervalTimetable
 
 import tracker
+
+DAY = "{{ data_interval_end | ds }}"  # the day the run's data interval ends
 
 
 def run_week(day):
@@ -53,10 +56,10 @@ def egypt_real_estate_prices():
     def report(day):
         tracker.report(run_week(day))
 
-    day = "{{ ds }}"  # the run's logical date; rendering fails loudly when a run has none
+    day = DAY
     extracts = [extract.override(task_id=f"extract_{source}")(source, day)
                 for source in ("realestate", "propertyfinder", "dubizzle", "nawy")]
     extracts >> load_silver(day) >> build_gold(day) >> report(day)
 
 
-egypt_real_estate_prices()
+dag = egypt_real_estate_prices()

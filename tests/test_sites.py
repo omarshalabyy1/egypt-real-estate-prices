@@ -146,7 +146,8 @@ def test_strip_contacts_at_any_depth():
 
 
 @pytest.mark.parametrize("label, expected", [
-    ("Apartment", "Apartment"), ("Villa", "Villa"), ("Stand Alone Villa", "Villa"), ("iVilla", "iVilla"), ("Townhouse", "Town House"), ("Town House", "Town House"),
+    ("Apartment", "Apartment"), ("Villa", "Villa"), ("Stand Alone Villa", "Villa"), ("iVilla", "iVilla"), ("IVilla", "iVilla"), ("Cabin", "Cabin"),
+    ("Loft", "Loft"), ("Building", "Building"), ("Townhouse", "Town House"), ("Town House", "Town House"),
     ("Twinhouse", "Twin House"), ("Twin House", "Twin House"), ("Duplex", "Duplex"), ("Penthouse", "Penthouse"),
     ("Chalet", "Chalet"), ("Studio", "Studio"), ("Hotel Apartment", "Hotel Apartment"), ("Office", "Office"),
     ("Administrative", "Administrative"), (None, None),

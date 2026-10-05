@@ -80,7 +80,7 @@ def row(listing_id, area="new-cairo", unit_type="Apartment", price=Decimal("5000
 
 
 def test_every_row_is_counted_once_and_reconciles():
-    rows = [row(1), row(2, area=None), row(3, unit_type="Office"), row(1), row(4, unit_type="iVilla"),
+    rows = [row(1), row(2, area=None), row(3, unit_type="Office"), row(1), row(4, unit_type="Igloo"),
             row(5, price=None), row(6, size=None), row(7), row(8)]
     counts, saved, rejected = tracker.check(rows, set(), {("nawy", "8"): "no JSON-LD"})
     assert counts == Counter(parsed=9, skipped=2, duplicate=1, saved=2, quarantined=4)
@@ -88,6 +88,14 @@ def test_every_row_is_counted_once_and_reconciles():
     assert [reason for reason, _ in rejected] == ["unknown type", "price missing or <= 0", "size missing or <= 0",
                                                   "no JSON-LD"]
     tracker.reconcile(counts, "test")
+
+
+def test_ivilla_cabin_and_loft_are_saved_and_a_building_is_skipped():
+    rows = [row(1, unit_type=sites.unit_type("iVilla")), row(2, unit_type=sites.unit_type("Cabin")),
+            row(3, unit_type=sites.unit_type("Loft")), row(4, unit_type=sites.unit_type("Building"))]
+    counts, saved, _ = tracker.check(rows, set(), {})
+    assert counts == Counter(parsed=4, saved=3, skipped=1)
+    assert [r["unit_type"] for r in saved] == ["iVilla", "Cabin", "Loft"]
 
 
 def test_a_listing_seen_in_an_earlier_area_is_a_duplicate():
@@ -226,6 +234,27 @@ def test_rejected_row_goes_to_quarantine_once():
                             " WHERE url = 'uq-1'").fetchall() == [("price missing or <= 0", "100", True)]
         assert conn.execute("SELECT pages_read, pages_used FROM silver.run_log WHERE area_id = 'test-area'").fetchone() == (
             1, ["test.json.gz"])
+    finally:
+        conn.rollback()
+        conn.close()
+
+
+@needs_warehouse
+def test_a_reload_that_saves_a_different_set_passes_the_saved_check():
+    """Week 2099-01-04 first loaded with listings s-1 and s-2, then reloaded saving s-1 and s-3: the check
+    passes (prices are append-only, s-2 stays); a key that never reached silver fails it. Rolled back."""
+    conn = tracker.connect()
+    try:
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
+        week, part = date(2099, 1, 4), {"pages": ["test.json.gz"], "stated_total": None}
+        for ids in (("s-1", "s-2"), ("s-1", "s-3")):
+            saved = [row(i, area="test-area") for i in ids]
+            tracker.save(conn, week, "nawy", "test-area", part, Counter(parsed=2, saved=2), saved, [])
+            tracker.check_saved(conn, week, {("nawy", i) for i in ids})
+        assert conn.execute("SELECT count(*) FROM silver.price_observation WHERE run_week = %s", (week,)).fetchone()[0] == 3
+        with pytest.raises(RuntimeError, match="not in silver"):
+            tracker.check_saved(conn, week, {("nawy", "s-1"), ("nawy", "never-saved")})
     finally:
         conn.rollback()
         conn.close()

@@ -456,6 +456,15 @@ def save(conn, run_week, source, area_id, part, counts, saved, rejected):
          counts["duplicate"], counts["saved"], counts["quarantined"]))
 
 
+def check_saved(conn, run_week, keys):
+    """Every listing this load saved has its price for the week in silver. Prices are append-only, so the
+    week may also hold prices an earlier load of it saved."""
+    held = set(conn.execute("SELECT source, listing_id FROM silver.price_observation WHERE run_week = %s",
+                            (run_week,)).fetchall())
+    if missing := keys - held:
+        raise RuntimeError(f"{len(missing)} prices saved for {run_week} are not in silver, e.g. {sorted(missing)[:3]}")
+
+
 def load_silver(run_week):
     """Parse every source's bronze for the week and load silver in one transaction. A site Airflow reads
     without _done fails the run; a browser site's folder is used when Omar's run has finished it."""
@@ -466,7 +475,7 @@ def load_silver(run_week):
         load_fetch_log(conn, run_week)
         # The week's quarantine is derived from its bronze: a reload replaces it. Prices are only ever added.
         conn.execute("DELETE FROM silver.quarantine WHERE run_week = %s", (run_week,))
-        seen, total = set(), Counter()
+        seen, total, saved_keys = set(), Counter(), set()
         for source in SOURCES:
             out = folder(source, run_week)
             if not (out / "_done").exists():
@@ -480,15 +489,15 @@ def load_silver(run_week):
                 counts, saved, rejected = check(part["rows"], seen, part["problems"])
                 reconcile(counts, f"{source} {area_id}")
                 save(conn, run_week, source, area_id, part, counts, saved, rejected)
+                saved_keys |= {(r["source"], r["source_listing_id"]) for r in saved}
                 total += counts
                 print(f"{source} {area_id}: {len(set(part['pages']))} pages, {dict(counts)}")
         reconcile(total, "all sources")
-        observations, quarantined = conn.execute(
-            "SELECT (SELECT count(*) FROM silver.price_observation WHERE run_week = %(w)s),"
-            " (SELECT count(*) FROM silver.quarantine WHERE run_week = %(w)s)", {"w": run_week}).fetchone()
-        if (observations, quarantined) != (total["saved"], total["quarantined"]):
-            raise RuntimeError(f"The warehouse holds {observations} prices and {quarantined} quarantined rows"
-                               f" for {run_week}, the run counted {total['saved']} and {total['quarantined']}")
+        check_saved(conn, run_week, saved_keys)
+        quarantined = conn.execute("SELECT count(*) FROM silver.quarantine WHERE run_week = %s", (run_week,)).fetchone()[0]
+        if quarantined != total["quarantined"]:
+            raise RuntimeError(f"The warehouse holds {quarantined} quarantined rows for {run_week}, the run counted"
+                               f" {total['quarantined']}")
         if not total["saved"]:
             raise RuntimeError(f"No asking price saved for {run_week}")
         print(f"{run_week}: {dict(total)}")
