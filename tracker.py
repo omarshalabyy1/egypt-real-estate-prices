@@ -39,6 +39,8 @@ ROWS_PER_SEARCH = 150  # a search's pages are read until this many residential r
 # ...or the search's max_pages in data/site_areas.csv, or its last page, whichever comes first.
 SOURCES = ["realestate", "propertyfinder", "dubizzle", "nawy", "bayut", "aqarmap"]
 BROWSER = {"bayut", "aqarmap"}  # read by Omar's browser run (fetch_bayut_aqarmap.py), not by Airflow
+PRICE_PER_M2_MIN, PRICE_PER_M2_MAX = 10_000, 400_000  # EGP: a row priced per m² outside this band is quarantined
+OUTSIDE_BAND = f"price per m² outside {PRICE_PER_M2_MIN:,} to {PRICE_PER_M2_MAX:,}"
 with open(ROOT / "data" / "areas.csv", newline="", encoding="utf-8") as f:
     AREAS = [r["area_id"] for r in csv.DictReader(f)]
 
@@ -358,23 +360,26 @@ def reconcile(counts, where):
         raise RuntimeError(f"{where}: counts do not reconcile: {dict(counts)}")
 
 
-def check(rows, seen, problems):
+def check(rows, seen, problems, typed=frozenset()):
     """One area's rows -> (counts, rows to save, (reason, row) to quarantine). A row outside our six
-    areas or of a non-residential type is skipped; a listing already read this run (seen) is a
-    duplicate; then a page problem, an unknown type, or a missing price or size quarantines it."""
+    areas or of a non-residential type is skipped; a listing already read this run (seen), or a row
+    without a unit type whose listing the run also read with one (typed), is a duplicate; then a page
+    problem, an unknown type, a missing price or size, or a price per m² outside the band quarantines it."""
     counts, saved, rejected = Counter(parsed=len(rows)), [], []
     for r in rows:
         key = (r["source"], r["source_listing_id"])
         if r["area_id"] not in AREAS or r["unit_type"] in sites.NON_RESIDENTIAL:
             counts["skipped"] += 1
             continue
-        if key in seen:
+        if key in seen or (r["unit_type"] is None and key in typed):
             counts["duplicate"] += 1
             continue
         seen.add(key)
         reason = (problems.get(key) or ("unknown type" if r["unit_type"] not in sites.RESIDENTIAL else None)
                   or ("price missing or <= 0" if not r["asking_price"] else None)
-                  or ("size missing or <= 0" if not r["size_m2"] else None))
+                  or ("size missing or <= 0" if not r["size_m2"] else None)
+                  or (OUTSIDE_BAND if not PRICE_PER_M2_MIN * r["size_m2"] <= r["asking_price"]
+                      <= PRICE_PER_M2_MAX * r["size_m2"] else None))
         if reason:
             counts["quarantined"] += 1
             rejected.append((reason, r))
@@ -475,7 +480,7 @@ def load_silver(run_week):
         load_fetch_log(conn, run_week)
         # The week's quarantine is derived from its bronze: a reload replaces it. Prices are only ever added.
         conn.execute("DELETE FROM silver.quarantine WHERE run_week = %s", (run_week,))
-        seen, total, saved_keys = set(), Counter(), set()
+        seen, total, saved_keys, parsed = set(), Counter(), set(), {}
         for source in SOURCES:
             out = folder(source, run_week)
             if not (out / "_done").exists():
@@ -483,10 +488,14 @@ def load_silver(run_week):
                     print(f"{source} {run_week}: no pages saved by the browser run, nothing to load")
                     continue
                 raise RuntimeError(f"{out} has no _done: its extract did not finish")
-            parts = (realestate_parts(out) if source == "realestate" else browser_parts(source, out)
-                     if source in BROWSER else json_site_parts(source, out))
+            parsed[source] = (realestate_parts(out) if source == "realestate" else browser_parts(source, out)
+                              if source in BROWSER else json_site_parts(source, out))
+        # A listing read with a unit type and also without one keeps the typed row, whatever the parse order.
+        typed = {(r["source"], r["source_listing_id"]) for parts in parsed.values() for part in parts.values()
+                 for r in part["rows"] if r["unit_type"] is not None}
+        for source, parts in parsed.items():
             for area_id, part in parts.items():
-                counts, saved, rejected = check(part["rows"], seen, part["problems"])
+                counts, saved, rejected = check(part["rows"], seen, part["problems"], typed)
                 reconcile(counts, f"{source} {area_id}")
                 save(conn, run_week, source, area_id, part, counts, saved, rejected)
                 saved_keys |= {(r["source"], r["source_listing_id"]) for r in saved}

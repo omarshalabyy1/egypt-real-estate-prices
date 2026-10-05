@@ -2,7 +2,8 @@
 -- data/raw/<source>/<run_week>/). Silver holds the checked rows: listings, the asking price of each
 -- listing in each run week (append-only), the rejected rows with their reason and the counts of every
 -- run. Gold is a star rebuilt per run week for the report and Power BI. Prices are in EGP.
--- Safe to run again: load_silver runs it at the start of every weekly run. No contact data at any layer.
+-- Safe to run again: load_silver runs it at the start of every weekly run. No contact data in any table;
+-- the raw pages on disk (gitignored) can hold sellers' contact details.
 
 CREATE SCHEMA IF NOT EXISTS bronze;
 CREATE SCHEMA IF NOT EXISTS silver;
@@ -250,12 +251,21 @@ FROM (
 WHERE old_price_per_m2 IS NOT NULL AND new_price_per_m2 <> old_price_per_m2;
 COMMENT ON VIEW gold.price_change IS 'One row per listing whose price per m2 changed from its previous run week; is_cut when it fell.';
 
+CREATE OR REPLACE VIEW gold.pooled_listing_price AS
+SELECT f.*
+FROM gold.fact_listing_price f
+JOIN gold.dim_site s USING (site_key)
+WHERE NOT (s.source = 'bayut' AND EXISTS (
+    SELECT 1 FROM gold.fact_listing_price d JOIN gold.dim_site ds USING (site_key)
+    WHERE ds.source = 'dubizzle' AND d.listing_id = f.listing_id AND d.week_key = f.week_key));
+COMMENT ON VIEW gold.pooled_listing_price IS 'The facts for views that pool over sites: a Bayut row whose listing_id is also a Dubizzle row that week is left out, as Bayut Egypt mirrors Dubizzle''s ads.';
+
 CREATE OR REPLACE VIEW gold.area_benchmark AS
 SELECT area_key, type_key, week_key, count(*) AS listings,
        round(percentile_cont(0.5) WITHIN GROUP (ORDER BY price_per_m2)::numeric, 2) AS median_price_per_m2,
        round(percentile_cont(0.25) WITHIN GROUP (ORDER BY price_per_m2)::numeric, 2) AS p25_price_per_m2,
        round(percentile_cont(0.75) WITHIN GROUP (ORDER BY price_per_m2)::numeric, 2) AS p75_price_per_m2
-FROM gold.fact_listing_price
+FROM gold.pooled_listing_price
 WHERE week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
 GROUP BY area_key, type_key, week_key;
 COMMENT ON VIEW gold.area_benchmark IS 'Latest run week, one row per area and unit type, pooled over sites: listings and price per m2 quartiles.';
@@ -278,7 +288,7 @@ SELECT u.unit_code, u.area_key, u.type_key, u.compound_key, u.price_per_m2, b.me
        round(avg((f.price_per_m2 < u.price_per_m2)::int) * 100, 2) AS pct_listings_cheaper
 FROM gold.fact_our_unit u
 LEFT JOIN gold.area_benchmark b USING (area_key, type_key)
-LEFT JOIN gold.fact_listing_price f ON f.area_key = u.area_key AND f.type_key = u.type_key AND f.week_key = b.week_key
+LEFT JOIN gold.pooled_listing_price f ON f.area_key = u.area_key AND f.type_key = u.type_key AND f.week_key = b.week_key
 GROUP BY u.unit_code, b.median_price_per_m2;
 COMMENT ON VIEW gold.unit_gap IS 'One row per unit of ours against the latest week''s pooled median of its area and type; NULLs when none.';
 

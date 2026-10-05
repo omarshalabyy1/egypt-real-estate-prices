@@ -36,7 +36,7 @@ RESIDENTIAL = set(UNIT_TYPES.values())
 # Labels known not to be homes: skipped and counted, never quarantined. "Project" is a realestate.eg
 # card for a whole compound, not a unit. A label in neither set is quarantined as "unknown type".
 NON_RESIDENTIAL = {"Office", "Administrative", "Retail", "Medical", "Clinic", "Store", "Shop", "Commercial",
-                   "Pharmacy", "Hotel Apartment", "Mall", "Warehouse", "Project", "Building"}
+                   "Pharmacy", "Hotel Apartment", "Mall", "Warehouse", "Project", "Building", "Laboratory"}
 # A JSON key holding any of these words is removed, with everything under it, before a block is kept.
 CONTACT = re.compile(r"agent|broker|agency|client|user|contact|phone|mobile|whatsapp|email|seller|owner"
                      r"|description|title", re.I)

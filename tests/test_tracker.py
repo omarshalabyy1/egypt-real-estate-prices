@@ -7,6 +7,7 @@ from collections import Counter
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import requests
@@ -104,6 +105,47 @@ def test_a_listing_seen_in_an_earlier_area_is_a_duplicate():
     assert tracker.check([row(1, area="mostakbal-city")], seen, {})[0]["duplicate"] == 1
 
 
+@pytest.mark.parametrize("price, quarantined", [
+    (Decimal("999999"), True),     # 9,999.99 per m²
+    (Decimal("1000000"), False),   # 10,000 per m²
+    (Decimal("40000000"), False),  # 400,000 per m²
+    (Decimal("40000001"), True),   # 400,000.01 per m²
+])
+def test_a_price_per_m2_outside_10000_to_400000_is_quarantined(price, quarantined):
+    counts, saved, rejected = tracker.check([row(1, price=price, size=Decimal("100"))], set(), {})
+    assert [reason for reason, _ in rejected] == (["price per m² outside 10,000 to 400,000"] if quarantined else [])
+    assert len(saved) == (not quarantined)
+
+
+def test_a_listing_read_with_and_without_a_unit_type_keeps_the_typed_row_in_either_order():
+    for areas in (([row(1, unit_type=None)], [row(1)]), ([row(1)], [row(1, unit_type=None)])):
+        seen, counts, saved = set(), Counter(), []
+        for rows in areas:
+            area_counts, area_saved, rejected = tracker.check(rows, seen, {}, typed={("nawy", "1")})
+            counts, saved = counts + area_counts, saved + area_saved
+            assert not rejected
+        assert counts == Counter(parsed=2, duplicate=1, saved=1)
+        assert [r["unit_type"] for r in saved] == ["Apartment"]
+
+
+def test_a_laboratory_card_is_skipped_not_quarantined():
+    counts, _, rejected = tracker.check([row(1, unit_type=sites.unit_type("Laboratory"))], set(),
+                                        {("nawy", "1"): "unit page not read"})
+    assert counts == Counter(parsed=1, skipped=1) and not rejected
+
+
+def test_fetch_logs_the_url_the_site_answered_from(monkeypatch, tmp_path):
+    def get(url, timeout):
+        response = requests.Response()
+        response.status_code, response._content, response.url = 200, b"<html></html>", url + "-moved"
+        return response
+    monkeypatch.setattr(tracker.http, "get", get)
+    monkeypatch.setattr(tracker.time, "sleep", lambda seconds: None)
+    tracker.fetch(SimpleNamespace(can_fetch=lambda agent, url: True), tmp_path, UNIT_URL)
+    (logged,) = tracker.read_csv(tmp_path / "index.csv")
+    assert (logged["url"], logged["final_url"]) == (UNIT_URL, UNIT_URL + "-moved")
+
+
 def test_reconciliation_fails_loudly_on_a_mismatch():
     with pytest.raises(RuntimeError, match="do not reconcile"):
         tracker.reconcile(Counter(parsed=9, skipped=2, duplicate=1, saved=2, quarantined=3), "test")
@@ -182,6 +224,32 @@ def test_price_change_over_two_synthetic_weeks():
             ("t-1", date(2099, 1, 4), date(2099, 1, 11), Decimal("50000.00"), Decimal("45000.00"), Decimal("-10.00"), True),
             ("t-2", date(2099, 1, 4), date(2099, 1, 11), Decimal("50000.00"), Decimal("52500.00"), Decimal("5.00"), False),
         ]
+    finally:
+        conn.rollback()
+        conn.close()
+
+
+@needs_warehouse
+def test_pooled_views_leave_out_a_bayut_copy_of_a_dubizzle_ad():
+    """One ad on Dubizzle and on Bayut in the same week: the fact table and the per-site view keep both,
+    the pooled views count it once. Rolled back."""
+    conn = tracker.connect()
+    try:
+        conn.execute((tracker.ROOT / "sql" / "schema.sql").read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO silver.area (area_id, name) VALUES ('test-area', 'Test area')")
+        for source in ("dubizzle", "bayut"):
+            conn.execute("INSERT INTO silver.listing (source, listing_id, area_id, unit_type, size_m2, first_seen_week,"
+                         " last_seen_week) VALUES (%s, 'm-1', 'test-area', 'Apartment', 100, '2099-01-04', '2099-01-04')",
+                         (source,))
+            conn.execute("INSERT INTO silver.price_observation (source, listing_id, run_week, asking_price, size_m2,"
+                         " fetched_at) VALUES (%s, 'm-1', '2099-01-04', 5000000, 100, now())", (source,))
+        tracker.build_gold(date(2099, 1, 4), conn)
+        area = "(SELECT area_key FROM gold.dim_area WHERE area_id = 'test-area')"
+        assert conn.execute(f"SELECT count(*) FROM gold.fact_listing_price WHERE area_key = {area}").fetchone()[0] == 2
+        assert conn.execute(f"SELECT count(*) FROM gold.area_site_benchmark WHERE area_key = {area}").fetchone()[0] == 2
+        assert conn.execute(f"SELECT listings FROM gold.area_benchmark WHERE area_key = {area}").fetchall() == [(1,)]
+        assert conn.execute(f"SELECT s.source FROM gold.pooled_listing_price JOIN gold.dim_site s USING (site_key)"
+                            f" WHERE area_key = {area}").fetchall() == [("dubizzle",)]
     finally:
         conn.rollback()
         conn.close()
