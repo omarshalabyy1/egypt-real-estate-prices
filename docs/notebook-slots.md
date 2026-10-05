@@ -47,9 +47,9 @@ pooled over sites in gold.pooled_listing_price; a group needs 10 or more listing
 i1_premium_pct, i1_dearest_area, i1_cheapest_area
                                   the areas with the highest and the lowest median asking price per m² over all types, and the
                                   first's median above the second's, percent
-i2_gap_pct, i2_area, i2_dearest_type, i2_cheapest_type
-                                  the area whose dearest and cheapest unit type (median price per m²) are furthest apart, the two
-                                  types, and the dearest's median above the cheapest's, percent
+i5_types_lower_in_largest_band, i5_types_compared
+                                  unit types with two or more size bands of 10 or more listings, and of those, the count whose
+                                  largest band's median price per m² is below its smallest band's
 i3_top_index, i3_top_developer, i3_bottom_index, i3_bottom_developer, i3_developers
                                   each developer's index: the median of its listings' price per m² over their area's median, times
                                   100 (whole number); the highest and the lowest, and the count of developers measured
@@ -74,13 +74,11 @@ share_cheaper_<area>              percent of that area's competing listings aski
 
 powerbi/06-checks.md (each value is what the SQL under its check returns, run by the notebook as printed;
 where a key above holds the same number, the notebook asserts that the two agree)
-latest_run_week, run_weeks_phrase, listings_compared, our_units, widest_gap_area, units_without_comparison
+latest_run_week, run_weeks_phrase, our_units, widest_gap_area, units_without_comparison, listings_in_our_types,
+share_listings_cheaper_than_ours, share_cheaper_new_cairo
                                   as above
-report_share_cheaper_pct, report_listings_in_our_types
-                                  C3: share_listings_cheaper_than_ours and listings_in_our_types as the report counts them, over
-                                  every gold.fact_listing_price row (the Bayut Egypt copies of Dubizzle ads included)
-report_share_cheaper_new_cairo_pct
-                                  C7: share_cheaper_new_cairo counted the same way
+pooled_listings                   count of gold.pooled_listing_price rows in the latest run week (the table the report loads as
+                                  Listing Price: without the Bayut Egypt rows that copy a Dubizzle ad)
 price_changes                     rows of gold.price_change, all run weeks
 table_rows_<table>                C2: rows of each gold table the report loads (site, area, compound, property_type, week,
                                   listing_price, our_unit, price_change, area_benchmark, area_site_benchmark, unit_gap, area_gap)

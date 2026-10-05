@@ -17,7 +17,7 @@ heading, open **Home > Advanced editor**, delete what is there and paste the cod
 | `Compound` | the `gold.dim_compound` table | 4 | none | yes |
 | `Property Type` | the `gold.dim_property_type` table | 2 | none | yes |
 | `Week` | the `gold.dim_week` table | 4 | none | yes |
-| `Listing Price` | the `gold.fact_listing_price` table | 10 | none | yes |
+| `Listing Price` | the `gold.pooled_listing_price` view | 10 | none | yes |
 | `Our Unit` | the `gold.fact_our_unit` table | 7 | none | yes |
 | `Price Change` | the `gold.price_change` view | 12 (11 + `Direction`) | none | yes |
 | `Area Benchmark` | the `gold.area_benchmark` view | 7 | none | yes |
@@ -143,12 +143,14 @@ hold six empty days for every day with data.
 ## Listing Price (loads)
 
 The fact: one row per site, listing and run week, with the asking price, size and price per m².
+It reads `gold.pooled_listing_price`, the fact's columns without the Bayut Egypt rows that copy a
+Dubizzle ad, so the report counts the same listings as the README.
 
 ```m
 let
     Source = PostgreSQL.Database(WarehouseServer, "prices"),
-    fact_listing_price = Source{[Schema = "gold", Item = "fact_listing_price"]}[Data],
-    Typed = Table.TransformColumnTypes(fact_listing_price, {
+    pooled_listing_price = Source{[Schema = "gold", Item = "pooled_listing_price"]}[Data],
+    Typed = Table.TransformColumnTypes(pooled_listing_price, {
         {"site_key", Int64.Type}, {"area_key", Int64.Type}, {"compound_key", Int64.Type},
         {"type_key", Int64.Type}, {"week_key", type date}, {"listing_id", type text},
         {"asking_price", Currency.Type}, {"size_m2", type number},

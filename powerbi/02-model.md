@@ -13,7 +13,7 @@ Row counts grow with every weekly run: the numbers to expect are in `06-checks.m
 | `Compound` | dimension | area, compound and developer as the sites write them | `compound_key` (natural key `area_id` + `compound` + `developer`) | see 06-checks.md |
 | `Property Type` | dimension | residential unit type | `type_key` (natural key `unit_type`) | see 06-checks.md |
 | `Week` | dimension, date table | run week (the Sunday it starts) | `week_key` | see 06-checks.md |
-| `Listing Price` | fact | site, listing and run week | `site_key` + `listing_id` + `week_key` | see 06-checks.md |
+| `Listing Price` | fact | site, listing and run week, without the Bayut Egypt rows that copy a Dubizzle ad (`gold.pooled_listing_price`) | `site_key` + `listing_id` + `week_key` | see 06-checks.md |
 | `Our Unit` | fact | unit of ours for sale | `unit_code` | see 06-checks.md |
 | `Price Change` | view | site and listing whose price per m² changed from its previous run week | `site_key` + `listing_id` + `week_key` | see 06-checks.md |
 | `Area Benchmark` | view | area and unit type, latest run week, pooled over sites | `area_key` + `type_key` | see 06-checks.md |

@@ -68,8 +68,8 @@ median of the same type in the same area.** The checks behind every number are i
   by site and area by area.
 - **<!--nb:i1_premium_pct-->114.2<!--/nb-->% more per m²** asked in <!--nb:i1_dearest_area-->North Coast<!--/nb--> than
   in <!--nb:i1_cheapest_area-->New Capital<!--/nb-->, the cheapest area, comparing median asking prices.
-- **<!--nb:i2_gap_pct-->224.8<!--/nb-->% between the dearest and the cheapest unit type** in <!--nb:i2_area-->North Coast<!--/nb-->
-  (<!--nb:i2_dearest_type-->Duplex<!--/nb--> against <!--nb:i2_cheapest_type-->Apartment<!--/nb-->), the widest spread of any area.
+- **<!--nb:i5_types_lower_in_largest_band-->7<!--/nb--> of <!--nb:i5_types_compared-->9<!--/nb--> unit types** ask less per m² in their largest size band
+  than in their smallest; different listings side by side, not the effect of size.
 - **Index <!--nb:i3_top_index-->219<!--/nb--> for <!--nb:i3_top_developer-->ADD Properties<!--/nb-->**, the dearest of <!--nb:i3_developers-->48<!--/nb--> developers
   with 10 or more listings (100 = the area median); the lowest is <!--nb:i3_bottom_developer-->Amer Group<!--/nb--> at <!--nb:i3_bottom_index-->62<!--/nb-->.
 - **Nawy above Dubizzle in <!--nb:i6_nawy_above_areas-->6<!--/nb--> of <!--nb:i6_areas_compared-->6<!--/nb--> areas** by median asking price per m²;

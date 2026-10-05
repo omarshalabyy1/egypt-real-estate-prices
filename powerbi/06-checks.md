@@ -9,12 +9,12 @@ missing relationship, a wrong column type in Power Query, or a filter left on a 
 Every query reads the gold layer only, as the report does. Where a gold view already holds the
 answer pooled over every site, the check reads the view: with no slicer selected, the report's
 measures must equal it. Where a check picks one site, the SQL recomputes from
-`gold.fact_listing_price`, as the measures do. The share of listings cheaper than ours is
-recomputed from the fact too: of the competing listings in the areas and unit types where we have
-units, the share asking less per m² than our median unit of that type and area, the definition the
-README uses; no gold view holds it. The README counts it over the listings pooled over sites, without
-the Bayut Egypt rows that copy a Dubizzle ad; the report and the SQL here count every fact row, so
-the two can differ by those rows.
+`gold.pooled_listing_price`, the table the report loads as `Listing Price`, as the measures do. The
+share of listings cheaper than ours is recomputed from it too: of the competing listings in the
+areas and unit types where we have units, the share asking less per m² than our median unit of that
+type and area, the definition the README uses; no gold view holds it. The report, the README and the
+SQL here all count the listings pooled over sites, without the Bayut Egypt rows that copy a Dubizzle
+ad, so each check has one number.
 
 **Building on a later date?** The sites show today's asking prices, so every weekly run changes the
 latest week and the numbers move. Run the notebook once, or the SQL under each check, and compare
@@ -29,18 +29,19 @@ Run the SQL in any SQL tool on `127.0.0.1:5451`, database `prices`, user `prices
 ## The warehouse, before Power BI
 
 **C1.** The runs are in: <!--nb:run_weeks_phrase-->1 weekly run<!--/nb-->, the latest one the week
-of <!--nb:latest_run_week-->4 October 2026<!--/nb-->, with <!--nb:listings_compared-->5,757<!--/nb--> asking prices in it (one per site and listing).
+of <!--nb:latest_run_week-->4 October 2026<!--/nb-->, with <!--nb:pooled_listings-->5,619<!--/nb--> asking prices in it (one per site and listing, without the Bayut Egypt
+rows that copy a Dubizzle ad).
 
 ```sql
 SELECT count(*) AS run_weeks, max(week_key) AS latest_week,
-       (SELECT count(*) FROM gold.fact_listing_price
-        WHERE week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS prices_latest_week
+       (SELECT count(*) FROM gold.pooled_listing_price
+        WHERE week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS prices_latest_week
 FROM gold.dim_week;
 ```
 
 **C2.** Rows per table after **Close & apply** (Table view, bottom left): Site <!--nb:table_rows_site-->6<!--/nb--> ·
 Area <!--nb:table_rows_area-->6<!--/nb--> · Compound <!--nb:table_rows_compound-->1,336<!--/nb--> · Property Type <!--nb:table_rows_property_type-->11<!--/nb--> ·
-Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,757<!--/nb--> · Our Unit <!--nb:table_rows_our_unit-->60<!--/nb--> ·
+Week <!--nb:table_rows_week-->1<!--/nb--> · Listing Price <!--nb:table_rows_listing_price-->5,619<!--/nb--> · Our Unit <!--nb:table_rows_our_unit-->60<!--/nb--> ·
 Price Change <!--nb:table_rows_price_change-->0<!--/nb--> · Area Benchmark <!--nb:table_rows_area_benchmark-->55<!--/nb--> ·
 Area Site Benchmark <!--nb:table_rows_area_site_benchmark-->234<!--/nb--> · Unit Gap <!--nb:table_rows_unit_gap-->60<!--/nb--> ·
 Area Gap <!--nb:table_rows_area_gap-->6<!--/nb-->.
@@ -50,7 +51,7 @@ SELECT (SELECT count(*) FROM gold.dim_site) AS site, (SELECT count(*) FROM gold.
        (SELECT count(*) FROM gold.dim_compound) AS compound,
        (SELECT count(*) FROM gold.dim_property_type) AS property_type,
        (SELECT count(*) FROM gold.dim_week) AS week,
-       (SELECT count(*) FROM gold.fact_listing_price) AS listing_price,
+       (SELECT count(*) FROM gold.pooled_listing_price) AS listing_price,
        (SELECT count(*) FROM gold.fact_our_unit) AS our_unit,
        (SELECT count(*) FROM gold.price_change) AS price_change,
        (SELECT count(*) FROM gold.area_benchmark) AS area_benchmark,
@@ -61,10 +62,10 @@ SELECT (SELECT count(*) FROM gold.dim_site) AS site, (SELECT count(*) FROM gold.
 ## Page 1: Market position
 
 **C3.** Cards, no slicer: Our units <!--nb:our_units-->60<!--/nb--> · Above market <!--nb:units_above_market_pct-->58.3<!--/nb-->% · At or
-below market <!--nb:units_below_market_pct-->41.7<!--/nb-->% · Listings cheaper than ours <!--nb:report_share_cheaper_pct-->50.7<!--/nb-->%
-(measure `Share Of Listings Cheaper Than Ours`: of the <!--nb:report_listings_in_our_types-->5,066<!--/nb--> competing listings in
+below market <!--nb:units_below_market_pct-->41.7<!--/nb-->% · Listings cheaper than ours <!--nb:share_listings_cheaper_than_ours-->50.4<!--/nb-->%
+(measure `Share Of Listings Cheaper Than Ours`: of the <!--nb:listings_in_our_types-->4,929<!--/nb--> competing listings in
 the areas and types where we have units, the share asking less per m² than our median unit of that
-type and area) · Widest gap <!--nb:widest_gap_area-->6th of October<!--/nb--> · Competitor listings this week <!--nb:listings_compared-->5,757<!--/nb-->.
+type and area) · Widest gap <!--nb:widest_gap_area-->6th of October<!--/nb--> · Competitor listings this week <!--nb:pooled_listings-->5,619<!--/nb-->.
 
 ```sql
 WITH ours AS (
@@ -73,8 +74,8 @@ WITH ours AS (
 ), compared AS (
     SELECT count(*) AS listings_in_our_types,
            count(*) FILTER (WHERE f.price_per_m2 < o.our_median) AS listings_cheaper
-    FROM gold.fact_listing_price f JOIN ours o USING (area_key, type_key)
-    WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+    FROM gold.pooled_listing_price f JOIN ours o USING (area_key, type_key)
+    WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 )
 SELECT count(*) AS our_units,
        round(count(*) FILTER (WHERE gap_pct > 0) * 100.0 / nullif(count(gap_pct), 0), 1) AS share_above_pct,
@@ -84,8 +85,8 @@ SELECT count(*) AS our_units,
        (SELECT round(listings_cheaper * 100.0 / nullif(listings_in_our_types, 0), 1) FROM compared) AS share_cheaper_pct,
        (SELECT a.name FROM gold.area_gap g JOIN gold.dim_area a USING (area_key)
         WHERE g.gap_rank = 1 ORDER BY a.name DESC LIMIT 1) AS widest_gap_area,
-       (SELECT count(*) FROM gold.fact_listing_price
-        WHERE week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS listings
+       (SELECT count(*) FROM gold.pooled_listing_price
+        WHERE week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.unit_gap;
 ```
 
@@ -105,8 +106,8 @@ is blank below: note the area and say so before going on.
 ```sql
 SELECT a.name, a.lat, a.lon, count(f.listing_id) AS listings
 FROM gold.dim_area a
-LEFT JOIN gold.fact_listing_price f
-       ON f.area_key = a.area_key AND f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+LEFT JOIN gold.pooled_listing_price f
+       ON f.area_key = a.area_key AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 GROUP BY a.name, a.lat, a.lon ORDER BY listings DESC;
 ```
 
@@ -127,7 +128,7 @@ SELECT count(*) AS units, count(*) FILTER (WHERE gap_pct IS NULL) AS no_comparis
 
 **C7.** Area slicer (#3) on **New Cairo**: Our units <!--nb:new_cairo_our_units-->10<!--/nb--> · Above
 market <!--nb:new_cairo_units_above_pct-->50.0<!--/nb-->% · At or below market <!--nb:new_cairo_units_below_pct-->50.0<!--/nb-->% · Listings cheaper
-than ours <!--nb:report_share_cheaper_new_cairo_pct-->52.2<!--/nb-->% · Competitor listings this week <!--nb:new_cairo_listings-->939<!--/nb-->. Clear the
+than ours <!--nb:share_cheaper_new_cairo-->51.9<!--/nb-->% · Competitor listings this week <!--nb:new_cairo_listings-->916<!--/nb-->. Clear the
 slicer.
 
 ```sql
@@ -140,11 +141,11 @@ SELECT count(*) AS our_units,
        round(count(*) FILTER (WHERE g.gap_pct > 0) * 100.0 / nullif(count(g.gap_pct), 0), 1) AS share_above_pct,
        round(count(*) FILTER (WHERE g.gap_pct <= 0) * 100.0 / nullif(count(g.gap_pct), 0), 1) AS share_below_pct,
        (SELECT round(count(*) FILTER (WHERE f.price_per_m2 < o.our_median) * 100.0 / nullif(count(*), 0), 1)
-        FROM gold.fact_listing_price f JOIN ours o USING (area_key, type_key)
-        WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS share_cheaper_pct,
-       (SELECT count(*) FROM gold.fact_listing_price f JOIN gold.dim_area fa USING (area_key)
+        FROM gold.pooled_listing_price f JOIN ours o USING (area_key, type_key)
+        WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS share_cheaper_pct,
+       (SELECT count(*) FROM gold.pooled_listing_price f JOIN gold.dim_area fa USING (area_key)
         WHERE fa.area_id = 'new-cairo'
-          AND f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS listings
+          AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.unit_gap g JOIN gold.dim_area a USING (area_key)
 WHERE a.area_id = 'new-cairo';
 ```
@@ -159,8 +160,8 @@ is recomputed from the fact. Clear the slicer.
 ```sql
 WITH latest AS (
     SELECT f.area_key, f.type_key, f.price_per_m2
-    FROM gold.fact_listing_price f JOIN gold.dim_site s USING (site_key)
-    WHERE s.source = 'dubizzle' AND f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+    FROM gold.pooled_listing_price f JOIN gold.dim_site s USING (site_key)
+    WHERE s.source = 'dubizzle' AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 ), ours AS (
     SELECT area_key, type_key, percentile_cont(0.5) WITHIN GROUP (ORDER BY price_per_m2) AS our_median
     FROM gold.fact_our_unit GROUP BY area_key, type_key
@@ -186,15 +187,15 @@ FROM per_unit;
 
 ## Page 2: Compounds and developers
 
-**C9.** Cards, no slicer: Listings this week <!--nb:listings_compared-->5,757<!--/nb--> (equal to Competitor listings
+**C9.** Cards, no slicer: Listings this week <!--nb:pooled_listings-->5,619<!--/nb--> (equal to Competitor listings
 this week in C3) · Compounds <!--nb:compounds_latest_week-->1,152<!--/nb--> · Developers <!--nb:developers_latest_week-->307<!--/nb--> ·
 Cheapest compound per m² <!--nb:cheapest_compound-->Haram City Compound<!--/nb--> · Dearest compound per m² <!--nb:dearest_compound-->Yemm Views<!--/nb-->.
 
 ```sql
 WITH latest AS (
     SELECT c.compound, c.developer, f.price_per_m2
-    FROM gold.fact_listing_price f JOIN gold.dim_compound c USING (compound_key)
-    WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+    FROM gold.pooled_listing_price f JOIN gold.dim_compound c USING (compound_key)
+    WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 ), by_compound AS (
     SELECT compound, percentile_cont(0.5) WITHIN GROUP (ORDER BY price_per_m2) AS median_per_m2
     FROM latest WHERE compound <> 'Unknown' GROUP BY compound
@@ -212,10 +213,10 @@ their median per m² by unit type as below.
 ```sql
 SELECT c.compound, t.unit_type, count(*) AS listings,
        round((percentile_cont(0.5) WITHIN GROUP (ORDER BY f.price_per_m2))::numeric, 0) AS median_per_m2
-FROM gold.fact_listing_price f
+FROM gold.pooled_listing_price f
 JOIN gold.dim_compound c USING (compound_key)
 JOIN gold.dim_property_type t USING (type_key)
-WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 GROUP BY c.compound, t.unit_type ORDER BY c.compound, t.unit_type LIMIT 10;
 ```
 
@@ -224,8 +225,8 @@ GROUP BY c.compound, t.unit_type ORDER BY c.compound, t.unit_type LIMIT 10;
 ```sql
 SELECT c.developer, count(*) AS listings,
        round((percentile_cont(0.5) WITHIN GROUP (ORDER BY f.price_per_m2))::numeric, 0) AS median_per_m2
-FROM gold.fact_listing_price f JOIN gold.dim_compound c USING (compound_key)
-WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)
+FROM gold.pooled_listing_price f JOIN gold.dim_compound c USING (compound_key)
+WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)
 GROUP BY c.developer ORDER BY median_per_m2 DESC LIMIT 3;
 ```
 
@@ -241,17 +242,17 @@ JOIN gold.dim_property_type t USING (type_key)
 ORDER BY b.listings DESC, a.name, t.unit_type LIMIT 5;
 ```
 
-**C13.** Area slicer (#3) on **New Cairo**: Listings this week <!--nb:new_cairo_listings-->939<!--/nb--> ·
+**C13.** Area slicer (#3) on **New Cairo**: Listings this week <!--nb:new_cairo_listings-->916<!--/nb--> ·
 Compounds <!--nb:new_cairo_compounds-->295<!--/nb--> · Developers <!--nb:new_cairo_developers-->81<!--/nb--> · Cheapest compound per
 m² <!--nb:new_cairo_cheapest_compound-->Shalya Taj City<!--/nb--> · Dearest compound per m² <!--nb:new_cairo_dearest_compound-->WBR1<!--/nb-->. Clear the slicer.
 
 ```sql
 WITH latest AS (
     SELECT c.compound, c.developer, f.price_per_m2
-    FROM gold.fact_listing_price f
+    FROM gold.pooled_listing_price f
     JOIN gold.dim_compound c USING (compound_key)
     JOIN gold.dim_area a USING (area_key)
-    WHERE f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price) AND a.area_id = 'new-cairo'
+    WHERE f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price) AND a.area_id = 'new-cairo'
 ), by_compound AS (
     SELECT compound, percentile_cont(0.5) WITHIN GROUP (ORDER BY price_per_m2) AS median_per_m2
     FROM latest WHERE compound <> 'Unknown' GROUP BY compound
@@ -269,13 +270,13 @@ From the second weekly run on. After the first run, C14 shows "(Blank)" on the f
 
 **C14.** Cards, no slicer: Price changes <!--nb:price_changes-->0<!--/nb--> · Cuts <!--nb:cuts_all_weeks-->0<!--/nb--> ·
 Rises <!--nb:rises_all_weeks-->0<!--/nb--> · Average change, in percent, <!--nb:average_change_pct-->(Blank)<!--/nb--> · Listings seen this
-week <!--nb:listings_compared-->5,757<!--/nb-->.
+week <!--nb:pooled_listings-->5,619<!--/nb-->.
 
 ```sql
 SELECT count(*) AS price_changes, count(*) FILTER (WHERE is_cut) AS cuts,
        count(*) FILTER (WHERE NOT is_cut) AS rises, round(avg(change_pct), 1) AS average_change_pct,
-       (SELECT count(*) FROM gold.fact_listing_price
-        WHERE week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS listings
+       (SELECT count(*) FROM gold.pooled_listing_price
+        WHERE week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.price_change;
 ```
 
@@ -299,7 +300,7 @@ SELECT f.week_key, f.price_per_m2,
        (SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY u.price_per_m2)
         FROM gold.fact_our_unit u
         WHERE u.area_key = f.area_key AND u.type_key = f.type_key) AS ours_same_type_per_m2
-FROM gold.fact_listing_price f JOIN gold.dim_site s USING (site_key)
+FROM gold.pooled_listing_price f JOIN gold.dim_site s USING (site_key)
 WHERE s.source = 'dubizzle' AND f.listing_id = '0'
 ORDER BY f.week_key;
 ```
@@ -319,15 +320,15 @@ ORDER BY c.change_pct LIMIT 5;
 ```
 
 **C18.** Area slicer (#3) on **New Cairo**: Price changes <!--nb:new_cairo_price_changes-->0<!--/nb--> ·
-Cuts <!--nb:new_cairo_cuts-->0<!--/nb--> · Rises <!--nb:new_cairo_rises-->0<!--/nb--> · Listings seen this week <!--nb:new_cairo_listings-->939<!--/nb-->.
+Cuts <!--nb:new_cairo_cuts-->0<!--/nb--> · Rises <!--nb:new_cairo_rises-->0<!--/nb--> · Listings seen this week <!--nb:new_cairo_listings-->916<!--/nb-->.
 Clear the slicer.
 
 ```sql
 SELECT count(*) AS price_changes, count(*) FILTER (WHERE c.is_cut) AS cuts,
        count(*) FILTER (WHERE NOT c.is_cut) AS rises,
-       (SELECT count(*) FROM gold.fact_listing_price f JOIN gold.dim_area fa USING (area_key)
+       (SELECT count(*) FROM gold.pooled_listing_price f JOIN gold.dim_area fa USING (area_key)
         WHERE fa.area_id = 'new-cairo'
-          AND f.week_key = (SELECT max(week_key) FROM gold.fact_listing_price)) AS listings
+          AND f.week_key = (SELECT max(week_key) FROM gold.pooled_listing_price)) AS listings
 FROM gold.price_change c JOIN gold.dim_area a USING (area_key)
 WHERE a.area_id = 'new-cairo';
 ```
