@@ -123,7 +123,7 @@ so a rerun gives the same rows.
 Then the numbers and the tests, in a virtual environment, with the stack still up:
 
 ```bash
-python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scriptsctivate
+python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r analysis/requirements.txt
 jupyter lab analysis/analysis.ipynb  # or headless:
 python -m jupyter nbconvert --to notebook --execute --inplace analysis/analysis.ipynb
