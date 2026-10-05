@@ -1,21 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 534" width="1000" height="534" role="img" aria-label="Price gap by area: one strip per area (New Cairo, New Capital, Sheikh Zayed, 6th of October, North Coast, Mostakbal City). On each strip a band shows the middle half of competing listings by asking price per square metre, a tick shows the area median, and dots show our units. The gap between our units and the area median is written beside each strip, and the share of competing listings cheaper than ours at its right end.">
   <!-- Positions are illustrative until the notebook redraws this file from the gold layer. Every number is a tspan with id="nb-KEY"; the notebook fills them. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#16233B"/>
+    </linearGradient>
+  </defs>
   <style>
     text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
-    .title { font-size: 21px; font-weight: 700; fill: #0E1630; }
-    .sub { font-size: 13.5px; fill: #475569; }
-    .head { font-size: 12.5px; font-weight: 600; fill: #475569; }
-    .area { font-size: 15px; font-weight: 700; fill: #0E1630; }
-    .cap { font-size: 12px; fill: #475569; }
-    .val { font-size: 15px; font-weight: 700; fill: #0E1630; }
-    .track { stroke: #CBD5E1; stroke-width: 2; }
-    .band { fill: #2563EB; fill-opacity: 0.18; }
-    .median { stroke: #0E1630; stroke-width: 2.5; }
-    .ours { fill: #2563EB; stroke: #FFFFFF; stroke-width: 2; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .head { font-size: 12.5px; font-weight: 600; fill: #94A3B8; }
+    .area { font-size: 15px; font-weight: 700; fill: #FFFFFF; }
+    .cap { font-size: 12.5px; fill: #94A3B8; }
+    .val { font-size: 15px; font-weight: 700; fill: #FFFFFF; }
+    .track { stroke: #334155; stroke-width: 2; }
+    .band { fill: #CBD5E1; fill-opacity: 0.22; }
+    .median { stroke: #E2E8F0; stroke-width: 2.5; }
+    .ours { fill: #F59E0B; stroke: #0B1220; stroke-width: 2; }
   </style>
 
-  <rect width="1000" height="534" rx="22" fill="#F4F6FB"/>
-  <rect x="0.75" y="0.75" width="998.5" height="532.5" rx="21.5" fill="none" stroke="#E2E8F0" stroke-width="1.5"/>
+  <rect width="1000" height="534" rx="22" fill="url(#bg)"/>
   <text x="40" y="50" class="title">Where our units sit against the market</text>
   <text x="40" y="74" class="sub">Asking price per m² in EGP, latest run week. One strip per area, all on one scale.</text>
 
@@ -25,7 +30,7 @@
   <text x="760" y="122" class="head" text-anchor="middle">Gap</text>
   <text x="960" y="114" class="head" text-anchor="end">Listings cheaper</text>
   <text x="960" y="130" class="head" text-anchor="end">than ours</text>
-  <line x1="40" y1="142" x2="960" y2="142" stroke="#E2E8F0" stroke-width="1.5"/>
+  <line x1="40" y1="142" x2="960" y2="142" stroke="#334155" stroke-width="1.5"/>
 
   <!-- New Cairo -->
   <text x="40" y="174" class="area">New Cairo</text>
@@ -86,7 +91,7 @@
   <text x="960" y="441" class="val" text-anchor="end"><tspan id="nb-share_cheaper_mostakbal_city">…</tspan>%</text>
 
   <!-- legend -->
-  <line x1="40" y1="482" x2="960" y2="482" stroke="#E2E8F0" stroke-width="1.5"/>
+  <line x1="40" y1="482" x2="960" y2="482" stroke="#334155" stroke-width="1.5"/>
   <rect x="40" y="496" width="34" height="16" rx="4" class="band"/>
   <text x="82" y="509" class="cap">middle half of competing listings</text>
   <line x1="300" y1="492" x2="300" y2="516" class="median"/>

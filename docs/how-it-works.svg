@@ -1,69 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 290" width="1000" height="290" role="img" aria-label="How it works: 01 Extract, six listing sites in six areas every week, four read automatically and two by a browser run; 02 Check, price, size, area and type on every row, failures go to quarantine; 03 Store, every price per square metre kept by site, listing and week, never overwritten; 04 Compare, our units against competing listings in the same area, by compound and developer; 05 Report, Power BI gaps by area, compound and developer, and who cut prices.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 290" width="1000" height="290" role="img" aria-label="How it works: 01 Collect, asking prices from six listing sites in six areas every week; 02 Check, price, size, area and type on every row, failures set aside with the reason; 03 Store, every price kept with its week, never overwritten; 04 Compare, our units against competing listings in the same area and compound; 05 Report, Power BI gaps by area and developer, and who cut prices.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#16233B"/>
+    </linearGradient>
+  </defs>
   <style>
     text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
-    .title { font-size: 21px; font-weight: 700; fill: #0E1630; }
-    .sub { font-size: 13.5px; fill: #475569; }
-    .num { font-size: 13px; font-weight: 700; fill: #FFFFFF; }
-    .step { font-size: 16px; font-weight: 700; fill: #0E1630; }
-    .desc { font-size: 12.5px; fill: #475569; }
-    .box { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; }
-    .link { fill: none; stroke: #2563EB; stroke-width: 2; stroke-dasharray: 4 6; animation: flow 1.6s linear infinite; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .num { font-size: 13px; font-weight: 700; fill: #0B1220; }
+    .step { font-size: 16px; font-weight: 700; fill: #FFFFFF; }
+    .desc { font-size: 12.5px; fill: #94A3B8; }
+    .box { fill: #FFFFFF; fill-opacity: 0.04; stroke: #334155; }
+    .link { fill: none; stroke: #F59E0B; stroke-width: 2; stroke-dasharray: 4 6; animation: flow 1.6s linear infinite; }
     @keyframes flow { to { stroke-dashoffset: -20; } }
   </style>
 
-  <rect width="1000" height="290" rx="22" fill="#F4F6FB"/>
-  <rect x="0.75" y="0.75" width="998.5" height="288.5" rx="21.5" fill="none" stroke="#E2E8F0" stroke-width="1.5"/>
+  <rect width="1000" height="290" rx="22" fill="url(#bg)"/>
   <text x="40" y="52" class="title">How it works</text>
   <text x="40" y="76" class="sub">One Airflow run a week. A week already read is skipped, so a rerun gives the same rows.</text>
 
-  <path class="link" d="M209 175h22"/>
-  <path class="link" d="M401 175h22"/>
-  <path class="link" d="M593 175h22"/>
-  <path class="link" d="M785 175h22"/>
+  <path class="link" d="M210 175h18"/>
+  <path class="link" d="M402 175h18"/>
+  <path class="link" d="M594 175h18"/>
+  <path class="link" d="M786 175h18"/>
 
-  <!-- five boxes, 168 wide, 24 apart, from x=40 -->
-  <rect x="40" y="105" width="168" height="150" rx="14" class="box"/>
-  <circle cx="70" cy="135" r="15" fill="#2563EB"/>
+  <rect x="40" y="105" width="170" height="140" rx="14" class="box"/>
+  <circle cx="70" cy="135" r="15" fill="#F59E0B"/>
   <text x="70" y="140" class="num" text-anchor="middle">01</text>
-  <text x="94" y="141" class="step">Extract</text>
-  <text x="54" y="178" class="desc">Six listing sites, six</text>
-  <text x="54" y="197" class="desc">areas, every week; four</text>
-  <text x="54" y="216" class="desc">read automatically,</text>
-  <text x="54" y="235" class="desc">two by a browser run</text>
+  <text x="94" y="141" class="step">Collect</text>
+  <text x="56" y="178" class="desc">Asking prices from six</text>
+  <text x="56" y="197" class="desc">listing sites in six</text>
+  <text x="56" y="216" class="desc">areas, every week</text>
 
-  <rect x="232" y="105" width="168" height="150" rx="14" class="box"/>
-  <circle cx="262" cy="135" r="15" fill="#2563EB"/>
+  <rect x="232" y="105" width="170" height="140" rx="14" class="box"/>
+  <circle cx="262" cy="135" r="15" fill="#F59E0B"/>
   <text x="262" y="140" class="num" text-anchor="middle">02</text>
   <text x="286" y="141" class="step">Check</text>
-  <text x="246" y="178" class="desc">Price, size, area and</text>
-  <text x="246" y="197" class="desc">type on every row;</text>
-  <text x="246" y="216" class="desc">failures go to</text>
-  <text x="246" y="235" class="desc">quarantine</text>
+  <text x="248" y="178" class="desc">Price, size, area and</text>
+  <text x="248" y="197" class="desc">type on every row; a</text>
+  <text x="248" y="216" class="desc">failure kept with why</text>
 
-  <rect x="424" y="105" width="168" height="150" rx="14" class="box"/>
-  <circle cx="454" cy="135" r="15" fill="#2563EB"/>
+  <rect x="424" y="105" width="170" height="140" rx="14" class="box"/>
+  <circle cx="454" cy="135" r="15" fill="#F59E0B"/>
   <text x="454" y="140" class="num" text-anchor="middle">03</text>
   <text x="478" y="141" class="step">Store</text>
-  <text x="438" y="178" class="desc">Every price per m² kept</text>
-  <text x="438" y="197" class="desc">by site, listing and</text>
-  <text x="438" y="216" class="desc">week; never</text>
-  <text x="438" y="235" class="desc">overwritten</text>
+  <text x="440" y="178" class="desc">Every price kept</text>
+  <text x="440" y="197" class="desc">with its week, never</text>
+  <text x="440" y="216" class="desc">overwritten</text>
 
-  <rect x="616" y="105" width="168" height="150" rx="14" class="box"/>
-  <circle cx="646" cy="135" r="15" fill="#2563EB"/>
+  <rect x="616" y="105" width="170" height="140" rx="14" class="box"/>
+  <circle cx="646" cy="135" r="15" fill="#F59E0B"/>
   <text x="646" y="140" class="num" text-anchor="middle">04</text>
   <text x="670" y="141" class="step">Compare</text>
-  <text x="630" y="178" class="desc">Our units against</text>
-  <text x="630" y="197" class="desc">competing listings in</text>
-  <text x="630" y="216" class="desc">the same area, by</text>
-  <text x="630" y="235" class="desc">compound and developer</text>
+  <text x="632" y="178" class="desc">Our units against</text>
+  <text x="632" y="197" class="desc">listings in the same</text>
+  <text x="632" y="216" class="desc">area and compound</text>
 
-  <rect x="808" y="105" width="168" height="150" rx="14" class="box"/>
-  <circle cx="838" cy="135" r="15" fill="#2563EB"/>
+  <rect x="808" y="105" width="152" height="140" rx="14" class="box"/>
+  <circle cx="838" cy="135" r="15" fill="#F59E0B"/>
   <text x="838" y="140" class="num" text-anchor="middle">05</text>
   <text x="862" y="141" class="step">Report</text>
-  <text x="822" y="178" class="desc">Power BI: gaps by area,</text>
-  <text x="822" y="197" class="desc">compound and</text>
-  <text x="822" y="216" class="desc">developer; who cut</text>
-  <text x="822" y="235" class="desc">prices</text>
+  <text x="824" y="178" class="desc">Power BI: gaps by</text>
+  <text x="824" y="197" class="desc">area and developer,</text>
+  <text x="824" y="216" class="desc">and who cut prices</text>
 </svg>

@@ -1,47 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 260" width="1000" height="260" role="img" aria-label="Egypt real estate prices. Every week, our asking prices per square metre against competing listings in six Egyptian areas, and who cut prices.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Egypt real estate prices. Competing listings compared with our units every week in six Egyptian areas, and the area where our asking price per square metre is furthest from the market median. One area's strip: the middle half of competing listings, the area median, and our units to its right.">
   <!-- Numbers in tspans with id="nb-KEY" are filled by the notebook from the gold layer. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#16233B"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F59E0B" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
   <style>
     text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
-    .eyebrow { font-size: 13px; font-weight: 600; fill: #2563EB; letter-spacing: 1.5px; }
-    .title { font-size: 36px; font-weight: 700; fill: #0E1630; }
-    .sub { font-size: 17px; fill: #475569; }
-    .pill { font-size: 14px; font-weight: 600; fill: #0E1630; }
-    .cap { font-size: 12px; fill: #475569; }
-    .track { stroke: #CBD5E1; stroke-width: 2; }
-    .band { fill: #2563EB; fill-opacity: 0.18; }
-    .median { stroke: #0E1630; stroke-width: 2.5; }
-    .ours { fill: #2563EB; stroke: #FFFFFF; stroke-width: 2; }
+    .title { font-size: 40px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 18px; fill: #CBD5E1; }
+    .hot { fill: #F59E0B; font-weight: 700; }
+    .pill { font-size: 14px; font-weight: 600; fill: #E2E8F0; }
+    .note { font-size: 13px; fill: #94A3B8; }
+    .track { stroke: #334155; stroke-width: 2; }
+    .band { fill: #CBD5E1; fill-opacity: 0.22; }
+    .median { stroke: #E2E8F0; stroke-width: 2.5; }
+    .ours { fill: #F59E0B; stroke: #0B1220; stroke-width: 2; }
   </style>
 
-  <rect width="1000" height="260" rx="22" fill="#F4F6FB"/>
-  <rect x="0.75" y="0.75" width="998.5" height="258.5" rx="21.5" fill="none" stroke="#E2E8F0" stroke-width="1.5"/>
+  <rect width="1000" height="300" rx="22" fill="url(#bg)"/>
+  <circle cx="830" cy="150" r="190" fill="url(#glow)"/>
 
-  <text x="50" y="60" class="eyebrow">PROJECT · WEEKLY ASKING PRICES</text>
-  <text x="50" y="104" class="title">Egypt real estate prices</text>
-  <text x="50" y="138" class="sub">Our asking price per m² against competing listings, every week,</text>
-  <text x="50" y="161" class="sub">in six Egyptian areas: who cut prices, and where the gap is widest.</text>
+  <text x="50" y="100" class="title">Egypt real estate prices</text>
+  <text x="50" y="140" class="sub"><tspan id="nb-listings_compared">…</tspan> competing listings compared with ours every week;</text>
+  <text x="50" y="166" class="sub">widest gap <tspan class="hot"><tspan id="nb-widest_gap_pct">…</tspan>% in <tspan id="nb-widest_gap_area">…</tspan></tspan>, against the area median.</text>
 
   <g>
-    <rect x="50" y="186" width="96" height="34" rx="17" fill="#FFFFFF" stroke="#CBD5E1"/>
-    <text x="98" y="208" class="pill" text-anchor="middle">6 sites</text>
-    <rect x="156" y="186" width="96" height="34" rx="17" fill="#FFFFFF" stroke="#CBD5E1"/>
-    <text x="204" y="208" class="pill" text-anchor="middle">6 areas</text>
-    <rect x="262" y="186" width="200" height="34" rx="17" fill="#FFFFFF" stroke="#CBD5E1"/>
-    <text x="362" y="208" class="pill" text-anchor="middle"><tspan id="nb-listings_compared">…</tspan> listings compared</text>
-    <rect x="472" y="186" width="290" height="34" rx="17" fill="#2563EB" fill-opacity="0.10" stroke="#2563EB"/>
-    <text x="617" y="208" class="pill" text-anchor="middle">widest gap <tspan id="nb-widest_gap_pct">…</tspan>% in <tspan id="nb-widest_gap_area">…</tspan></text>
+    <rect x="50" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
+    <text x="96" y="218" class="pill" text-anchor="middle">6 sites</text>
+    <rect x="152" y="196" width="92" height="34" rx="17" fill="none" stroke="#334155"/>
+    <text x="198" y="218" class="pill" text-anchor="middle">6 areas</text>
+    <rect x="254" y="196" width="196" height="34" rx="17" fill="none" stroke="#F59E0B"/>
+    <text x="352" y="218" class="pill" text-anchor="middle" style="fill:#F59E0B">every asking price kept</text>
   </g>
 
   <!-- the idea in one strip: the market's middle half, its median, our units -->
   <g>
-    <text x="770" y="62" class="cap">price per m², one area</text>
-    <line x1="770" y1="110" x2="950" y2="110" class="track"/>
-    <rect x="808" y="100" width="88" height="20" rx="4" class="band"/>
-    <line x1="850" y1="95" x2="850" y2="125" class="median"/>
-    <circle cx="884" cy="110" r="7" class="ours"/>
-    <circle cx="916" cy="110" r="7" class="ours"/>
-    <text x="808" y="148" class="cap">middle half</text>
-    <text x="850" y="88" class="cap" text-anchor="middle">median</text>
-    <text x="900" y="148" class="cap">our units</text>
+    <text x="730" y="80" class="note">price per m², one area</text>
+    <line x1="730" y1="140" x2="950" y2="140" class="track"/>
+    <rect x="770" y="128" width="104" height="24" rx="4" class="band"/>
+    <line x1="820" y1="120" x2="820" y2="160" class="median"/>
+    <circle cx="866" cy="140" r="8" class="ours"/>
+    <circle cx="904" cy="140" r="8" class="ours"/>
+    <text x="820" y="112" class="note" text-anchor="middle">median</text>
+    <text x="770" y="182" class="note">middle half</text>
+    <text x="950" y="182" class="note" text-anchor="end" style="fill:#F59E0B">our units</text>
+    <text x="730" y="256" class="note">The gap: how far our units sit from</text>
+    <text x="730" y="274" class="note">the median of the competing listings.</text>
   </g>
 </svg>
