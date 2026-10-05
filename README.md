@@ -3,6 +3,10 @@
 </p>
 
 <p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2DD4BF&center=true&vCenter=true&width=760&lines=Your+price+per+m2+against+the+market;Every+listing%2C+every+week%2C+kept;Who+cut+prices%2C+and+where+the+gap+is+widest" alt="Your price per m2 against the market">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10">
   <img src="https://img.shields.io/badge/Apache_Airflow-3-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white" alt="Apache Airflow 3">
   <img src="https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 17">
@@ -69,6 +73,10 @@ The weekly run of <!--nb:latest_run_week-->4 October 2026<!--/nb--> in Airflow, 
 <p align="center"><sub>silver.quarantine by reason and site: a rejected row is kept with its reason, never dropped.</sub></p>
 
 ## 📈 The result
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/74038190/221352987-68da234d-4d62-4e9d-9d7f-098dc657c2dc.gif" width="100" alt="Moving chart">
+</p>
 
 **<!--nb:listings_compared-->5,619<!--/nb--> competing listings compared with our units across <!--nb:areas_read-->6<!--/nb-->
 areas and <!--nb:sites_read-->6<!--/nb--> sites: the widest gap is
@@ -172,6 +180,10 @@ the theme, and the numbers each card must show.
 
 ## ▶️ Run it
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/74038190/212284087-bbe7e430-757e-4901-90bf-4cd2ce3e1852.gif" width="100" alt="Code">
+</p>
+
 You need Docker Desktop.
 
 ```bash
@@ -239,3 +251,7 @@ on the slowest site at one request every <!--nb:live_read_request_seconds-->2.5<
   [make_units.py](make_units.py): units inside real compounds seen on the sites, each priced near
   the market for its type and area, some above and some below. The client is not named; the
   competing listings are real.
+
+<p align="center">
+  <img width="100%" src="docs/footer.svg" alt="Price every unit against its market, every week.">
+</p>

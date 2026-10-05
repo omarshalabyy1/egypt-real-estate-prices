@@ -9,6 +9,14 @@
       <stop offset="0" stop-color="#F59E0B" stop-opacity="0.22"/>
       <stop offset="1" stop-color="#F59E0B" stop-opacity="0"/>
     </radialGradient>
+      <radialGradient id="jrGlowA" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="jrGlowB" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
   </defs>
   <style>
     text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
@@ -21,9 +29,16 @@
     .band { fill: #CBD5E1; fill-opacity: 0.22; }
     .median { stroke: #E2E8F0; stroke-width: 2.5; }
     .ours { fill: #F59E0B; stroke: #0B1220; stroke-width: 2; }
+      .wave { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 2 10; animation: flow 6s linear infinite; }
+    @keyframes flow { to { stroke-dashoffset: -120; } }
   </style>
 
   <rect width="1000" height="300" rx="22" fill="url(#bg)"/>
+  <circle cx="880" cy="60" r="190" fill="url(#jrGlowA)"/>
+  <circle cx="160" cy="280" r="170" fill="url(#jrGlowB)"/>
+  <path class="wave" stroke="#2DD4BF" stroke-opacity="0.5" d="M24 289 C 200 284, 330 293, 500 289 S 800 285, 976 289"/>
+  <path class="wave" stroke="#A78BFA" stroke-opacity="0.4" style="animation-duration:9s" d="M40 295 C 220 291, 360 298, 520 295 S 820 292, 960 295"/>
+
   <circle cx="830" cy="150" r="190" fill="url(#glow)"/>
 
   <text x="50" y="100" class="title">Egypt real estate prices</text>
