@@ -29,22 +29,22 @@
   <rect width="1000" height="794" rx="22" fill="url(#bg)"/>
   <text x="40" y="50" class="title">The star schema</text>
   <text x="40" y="74" class="sub">Two facts share the area, compound and type dimensions. Every join is many to one, on a surrogate key.</text>
-  <path d="M370 167.5 C320.0 167.5 320.0 167.5 270 167.5" class="edge" stroke="#94A3B8"/>
+  <path d="M370 167.5 L270 167.5" class="edge" stroke="#94A3B8"/>
   <text x="360" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">*</text><text x="278" y="162.5" class="key" fill="#CBD5E1" text-anchor="start">1</text>
-  <path d="M370 259.5 C320.0 259.5 320.0 387.5 270 387.5" class="edge" stroke="#94A3B8"/>
+  <path d="M370 259.5 L326 259.5 Q320 259.5 320 265.5 L320 381.5 Q320 387.5 314 387.5 L270 387.5" class="edge" stroke="#94A3B8"/>
   <text x="360" y="254.5" class="key" fill="#CBD5E1" text-anchor="end">*</text><text x="278" y="382.5" class="key" fill="#CBD5E1" text-anchor="start">1</text>
-  <path d="M630 190.5 C680.0 190.5 680.0 167.5 730 167.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="185.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
-  <path d="M630 213.5 C680.0 213.5 680.0 387.5 730 387.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="208.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="382.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
-  <path d="M630 236.5 C680.0 236.5 680.0 557.5 730 557.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="231.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="552.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
-  <path d="M630 530.5 C680.0 530.5 680.0 167.5 730 167.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="525.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
-  <path d="M630 576.5 C680.0 576.5 680.0 387.5 730 387.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="571.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="382.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
-  <path d="M630 553.5 C680.0 553.5 680.0 557.5 730 557.5" class="edge" stroke="#94A3B8"/>
-  <text x="640" y="548.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="552.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 190.5 L684 190.5 Q690 190.5 690 184.5 L690 168 Q690 162 696 162 L730 162" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="185.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="157.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 213.5 L670 213.5 Q676 213.5 676 219.5 L676 376 Q676 382 682 382 L730 382" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="208.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="377.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 236.5 L656 236.5 Q662 236.5 662 242.5 L662 546 Q662 552 668 552 L730 552" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="231.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="547.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 530.5 L694 530.5 Q700 530.5 700 524.5 L700 179 Q700 173 706 173 L730 173" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="525.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="186.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 576.5 L706 576.5 Q712 576.5 712 570.5 L712 399 Q712 393 718 393 L730 393" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="571.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="406.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 553.5 L645.25 553.5 Q650 553.5 650 558.25 L650 558.25 Q650 563 654.75 563 L730 563" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="548.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="576.0" class="key" fill="#CBD5E1" text-anchor="end">1</text>
   <rect x="370" y="110" width="260" height="284" rx="10" fill="#13233D" stroke="#2563EB" stroke-width="1.5"/>
   <path d="M370 120 a10 10 0 0 1 10 -10 h240 a10 10 0 0 1 10 10 v36 h-260 Z" fill="#2563EB"/>
   <text x="382" y="130" class="name" font-weight="700" style="fill:#FFFFFF">fact_listing_price</text><text x="382" y="147" class="count" style="fill:#FFFFFF">5,757 rows</text>

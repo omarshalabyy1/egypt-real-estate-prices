@@ -29,7 +29,9 @@
   <text x="40" y="74" class="sub">Each layer only reads the one to its left, so any number in the report can be traced back to the page it came from.</text>
 
   <!-- the weekly Airflow run across the top -->
-  <line x1="40" y1="108" x2="954" y2="108" class="flow" marker-end="url(#arrow)"/>
+  <path d="M40 108 H188" class="flow" fill="none"/>
+  <path d="M666 108 H702" class="flow" fill="none"/>
+  <path d="M902 108 H912 Q920 108 920 116 V137" class="flow" fill="none" marker-end="url(#arrow)"/>
   <rect x="190" y="95" width="474" height="26" rx="13" fill="#0F1829"/>
   <text x="427" y="113" class="run" text-anchor="middle">Airflow, weekly: extract, transform, load, build gold, report</text>
   <rect x="704" y="94" width="196" height="28" rx="14" fill="#F59E0B"/>
