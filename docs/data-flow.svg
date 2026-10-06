@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 756.8" width="1000" height="756.8" role="img" aria-label="Data flow, table by table: six listing sites (realestate.eg, Property Finder Egypt, Dubizzle Egypt and Nawy read by the weekly Airflow DAG, Bayut Egypt and Aqarmap by a browser run before it) are kept as pages on disk and logged in bronze.fetch_log (1,804 pages). load_silver parses them into silver.listing (5,757 rows), silver.price_observation (5,757), silver.quarantine (41) and silver.run_log (36), and loads the areas from config/client.yaml (6) and our units from our_units.csv (60). build_gold builds a star of two facts, fact_listing_price (5,757 rows, quarantined prices left out) and fact_our_unit (60), five dimensions and six views, among them pooled_listing_price (5,619 rows). Power BI reads gold into three pages, the report task prints the weekly summary and the notebook computes every README number.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#64748B"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#F59E0B"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .layer { font-size: 14px; font-weight: 700; fill: #0B1220; }
+    .where { font-size: 12px; fill: #94A3B8; }
+    .name { font-size: 13px; fill: #F1F5F9; }
+    .small { font-size: 12.5px; fill: #F1F5F9; }
+    .count { font-size: 11.5px; fill: #94A3B8; }
+    .col { font-size: 12.5px; fill: #E2E8F0; }
+    .key { font-size: 11px; font-weight: 700; }
+    .task { font-size: 12px; font-weight: 700; fill: #0B1220; }
+    .edge { fill: none; stroke: #64748B; stroke-width: 1.4; }
+  </style>
+  <rect width="1000" height="756.8" rx="22" fill="url(#bg)"/>
+  <text x="40" y="50" class="title">Data flow, table by table</text>
+  <text x="40" y="74" class="sub">Every table in the warehouse, the tables it is built from, and its row count after the run for the week of 4 October 2026.</text>
+  <rect x="24" y="96" width="150" height="26" rx="13" fill="#94A3B8"/><text x="99.0" y="114" class="layer" text-anchor="middle">Sources</text>
+  <text x="99.0" y="138" class="where" text-anchor="middle">config/client.yaml</text>
+  <rect x="206" y="96" width="150" height="26" rx="13" fill="#3B82F6"/><text x="281.0" y="114" class="layer" text-anchor="middle">1  Bronze</text>
+  <text x="281.0" y="138" class="where" text-anchor="middle">pages on disk, schema bronze</text>
+  <rect x="388" y="96" width="168" height="26" rx="13" fill="#0EA5E9"/><text x="472.0" y="114" class="layer" text-anchor="middle">2  Silver</text>
+  <text x="472.0" y="138" class="where" text-anchor="middle">schema silver, tables</text>
+  <rect x="588" y="96" width="190" height="26" rx="13" fill="#14B8A6"/><text x="683.0" y="114" class="layer" text-anchor="middle">3  Gold</text>
+  <text x="683.0" y="138" class="where" text-anchor="middle">schema gold, star and views</text>
+  <rect x="810" y="96" width="166" height="26" rx="13" fill="#22C55E"/><text x="893.0" y="114" class="layer" text-anchor="middle">4  Reports</text>
+  <text x="893.0" y="138" class="where" text-anchor="middle">Power BI, log, notebook</text>
+  <rect x="24" y="150" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="169" class="small">realestate.eg</text>
+  <rect x="24" y="188" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="207" class="small">Property Finder Egypt</text>
+  <rect x="24" y="226" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="245" class="small">Dubizzle Egypt</text>
+  <rect x="24" y="264" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="283" class="small">Nawy</text>
+  <rect x="24" y="302" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="34" y="321" class="small">Bayut Egypt</text>
+  <rect x="24" y="340" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="34" y="359" class="small">Aqarmap</text>
+  <rect x="24" y="397.0" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="416.0" class="small">areas in client.yaml</text>
+  <rect x="24" y="435.0" width="150" height="28" rx="7" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.75"/><text x="34" y="454.0" class="small">our_units.csv</text>
+  <rect x="206" y="150" width="150" height="218" rx="10" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.75"/>
+  <text x="218" y="208" class="name" font-weight="700">pages on disk</text>
+  <text x="218" y="228" class="col">data/raw/&lt;source&gt;/</text>
+  <text x="218" y="248" class="col">&lt;run_week&gt;/</text>
+  <text x="218" y="268" class="count" style="fill:#CBD5E1;font-size:12.5px">gzipped, kept on</text>
+  <text x="218" y="288" class="count" style="fill:#CBD5E1;font-size:12.5px">the machine; JSON</text>
+  <text x="218" y="308" class="count" style="fill:#CBD5E1;font-size:12.5px">sites drop contacts</text>
+  <rect x="206" y="374" width="150" height="28" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.75"/><text x="216" y="393" class="name">fetch_log</text><text x="348" y="393" class="count" text-anchor="end">1,804</text>
+  <line x1="281" y1="368" x2="281" y2="372" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="164.0" x2="204" y2="164.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="202.0" x2="204" y2="202.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="240.0" x2="204" y2="240.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="278.0" x2="204" y2="278.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="316.0" x2="204" y2="316.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="354.0" x2="204" y2="354.0" class="edge" marker-end="url(#arrow)"/>
+  <rect x="388" y="150" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="169" class="name">listing</text><text x="548" y="169" class="count" text-anchor="end">5,757</text>
+  <rect x="388" y="188" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="207" class="name">price_observation</text><text x="548" y="207" class="count" text-anchor="end">5,757</text>
+  <rect x="388" y="226" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="245" class="name">quarantine</text><text x="548" y="245" class="count" text-anchor="end">41</text>
+  <rect x="388" y="264" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="283" class="name">run_log</text><text x="548" y="283" class="count" text-anchor="end">36</text>
+  <rect x="388" y="397.0" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="416.0" class="name">area</text><text x="548" y="416.0" class="count" text-anchor="end">6</text>
+  <rect x="388" y="435.0" width="168" height="28" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.75"/><text x="398" y="454.0" class="name">our_unit</text><text x="548" y="454.0" class="count" text-anchor="end">60</text>
+  <rect x="588" y="150" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="169" class="name">dim_site</text><text x="770" y="169" class="count" text-anchor="end">6</text>
+  <rect x="588" y="188" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="207" class="name">fact_listing_price</text><text x="770" y="207" class="count" text-anchor="end">5,757</text>
+  <rect x="588" y="226" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="245" class="name">dim_compound</text><text x="770" y="245" class="count" text-anchor="end">1,291</text>
+  <rect x="588" y="264" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="283" class="name">dim_property_type</text><text x="770" y="283" class="count" text-anchor="end">11</text>
+  <rect x="588" y="302" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="321" class="name">dim_week</text><text x="770" y="321" class="count" text-anchor="end">1</text>
+  <rect x="588" y="340" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="359" class="name">dim_area</text><text x="770" y="359" class="count" text-anchor="end">6</text>
+  <rect x="588" y="378" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75"/><text x="598" y="397" class="name">fact_our_unit</text><text x="770" y="397" class="count" text-anchor="end">60</text>
+  <rect x="588" y="438.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="457.8" class="name">pooled_listing_price</text><text x="770" y="457.8" class="count" text-anchor="end">5,619</text>
+  <rect x="588" y="476.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="495.8" class="name">price_change</text><text x="770" y="495.8" class="count" text-anchor="end">0</text>
+  <rect x="588" y="514.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="533.8" class="name">area_benchmark</text><text x="770" y="533.8" class="count" text-anchor="end">55</text>
+  <rect x="588" y="552.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="571.8" class="name">area_site_benchmark</text><text x="770" y="571.8" class="count" text-anchor="end">234</text>
+  <rect x="588" y="590.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="609.8" class="name">unit_gap</text><text x="770" y="609.8" class="count" text-anchor="end">60</text>
+  <rect x="588" y="628.8" width="190" height="28" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.75" stroke-dasharray="4 3"/><text x="598" y="647.8" class="name">area_gap</text><text x="770" y="647.8" class="count" text-anchor="end">6</text>
+  <path d="M356 164.0 C372.0 164.0 372.0 164.0 386 164.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M356 202.0 C372.0 202.0 372.0 202.0 386 202.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M356 240.0 C372.0 240.0 372.0 240.0 386 240.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M356 278.0 C372.0 278.0 372.0 278.0 386 278.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="411.0" x2="386" y2="411.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="174" y1="449.0" x2="386" y2="449.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 164.0 C572.0 164.0 572.0 202.0 586 202.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 202.0 C572.0 202.0 572.0 202.0 586 202.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 164.0 C572.0 164.0 572.0 240.0 586 240.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 164.0 C572.0 164.0 572.0 278.0 586 278.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 449.0 C572.0 449.0 572.0 240.0 586 240.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 449.0 C572.0 449.0 572.0 278.0 586 278.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 449.0 C572.0 449.0 572.0 392.0 586 392.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 411.0 C572.0 411.0 572.0 354.0 586 354.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M556 240.0 C572.0 240.0 572.0 208.0 586 208.0" class="edge" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="683" y="430" class="where" text-anchor="middle">views over the facts (dashed)</text>
+  <path d="M782 150 H794 V656.8 H782" class="edge" stroke="#14B8A6"/>
+  <line x1="794" y1="278.0" x2="808" y2="278.0" class="edge" stroke="#22C55E" marker-end="url(#arrow)"/>
+  <rect x="810" y="198.0" width="166" height="160" rx="12" fill="#13233D" stroke="#22C55E" stroke-opacity="0.75"/>
+  <text x="893" y="220.0" class="where" text-anchor="middle">Power BI, three pages</text>
+  <rect x="817" y="232.0" width="152" height="30" rx="15" fill="#166534"/><text x="893" y="252.0" class="small" style="font-size:11.5px" text-anchor="middle">Market position</text>
+  <rect x="817" y="272.0" width="152" height="30" rx="15" fill="#166534"/><text x="893" y="292.0" class="small" style="font-size:11.5px" text-anchor="middle">Compounds and developers</text>
+  <rect x="817" y="312.0" width="152" height="30" rx="15" fill="#166534"/><text x="893" y="332.0" class="small" style="font-size:11.5px" text-anchor="middle">Weekly changes</text>
+  <line x1="794" y1="472.8" x2="808" y2="472.8" class="edge" stroke="#22C55E" marker-end="url(#arrow)"/>
+  <rect x="810" y="438.8" width="166" height="70" rx="10" fill="#13233D" stroke="#22C55E" stroke-opacity="0.75"/>
+  <text x="822" y="460.8" class="name" font-weight="700">report task</text>
+  <text x="822" y="480.8" class="count" style="fill:#CBD5E1;font-size:12px">the week's price cuts and</text>
+  <text x="822" y="496.8" class="count" style="fill:#CBD5E1;font-size:12px">widest gaps, in its log</text>
+  <line x1="794" y1="568.8" x2="808" y2="568.8" class="edge" stroke="#22C55E" marker-end="url(#arrow)"/>
+  <rect x="810" y="534.8" width="166" height="70" rx="10" fill="#13233D" stroke="#22C55E" stroke-opacity="0.75"/>
+  <text x="822" y="556.8" class="name" font-weight="700">analysis.ipynb</text>
+  <text x="822" y="576.8" class="count" style="fill:#CBD5E1;font-size:12px">every number in</text>
+  <text x="822" y="592.8" class="count" style="fill:#CBD5E1;font-size:12px">the README</text>
+  <rect x="24" y="668.8" width="952" height="66" rx="12" fill="#F59E0B" fill-opacity="0.08" stroke="#F59E0B" stroke-opacity="0.6"/>
+  <text x="38" y="686.8" class="name" font-weight="700" style="fill:#FBBF24">Airflow</text>
+  <text x="38" y="704.8" class="where">weekly DAG</text>
+  <text x="38" y="720.8" class="where">egypt_real_estate_prices</text>
+  <rect x="206" y="690.8" width="150" height="26" rx="13" fill="#F59E0B"/><text x="281.0" y="708.8" class="task" text-anchor="middle">extract_&lt;site&gt; x4</text>
+  <rect x="388" y="690.8" width="168" height="26" rx="13" fill="#F59E0B"/><text x="472.0" y="708.8" class="task" text-anchor="middle">load_silver</text>
+  <line x1="356" y1="703.8" x2="386" y2="703.8" class="edge" stroke="#F59E0B" marker-end="url(#amber)"/>
+  <rect x="588" y="690.8" width="190" height="26" rx="13" fill="#F59E0B"/><text x="683.0" y="708.8" class="task" text-anchor="middle">build_gold</text>
+  <line x1="556" y1="703.8" x2="586" y2="703.8" class="edge" stroke="#F59E0B" marker-end="url(#amber)"/>
+  <rect x="810" y="690.8" width="166" height="26" rx="13" fill="#F59E0B"/><text x="893.0" y="708.8" class="task" text-anchor="middle">report</text>
+  <line x1="778" y1="703.8" x2="808" y2="703.8" class="edge" stroke="#F59E0B" marker-end="url(#amber)"/>
+  <text x="40" y="492" class="where" style="font-size:12.5px">Dashed sites: Bayut Egypt and Aqarmap are read by fetch_bayut_aqarmap.py</text>
+  <text x="40" y="512" class="where" style="font-size:12.5px">in a visible browser before the run, not by Airflow.</text>
+  <text x="40" y="532" class="where" style="font-size:12.5px">Dashed arrow: build_gold leaves out a price quarantined in its week.</text>
+  <text x="40" y="552" class="where" style="font-size:12.5px">dim_site: the six sites, listed in the function gold.build.</text>
+  <text x="40" y="572" class="where" style="font-size:12.5px">Counts: count(*) on each table and view.</text>
+</svg>

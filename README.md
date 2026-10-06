@@ -233,6 +233,16 @@ on the slowest site at one request every <!--nb:live_read_request_seconds-->2.5<
 | [powerbi/](powerbi/) | The report, step by step |
 | [tests/](tests/) | Page parsing for every site, and the checks |
 
+## 🏗️ For engineers
+
+Every table in the warehouse, the tables it is built from, and its row count after the run for the week of 4 October 2026:
+
+![Data flow, table by table](docs/data-flow.svg)
+
+The star schema Power BI reads:
+
+![The star schema](docs/data-model.svg)
+
 ## 🗂️ Data
 
 - **Competing listings:** residential units for sale in <!--nb:areas_read-->6<!--/nb--> areas (New Cairo, New Capital, Sheikh

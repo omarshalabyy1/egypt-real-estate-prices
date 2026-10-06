@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 794" width="1000" height="794" role="img" aria-label="Star schema with two facts. fact_listing_price (5,757 rows, one per site, listing and run week, key site_key plus listing_id plus week_key) joins dim_site (6 rows), dim_week (1), dim_area (6), dim_compound (1,291) and dim_property_type (11), many to one. fact_our_unit (60 rows, one per unit of ours) shares dim_area, dim_compound and dim_property_type, so one slicer filters the market and our units the same way. Power BI loads the listing fact through gold.pooled_listing_price (5,619 rows) and five views beside it.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#64748B"/>
+    </marker>
+    <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#F59E0B"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .layer { font-size: 14px; font-weight: 700; fill: #0B1220; }
+    .where { font-size: 12px; fill: #94A3B8; }
+    .name { font-size: 13px; fill: #F1F5F9; }
+    .small { font-size: 12.5px; fill: #F1F5F9; }
+    .count { font-size: 11.5px; fill: #94A3B8; }
+    .col { font-size: 12.5px; fill: #E2E8F0; }
+    .key { font-size: 11px; font-weight: 700; }
+    .task { font-size: 12px; font-weight: 700; fill: #0B1220; }
+    .edge { fill: none; stroke: #64748B; stroke-width: 1.4; }
+  </style>
+  <rect width="1000" height="794" rx="22" fill="url(#bg)"/>
+  <text x="40" y="50" class="title">The star schema</text>
+  <text x="40" y="74" class="sub">Two facts share the area, compound and type dimensions. Every join is many to one, on a surrogate key.</text>
+  <path d="M370 167.5 C320.0 167.5 320.0 167.5 270 167.5" class="edge" stroke="#94A3B8"/>
+  <text x="360" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">*</text><text x="278" y="162.5" class="key" fill="#CBD5E1" text-anchor="start">1</text>
+  <path d="M370 259.5 C320.0 259.5 320.0 387.5 270 387.5" class="edge" stroke="#94A3B8"/>
+  <text x="360" y="254.5" class="key" fill="#CBD5E1" text-anchor="end">*</text><text x="278" y="382.5" class="key" fill="#CBD5E1" text-anchor="start">1</text>
+  <path d="M630 190.5 C680.0 190.5 680.0 167.5 730 167.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="185.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 213.5 C680.0 213.5 680.0 387.5 730 387.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="208.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="382.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 236.5 C680.0 236.5 680.0 557.5 730 557.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="231.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="552.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 530.5 C680.0 530.5 680.0 167.5 730 167.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="525.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="162.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 576.5 C680.0 576.5 680.0 387.5 730 387.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="571.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="382.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <path d="M630 553.5 C680.0 553.5 680.0 557.5 730 557.5" class="edge" stroke="#94A3B8"/>
+  <text x="640" y="548.5" class="key" fill="#CBD5E1" text-anchor="start">*</text><text x="722" y="552.5" class="key" fill="#CBD5E1" text-anchor="end">1</text>
+  <rect x="370" y="110" width="260" height="284" rx="10" fill="#13233D" stroke="#2563EB" stroke-width="1.5"/>
+  <path d="M370 120 a10 10 0 0 1 10 -10 h240 a10 10 0 0 1 10 10 v36 h-260 Z" fill="#2563EB"/>
+  <text x="382" y="130" class="name" font-weight="700" style="fill:#FFFFFF">fact_listing_price</text><text x="382" y="147" class="count" style="fill:#FFFFFF">5,757 rows</text>
+  <text x="382" y="172" class="col">site_key</text><text x="618" y="172" class="key" fill="#FBBF24" text-anchor="end">PK FK</text>
+  <text x="382" y="195" class="col">area_key</text><text x="618" y="195" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="218" class="col">compound_key</text><text x="618" y="218" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="241" class="col">type_key</text><text x="618" y="241" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="264" class="col">week_key</text><text x="618" y="264" class="key" fill="#FBBF24" text-anchor="end">PK FK</text>
+  <text x="382" y="287" class="col">listing_id</text><text x="618" y="287" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="382" y="310" class="col">asking_price</text>
+  <text x="382" y="333" class="col">size_m2</text>
+  <text x="382" y="356" class="col">price_per_m2</text>
+  <text x="382" y="379" class="col">bedrooms</text>
+  <rect x="370" y="450" width="260" height="215" rx="10" fill="#13233D" stroke="#2563EB" stroke-width="1.5"/>
+  <path d="M370 460 a10 10 0 0 1 10 -10 h240 a10 10 0 0 1 10 10 v36 h-260 Z" fill="#2563EB"/>
+  <text x="382" y="470" class="name" font-weight="700" style="fill:#FFFFFF">fact_our_unit</text><text x="382" y="487" class="count" style="fill:#FFFFFF">60 rows</text>
+  <text x="382" y="512" class="col">unit_code</text><text x="618" y="512" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="382" y="535" class="col">area_key</text><text x="618" y="535" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="558" class="col">type_key</text><text x="618" y="558" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="581" class="col">compound_key</text><text x="618" y="581" class="key" fill="#93C5FD" text-anchor="end">FK</text>
+  <text x="382" y="604" class="col">size_m2</text>
+  <text x="382" y="627" class="col">asking_price</text>
+  <text x="382" y="650" class="col">price_per_m2</text>
+  <rect x="40" y="110" width="230" height="169" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5"/>
+  <path d="M40 120 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v36 h-230 Z" fill="#14B8A6"/>
+  <text x="52" y="130" class="name" font-weight="700" style="fill:#0B1220">dim_site</text><text x="52" y="147" class="count" style="fill:#0B1220">6 rows</text>
+  <text x="52" y="172" class="col">site_key</text><text x="258" y="172" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="52" y="195" class="col">source</text><text x="258" y="195" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <text x="52" y="218" class="col">name</text>
+  <text x="52" y="241" class="col">base_url</text>
+  <text x="52" y="264" class="col">read_by</text>
+  <rect x="40" y="330" width="230" height="146" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5"/>
+  <path d="M40 340 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v36 h-230 Z" fill="#14B8A6"/>
+  <text x="52" y="350" class="name" font-weight="700" style="fill:#0B1220">dim_week</text><text x="52" y="367" class="count" style="fill:#0B1220">1 row</text>
+  <text x="52" y="392" class="col">week_key</text><text x="258" y="392" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="52" y="415" class="col">year</text>
+  <text x="52" y="438" class="col">month</text>
+  <text x="52" y="461" class="col">week_of_year</text>
+  <rect x="730" y="110" width="230" height="192" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5"/>
+  <path d="M730 120 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v36 h-230 Z" fill="#14B8A6"/>
+  <text x="742" y="130" class="name" font-weight="700" style="fill:#0B1220">dim_area</text><text x="742" y="147" class="count" style="fill:#0B1220">6 rows</text>
+  <text x="742" y="172" class="col">area_key</text><text x="948" y="172" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="742" y="195" class="col">area_id</text><text x="948" y="195" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <text x="742" y="218" class="col">name</text>
+  <text x="742" y="241" class="col">map_name</text>
+  <text x="742" y="264" class="col">lat</text>
+  <text x="742" y="287" class="col">lon</text>
+  <rect x="730" y="330" width="230" height="146" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5"/>
+  <path d="M730 340 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v36 h-230 Z" fill="#14B8A6"/>
+  <text x="742" y="350" class="name" font-weight="700" style="fill:#0B1220">dim_compound</text><text x="742" y="367" class="count" style="fill:#0B1220">1,291 rows</text>
+  <text x="742" y="392" class="col">compound_key</text><text x="948" y="392" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="742" y="415" class="col">area_id</text><text x="948" y="415" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <text x="742" y="438" class="col">compound</text><text x="948" y="438" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <text x="742" y="461" class="col">developer</text><text x="948" y="461" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <rect x="730" y="500" width="230" height="100" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5"/>
+  <path d="M730 510 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v36 h-230 Z" fill="#14B8A6"/>
+  <text x="742" y="520" class="name" font-weight="700" style="fill:#0B1220">dim_property_type</text><text x="742" y="537" class="count" style="fill:#0B1220">11 rows</text>
+  <text x="742" y="562" class="col">type_key</text><text x="948" y="562" class="key" fill="#FBBF24" text-anchor="end">PK</text>
+  <text x="742" y="585" class="col">unit_type</text><text x="948" y="585" class="key" fill="#93C5FD" text-anchor="end">UK</text>
+  <rect x="40" y="520" width="260" height="192" rx="10" fill="#13233D" stroke="#14B8A6" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="52" y="540" class="name" font-weight="700">gold views</text><text x="52" y="557" class="count">Power BI loads them too; rows</text>
+  <text x="52" y="582" class="col">pooled_listing_price</text><text x="288" y="582" class="count" text-anchor="end">5,619</text>
+  <text x="52" y="605" class="col">price_change</text><text x="288" y="605" class="count" text-anchor="end">0</text>
+  <text x="52" y="628" class="col">area_benchmark</text><text x="288" y="628" class="count" text-anchor="end">55</text>
+  <text x="52" y="651" class="col">area_site_benchmark</text><text x="288" y="651" class="count" text-anchor="end">234</text>
+  <text x="52" y="674" class="col">unit_gap</text><text x="288" y="674" class="count" text-anchor="end">60</text>
+  <text x="52" y="697" class="col">area_gap</text><text x="288" y="697" class="count" text-anchor="end">6</text>
+  <text x="40" y="750" class="where">Power BI loads fact_listing_price through pooled_listing_price: a Bayut Egypt row that copies a Dubizzle ad is left out.</text>
+  <text x="40" y="772" class="where">PK primary key · FK foreign key · UK the natural key, unique · 1 to * one dimension row to many fact rows</text>
+</svg>
