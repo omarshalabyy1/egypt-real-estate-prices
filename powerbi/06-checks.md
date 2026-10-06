@@ -23,7 +23,7 @@ the report with those, not with the numbers written here.
 **The first week:** checks C14 to C18 (page 3) need two weekly runs. After the first run they show
 no changes at all, which is correct: one run has no earlier price to compare with.
 
-Run the SQL in any SQL tool on `127.0.0.1:5451`, database `prices`, user `prices`, or with
+Run the SQL in any SQL tool on port 5451, database `prices`, user `prices`, or with
 `docker compose exec warehouse psql -U prices -d prices`.
 
 ## The warehouse, before Power BI

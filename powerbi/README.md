@@ -37,7 +37,7 @@ reports look like one family. The pages name colours by theme slot
 list, so the theme uses Segoe UI.
 
 The warehouse must be running (`docker compose up -d` in the repo root, PostgreSQL on
-`127.0.0.1:5451`) while you build or refresh the report. After each Sunday's run of
+port 5451) while you build or refresh the report. After each Sunday's run of
 `egypt_real_estate_prices`, press **Refresh** in Power BI: that is the one click. The Weekly changes
 page stays empty until the second weekly run: one run has no earlier price to compare with.
 

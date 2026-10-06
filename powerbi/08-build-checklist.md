@@ -7,8 +7,8 @@ it is off, fix that step first.
 
 1. Start Docker Desktop. In the repo folder, if there is no `.env` yet, copy `.env.example` to `.env`
    and set `WAREHOUSE_PASSWORD` to a password of your choice. Then run `docker compose up -d --build`.
-   The warehouse listens on `127.0.0.1:5451`.
-2. Open Airflow at http://127.0.0.1:8101 and switch `egypt_real_estate_prices` on (the toggle left
+   The warehouse listens on port 5451.
+2. Open Airflow on port 8101 and switch `egypt_real_estate_prices` on (the toggle left
    of its name). The DAG does not catch up on past weeks (the sites only show today's prices), so
    start the first weekly run yourself: click the DAG's name, then **Trigger** (the play button) and
    confirm.

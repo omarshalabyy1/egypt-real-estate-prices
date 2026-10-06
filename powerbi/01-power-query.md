@@ -1,7 +1,7 @@
 # 1. Power Query
 
 The report reads the gold layer of the local warehouse, and nothing else: PostgreSQL on
-`127.0.0.1:5451`, database `prices`, schema `gold`, after `docker compose up -d --build` and at least
+port 5451, database `prices`, schema `gold`, after `docker compose up -d --build` and at least
 one run of the `egypt_real_estate_prices` DAG (steps 1 to 4 of
 [`08-build-checklist.md`](08-build-checklist.md)). Nothing is read from bronze, silver or files.
 

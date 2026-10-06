@@ -190,7 +190,7 @@ You need Docker Desktop.
 git clone https://github.com/omarshalabyy1/egypt-real-estate-prices
 cd egypt-real-estate-prices
 cp .env.example .env          # set WAREHOUSE_PASSWORD
-docker compose up -d --build  # Airflow http://127.0.0.1:8101, warehouse localhost:5451
+docker compose up -d --build  # Airflow on port 8101, warehouse on port 5451
 ```
 
 Open Airflow, unpause `egypt_real_estate_prices` and trigger it, from its page (Trigger DAG) or by
