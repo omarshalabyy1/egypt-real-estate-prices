@@ -36,11 +36,16 @@ Think of it like walking past every estate agent's window in six neighbourhoods 
 | **Gap** | How far one of our units is from the median price per m² of the same type in the same area, in percent. +10% means we ask 10% more. |
 | **Scraping** | Reading web pages with a program instead of by eye. Here the program reads the data block the page already carries (JSON) rather than the visible text. |
 | **HTML, JSON, JSON-LD** | HTML is the code of a web page. JSON is a text format for data, like `{"price": 15600000}`. JSON-LD is JSON a page embeds to describe itself to search engines; realestate.eg, Bayut and Aqarmap carry their prices there. |
+| **CSV** | A plain text file of a table, one row per line, values separated by commas: `our_units.csv`, and the `index.csv` and `summary.csv` page logs. |
+| **UTC** | The world reference clock. The schedule and every `fetched_at` time are in UTC. A listing's day is taken in Cairo time, the sites' own (`Africa/Cairo` in `sites.py`). |
 | **Pace** | The wait between two requests to one site: 2.5 seconds for the four automated sites, 5 seconds for the two browser sites (`pace_seconds` in `config/client.yaml`). |
 | **Browser run** | Bayut Egypt and Aqarmap refuse plain programs, so `fetch_bayut_aqarmap.py` opens them in a real, visible browser window before the weekly run and saves the pages. A person deals with any check or cookie banner. |
 | **Bronze, silver, gold** | The three layers of the warehouse. **Bronze**: the pages exactly as read, saved on disk, plus a log of every page read. **Silver**: clean, checked rows, one table per thing. **Gold**: the star schema the report reads. See [layers.svg](layers.svg). |
 | **Warehouse, PostgreSQL** | The database that holds silver and gold. PostgreSQL (often "Postgres") is a free, widely used database. Here it runs in Docker on port 5451. |
 | **Schema** | A folder of tables inside the database: `bronze`, `silver` and `gold`. |
+| **SQL** | The language used to ask a database questions and build tables. `sql/schema.sql` and the notebook's queries are SQL. |
+| **Transaction** | A group of database changes that either all happen or none do. `load_silver` runs as one, so a failed load leaves silver as it was. |
+| **Upsert** | Insert a row, or update it if its key is already there (`ON CONFLICT ... DO UPDATE`). |
 | **Run week** | The week a run belongs to, named by the Sunday it starts: "the week of 4 October 2026". Every saved price carries its run week. |
 | **Watermark** | How the pipeline knows what it has done. Here it is the run week: a finished week's folder gets a `_done` file and is skipped next time. |
 | **Canary** | A tripwire. If page 1 of a search gives no priced row, the site has probably changed its pages, so the run stops loudly instead of saving an empty week. |
@@ -141,7 +146,7 @@ Each chart in the README is drawn by the notebook. In plain words:
 
 | Chart | What it shows | Why it matters |
 |---|---|---|
-| listings-by-area.png | The 5,757 rows by area and site. Every area has between 874 (New Capital) and 1,019 (North Coast). Dubizzle Egypt gives the most, 2,150. | The comparison stands on a similar number of listings in every area. (cell 5) |
+| listings-by-area.png | The 5,757 rows by area and site. Every area has between 874 (New Capital) and 1,019 (North Coast). Dubizzle Egypt gives the most, 2,150. | The comparison stands on a similar number of listings in every area. (cells 5, 6) |
 | gap-by-area.png | The median gap of our units per area, from +7.4% in 6th of October to −0.7% in New Cairo. | The first question a sales manager asks: where are we priced high? (cell 14) |
 | 1. Area ranking | North Coast is dearest per m², New Capital cheapest, 114.2% apart. | Areas cannot share one price list. (cell 34) |
 | 2. Type by area | Median per m² for every type and area with 10+ listings. Widest within one area: North Coast duplexes at 171,058 against apartments at 52,667 per m², 224.8% apart (duplexes n 10). | An area median hides the type. That is why each unit is compared with its own type. (cell 36) |
