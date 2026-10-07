@@ -14,6 +14,8 @@
   <img src="https://img.shields.io/badge/Power_BI-Report-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI">
 </p>
 
+> 📖 **New to data?** [The project explained, from zero](docs/explained.md): every word, every number and the interview questions, in plain words.
+
 <h3 align="center">Know every week how your asking price per m² compares with the market,<br>who cut prices, and where the gap is widest.</h3>
 
 ## The problem
@@ -91,7 +93,7 @@ median of the same type in the same area.** The checks behind every number are i
 - **<!--nb:share_listings_cheaper_than_ours-->50.4<!--/nb-->% of the <!--nb:listings_in_our_types-->4,929<!--/nb--> competing listings** in
   the areas and types where we have units ask less per m² than our median unit of that type and area.
 - **<!--nb:quarantined_rows-->41<!--/nb--> rows set aside** with their reason
-  (<!--nb:quarantine_share_pct-->0.7<!--/nb-->% of all rows read), most often "<!--nb:i12_top_reason-->price per m² outside 10,000 to 400,000<!--/nb-->"
+  (<!--nb:quarantine_share_pct-->0.7<!--/nb-->% of all rows checked), most often "<!--nb:i12_top_reason-->price per m² outside 10,000 to 400,000<!--/nb-->"
   (<!--nb:i12_top_reason_rows-->29<!--/nb--> rows); every run's counts reconcile site by site and area by area.
 - **<!--nb:i1_premium_pct-->114.2<!--/nb-->% more per m²** asked in <!--nb:i1_dearest_area-->North Coast<!--/nb--> than
   in <!--nb:i1_cheapest_area-->New Capital<!--/nb-->, the cheapest area, comparing median asking prices.
